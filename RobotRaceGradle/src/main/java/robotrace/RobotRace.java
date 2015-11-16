@@ -160,24 +160,28 @@ public class RobotRace extends Base {
      */
     @Override
     public void setView() {
+        // Update the view according to the camera mode and robot of interest.
+        // For camera modes 1 to 4, determine which robot to focus on.
+        camera.update(gs, robots[0]);
+
         // Select part of window.
         gl.glViewport(0, 0, gs.w, gs.h);
 
         // Set projection matrix.
         gl.glMatrixMode(GL_PROJECTION);
+        //Load the identity matrix.
         gl.glLoadIdentity();
 
         // Set the perspective.
         // Modify this to meet the requirements in the assignment.
-        glu.gluPerspective(40, (float) gs.w / (float) gs.h, 0.1, 100);
+        glu.gluPerspective(camera.getFovAngle(), (float) gs.w / gs.h, 0.1 * gs.vDist, 10 * gs.vDist);
 
         // Set camera.
         gl.glMatrixMode(GL_MODELVIEW);
+        //Load the identity matrix.
         gl.glLoadIdentity();
 
-        // Update the view according to the camera mode and robot of interest.
-        // For camera modes 1 to 4, determine which robot to focus on.
-        camera.update(gs, robots[0]);
+        //Transform the camera to the right position.
         glu.gluLookAt(camera.eye.x(), camera.eye.y(), camera.eye.z(),
                 camera.center.x(), camera.center.y(), camera.center.z(),
                 camera.up.x(), camera.up.y(), camera.up.z());
@@ -253,7 +257,7 @@ public class RobotRace extends Base {
         drawAxis(0f, 1f, 0f);
         drawAxis(0f, 0f, 1f);
 
-        //Reset the color back to black.ß
+        //Reset the color back to black.
         gl.glColor3f(0f, 0f, 0f);
     }
 
@@ -305,7 +309,7 @@ public class RobotRace extends Base {
      * @param args
      */
     public static void main(String args[]) {
-        RobotRace robotRace = new RobotRace();
+        final RobotRace robotRace = new RobotRace();
         robotRace.run();
     }
 }
