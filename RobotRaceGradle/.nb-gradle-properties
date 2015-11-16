@@ -17,11 +17,7 @@
       <task-names>
         <name must-exist="no">run</name>
       </task-names>
-      <task-args>
-        <arg>--stacktrace</arg>
-        <arg>--info</arg>
-        <arg>--debug</arg>
-      </task-args>
+      <task-args/>
       <task-jvm-args/>
     </task>
   </built-in-tasks>
