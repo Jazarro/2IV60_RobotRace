@@ -37,27 +37,23 @@ class Camera {
      * @param gs
      * @return
      */
-    //Return the azimuth angle from the global state.
+    //Get the azimuth angle from the global state.
     public float getAzimuth(GlobalState gs) {
-        //To do this, first get the theta from the global state.
         return gs.theta;
     }
 
     //Set the azimuth angle to the global state.
     public void setAzimuth(GlobalState gs, float azimuth) {
-        //To do this, first set the theta to the global state.
         gs.theta = azimuth;
     }
 
-    //Return the inclination angle from the global state.
+    //Get the inclination angle from the global state.
     public float getInclination(GlobalState gs) {
-        //To do this, first get the phi from the global state.
         return gs.phi;
     }
 
     //Set the inclination angle to the global state.
     public void setInclination(GlobalState gs, float inclination) {
-        //To do this, first set the phi to the global state.
         gs.phi = inclination;
     }
 
