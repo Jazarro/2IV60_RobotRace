@@ -71,30 +71,34 @@ public class RobotRace extends Base {
      * Instance of the terrain.
      */
     private final Terrain terrain;
+    
+    private final Factory factory;
 
     /**
      * Constructs this robot race by initializing robots, camera, track, and
      * terrain.
      */
     public RobotRace() {
+        factory = new Factory();
+        
 
         // Create a new array of four robots
         robots = new Robot[4];
 
         // Initialize robot 0
-        robots[0] = new Robot(Material.GOLD
+        robots[0] = factory.createRobot(Material.GOLD
         /* add other parameters that characterize this robot */);
 
         // Initialize robot 1
-        robots[1] = new Robot(Material.SILVER
+        robots[1] = factory.createRobot(Material.SILVER
         /* add other parameters that characterize this robot */);
 
         // Initialize robot 2
-        robots[2] = new Robot(Material.WOOD
+        robots[2] = factory.createRobot(Material.WOOD
         /* add other parameters that characterize this robot */);
 
         // Initialize robot 3
-        robots[3] = new Robot(Material.ORANGE
+        robots[3] = factory.createRobot(Material.ORANGE
         /* add other parameters that characterize this robot */);
 
         // Initialize the camera
@@ -148,6 +152,8 @@ public class RobotRace extends Base {
         gl.glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
         gl.glBindTexture(GL_TEXTURE_2D, 0);
 
+        factory.initialize(gl);
+        
         // Try to load four textures, add more if you like.
         track = loadTexture("track.jpg");
         brick = loadTexture("brick.jpg");
