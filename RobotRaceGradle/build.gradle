@@ -28,7 +28,5 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.10'
     compile 'org.jogamp.jogl:jogl-all:2.2.4'//2.3.3
     compile 'org.jogamp.gluegen:gluegen-rt:2.2.4'//2.3.2
-    //    compile files('libs/RobotRaceLibrary.jar')
     compile fileTree(dir: 'libs', include: '*.jar')
-    //    runtime fileTree(dir: 'libs', include: '*.jar')
 }

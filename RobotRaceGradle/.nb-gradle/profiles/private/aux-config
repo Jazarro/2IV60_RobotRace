@@ -11,5 +11,15 @@
       </group>
     </open-files>
     <editor-bookmarks lastBookmarkId="0" xmlns="http://www.netbeans.org/ns/editor-bookmarks/2"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+      <group>
+        <file>file:/C:/Users/Arjan/Programs/Workspaces/NetBeansProjects/2IV60_RobotRace/RobotRaceGradle/src/main/java/robotrace/Terrain.java</file>
+        <file>file:/C:/Users/Arjan/Programs/Workspaces/NetBeansProjects/2IV60_RobotRace/RobotRaceGradle/src/main/java/robotrace/Camera.java</file>
+        <file>file:/C:/Users/Arjan/Programs/Workspaces/NetBeansProjects/2IV60_RobotRace/RobotRaceGradle/src/main/java/robotrace/RobotRace.java</file>
+        <file>file:/C:/Users/Arjan/Programs/Workspaces/NetBeansProjects/2IV60_RobotRace/RobotRaceGradle/src/main/java/robotrace/Material.java</file>
+        <file>file:/C:/Users/Arjan/Programs/Workspaces/NetBeansProjects/2IV60_RobotRace/RobotRaceGradle/src/main/java/robotrace/Lighting.java</file>
+        <file>file:/C:/Users/Arjan/Programs/Workspaces/NetBeansProjects/2IV60_RobotRace/RobotRaceGradle/src/main/java/robotrace/Robot.java</file>
+      </group>
+    </open-files>
   </auxiliary>
 </gradle-project-properties>
