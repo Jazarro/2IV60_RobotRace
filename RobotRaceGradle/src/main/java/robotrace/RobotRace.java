@@ -72,7 +72,9 @@ public class RobotRace extends Base {
      */
     private final Terrain terrain;
     
+    
     private final Factory factory;
+    private final Lighting lighting = new Lighting();
 
     /**
      * Constructs this robot race by initializing robots, camera, track, and
@@ -127,6 +129,7 @@ public class RobotRace extends Base {
 
         // Initialize the terrain
         terrain = new Terrain();
+        
     }
 
     /**
@@ -135,6 +138,7 @@ public class RobotRace extends Base {
      */
     @Override
     public void initialize() {
+        lighting.initialize(gl);
 
         // Enable blending.
         gl.glEnable(GL_BLEND);
@@ -166,6 +170,7 @@ public class RobotRace extends Base {
      */
     @Override
     public void setView() {
+        lighting.setView(gl);
         // Update the view according to the camera mode and robot of interest.
         // For camera modes 1 to 4, determine which robot to focus on.
         camera.update(gs, robots[0]);
@@ -198,6 +203,8 @@ public class RobotRace extends Base {
      */
     @Override
     public void drawScene() {
+        lighting.drawScene(gl);
+        
         // Background color.
         gl.glClearColor(1f, 1f, 1f, 0f);
 
@@ -231,7 +238,7 @@ public class RobotRace extends Base {
         terrain.draw(gl, glu, glut);
 
         // Unit box around origin.
-        glut.glutWireCube(1f);
+        glut.glutSolidCube(1f);
 
         // Move in x-direction.
         gl.glTranslatef(2f, 0f, 0f);
@@ -243,7 +250,7 @@ public class RobotRace extends Base {
         gl.glScalef(1f, 1f, 2f);
 
         // Translated, rotated, scaled box.
-        glut.glutWireCube(1f);
+        glut.glutSolidCube(1f);
     }
 
     /**
