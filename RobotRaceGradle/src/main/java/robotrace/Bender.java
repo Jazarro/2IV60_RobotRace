@@ -5,12 +5,15 @@ import java.nio.*;
 import javax.media.opengl.GL2;
 
 class Bender{
-    private static final int BND_MAIN_MANY = 4;
+    private static final int BND_MAIN_MANY = 50;
     private static final int BND_NUMCOORD = 3;
     private static final int BND_NUMEDGE = 4;
-
+    //private static final int BND_NUMEDGE = 2;
+    
     private static final double BND_MAIN_HGTS[] = {0.6f, 1.05f, 1.15f, 1.475f};
+    //private static final double BND_MAIN_HGTS[] = {0.6f, 1.05f};
     private static final double BND_MAIN_RADII[] = {0.35f, 0.45f, 0.25f, 0.25f};
+    //private static final double BND_MAIN_RADII[] = {1f, 1f};
 
     private final double[] BND_Main_vrtx;
     private final int[] BND_Shiny_inds;
@@ -60,18 +63,20 @@ class Bender{
     public void initialize(GL2 gl){
         for(int i = 0; i <= BND_MAIN_MANY; i++){
             for(int j = 0; j < BND_NUMEDGE; j++){
-                BND_Main_vrtx[(i * BND_NUMEDGE + j) * BND_NUMCOORD + 0] = BND_MAIN_RADII[j] * Math.cos(Math.toRadians(i * 360 / BND_MAIN_MANY));
-                BND_Main_vrtx[(i * BND_NUMEDGE + j) * BND_NUMCOORD + 1] = BND_MAIN_RADII[j] * Math.sin(Math.toRadians(i * 360 / BND_MAIN_MANY));
+                BND_Main_vrtx[(i * BND_NUMEDGE + j) * BND_NUMCOORD + 0] = BND_MAIN_RADII[j] * Math.cos(Math.toRadians(i * 360 / BND_MAIN_MANY)) / 2;
+                BND_Main_vrtx[(i * BND_NUMEDGE + j) * BND_NUMCOORD + 1] = BND_MAIN_RADII[j] * Math.sin(Math.toRadians(i * 360 / BND_MAIN_MANY)) / 2;
                 BND_Main_vrtx[(i * BND_NUMEDGE + j) * BND_NUMCOORD + 2] = BND_MAIN_HGTS[j];
             }
-            BND_Shiny_inds[i] = (i * BND_NUMEDGE + 0) * BND_NUMCOORD;
-            BND_Torso_inds[i * 2 + 0] = (i * BND_NUMEDGE + 0) * BND_NUMCOORD;
-            BND_Torso_inds[i * 2 + 1] = (i * BND_NUMEDGE + 1) * BND_NUMCOORD;
-            BND_Neck_inds[i * 2 + 0] = (i * BND_NUMEDGE + 1) * BND_NUMCOORD;
-            BND_Neck_inds[i * 2 + 1] = (i * BND_NUMEDGE + 2) * BND_NUMCOORD;
-            BND_Headl_inds[i * 2 + 0] = (i * BND_NUMEDGE + 2) * BND_NUMCOORD;
-            BND_Headl_inds[i * 2 + 1] = (i * BND_NUMEDGE + 3) * BND_NUMCOORD;
+            BND_Shiny_inds[i] = (i * BND_NUMEDGE + 0);
+            BND_Torso_inds[i * 2 + 0] = (i * BND_NUMEDGE + 0);
+            BND_Torso_inds[i * 2 + 1] = (i * BND_NUMEDGE + 1);
+            BND_Neck_inds[i * 2 + 0] = (i * BND_NUMEDGE + 1);
+            BND_Neck_inds[i * 2 + 1] = (i * BND_NUMEDGE + 2);
+            BND_Headl_inds[i * 2 + 0] = (i * BND_NUMEDGE + 2);
+            BND_Headl_inds[i * 2 + 1] = (i * BND_NUMEDGE + 3);
         }
+        
+        gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
 
         gl.glGenBuffers(10, BND_Buffers, 0);
 
@@ -99,5 +104,7 @@ class Bender{
         gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, BND_Buffers[4]);
         gl.glBufferData(GL2.GL_ELEMENT_ARRAY_BUFFER, BND_Headl_inds.length * Integer.BYTES, BND_Headl_inds_b, GL2.GL_STATIC_DRAW);
         //BND_Headl_inds_b = null;
+        
+        gl.glDisableClientState(GL2.GL_VERTEX_ARRAY);
     }
 }
