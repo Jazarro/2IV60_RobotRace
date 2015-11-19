@@ -74,13 +74,14 @@ public class RobotRace extends Base {
     
     
     private final Factory factory;
-    private final Lighting lighting = new Lighting();
+    private final Lighting lighting;
 
     /**
      * Constructs this robot race by initializing robots, camera, track, and
      * terrain.
      */
     public RobotRace() {
+        lighting = new Lighting();
         factory = new Factory();
         
 
@@ -138,7 +139,7 @@ public class RobotRace extends Base {
      */
     @Override
     public void initialize() {
-        lighting.initialize(gl);
+        //lighting.initialize(gl);
 
         // Enable blending.
         gl.glEnable(GL_BLEND);
@@ -238,7 +239,7 @@ public class RobotRace extends Base {
         terrain.draw(gl, glu, glut);
 
         // Unit box around origin.
-        glut.glutSolidCube(1f);
+        ////glut.glutSolidCube(1f);
 
         // Move in x-direction.
         gl.glTranslatef(2f, 0f, 0f);
@@ -250,7 +251,7 @@ public class RobotRace extends Base {
         gl.glScalef(1f, 1f, 2f);
 
         // Translated, rotated, scaled box.
-        glut.glutSolidCube(1f);
+        ////glut.glutSolidCube(1f);
     }
 
     /**
