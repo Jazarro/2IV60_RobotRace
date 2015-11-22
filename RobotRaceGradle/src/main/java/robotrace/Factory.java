@@ -2,25 +2,25 @@ package robotrace;
 
 import javax.media.opengl.GL2;
 
-public class Factory{
-    
+public class Factory {
+
     private final Bender bender;
-    
-    public Factory(){
+
+    public Factory() {
         bender = new Bender();
     }
-    
-    public void initialize(GL2 gl){
+
+    public void initialize(GL2 gl) {
         bender.initialize(gl);
     }
-    
-    public Robot createRobot(Material material){
+
+    public Robot createRobot(Material material) {
         Robot robot = new Robot(material, bender);
         //robot.initialize();
         return robot;
     }
-    
-    public Robot createRobot(Material material, int robotType){
+
+    public Robot createRobot(Material material, int robotType) {
         Robot robot = new Robot(material, robotType, bender);
         //robot.initialize();
         return robot;

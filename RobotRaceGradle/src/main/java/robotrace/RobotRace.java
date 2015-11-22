@@ -53,37 +53,36 @@ public class RobotRace extends Base {
     private static final int DEFAULT_SLICES = 10;
 
     /**
+     * Main program execution body, delegates to an instance of the RobotRace
+     * implementation.
+     *
+     * @param args
+     */
+    public static void main(String args[]) {
+        final RobotRace robotRace = new RobotRace();
+        robotRace.run();
+    }
+    
+    private final Camera camera = new Camera();
+    private final Terrain terrain = new Terrain();
+    private final Factory factory = new Factory();
+    private final Lighting lighting = new Lighting();
+
+    /**
      * Array of the four robots.
      */
     private final Robot[] robots;
 
     /**
-     * Instance of the camera.
-     */
-    private final Camera camera;
-
-    /**
      * Instance of the race track.
      */
     private final RaceTrack[] raceTracks;
-
-    /**
-     * Instance of the terrain.
-     */
-    private final Terrain terrain;
     
-    
-    private final Factory factory;
-    private final Lighting lighting = new Lighting();
-
     /**
      * Constructs this robot race by initializing robots, camera, track, and
      * terrain.
      */
     public RobotRace() {
-        factory = new Factory();
-        
-
         // Create a new array of four robots
         robots = new Robot[4];
 
@@ -102,9 +101,6 @@ public class RobotRace extends Base {
         // Initialize robot 3
         robots[3] = factory.createRobot(Material.ORANGE
         /* add other parameters that characterize this robot */);
-
-        // Initialize the camera
-        camera = new Camera();
 
         // Initialize the race tracks
         raceTracks = new RaceTrack[5];
@@ -126,10 +122,6 @@ public class RobotRace extends Base {
 
         // Custom track
         raceTracks[4] = new RaceTrack(new Vector[]{ /* add control points */});
-
-        // Initialize the terrain
-        terrain = new Terrain();
-        
     }
 
     /**
@@ -157,7 +149,7 @@ public class RobotRace extends Base {
         gl.glBindTexture(GL_TEXTURE_2D, 0);
 
         factory.initialize(gl);
-        
+
         // Try to load four textures, add more if you like.
         track = loadTexture("track.jpg");
         brick = loadTexture("brick.jpg");
@@ -192,10 +184,7 @@ public class RobotRace extends Base {
         //Load the identity matrix.
         gl.glLoadIdentity();
 
-        //Transform the camera to the right position.
-        glu.gluLookAt(camera.eye.x(), camera.eye.y(), camera.eye.z(),
-                camera.center.x(), camera.center.y(), camera.center.z(),
-                camera.up.x(), camera.up.y(), camera.up.z());
+        camera.setLookAt(glu);
     }
 
     /**
@@ -204,7 +193,7 @@ public class RobotRace extends Base {
     @Override
     public void drawScene() {
         lighting.drawScene(gl);
-        
+
         // Background color.
         gl.glClearColor(1f, 1f, 1f, 0f);
 
@@ -229,6 +218,7 @@ public class RobotRace extends Base {
         robots[0].direction = raceTracks[gs.trackNr].getLaneTangent(0, 0);
 
         // Draw the first robot.
+        lighting.setMaterial(gl, robots[0].getMaterial());
         robots[0].draw(gl, glu, glut, false, gs.tAnim);
 
         // Draw the race track.
@@ -237,6 +227,7 @@ public class RobotRace extends Base {
         // Draw the terrain.
         terrain.draw(gl, glu, glut);
 
+        lighting.setMaterial(gl, Material.GOLD);
         // Unit box around origin.
         glut.glutSolidCube(1f);
 
@@ -250,6 +241,7 @@ public class RobotRace extends Base {
         gl.glScalef(1f, 1f, 2f);
 
         // Translated, rotated, scaled box.
+        lighting.setMaterial(gl, Material.WOOD);
         glut.glutSolidCube(1f);
     }
 
@@ -258,6 +250,7 @@ public class RobotRace extends Base {
      * (yellow).
      */
     public void drawAxisFrame() {
+        lighting.setMaterial(gl, Material.SILVER);
         //The radius of the sphere that sits at the origin.
         final float originSphereRadius = 0.05f;
         //Sets the color to yellow.
@@ -315,14 +308,5 @@ public class RobotRace extends Base {
         gl.glPopMatrix();
     }
 
-    /**
-     * Main program execution body, delegates to an instance of the RobotRace
-     * implementation.
-     *
-     * @param args
-     */
-    public static void main(String args[]) {
-        final RobotRace robotRace = new RobotRace();
-        robotRace.run();
-    }
+
 }

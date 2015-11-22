@@ -1,5 +1,10 @@
 package robotrace;
 
+import javax.media.opengl.glu.GLU;
+
+import static utility.GsUtils.getAzimuth;
+import static utility.GsUtils.getInclination;
+
 /**
  * Implementation of a camera with a position and orientation.
  */
@@ -8,17 +13,15 @@ class Camera {
     /**
      * The position of the camera.
      */
-    public Vector eye = new Vector(3f, 6f, 5f);
-
+    private Vector eye = new Vector(3f, 6f, 5f);
     /**
      * The point to which the camera is looking.
      */
-    public Vector center = Vector.O;
-
+    private Vector center = Vector.O;
     /**
      * The up vector.
      */
-    public Vector up = Vector.Z;
+    private final Vector up = Vector.Z;
 
     private float fovAngle = 40f;
 
@@ -31,30 +34,15 @@ class Camera {
     }
 
     /**
-     * Convenience method that retrieves the azimuth angle from the given
-     * GlobalState.
+     * Sets the camera's position, focus point and up direction to the given GLU
+     * instance.
      *
-     * @param gs
-     * @return
+     * @param glu The GLU instance that will be adjusted.
      */
-    //Get the azimuth angle from the global state.
-    public float getAzimuth(GlobalState gs) {
-        return gs.theta;
-    }
-
-    //Set the azimuth angle to the global state.
-    public void setAzimuth(GlobalState gs, float azimuth) {
-        gs.theta = azimuth;
-    }
-
-    //Get the inclination angle from the global state.
-    public float getInclination(GlobalState gs) {
-        return gs.phi;
-    }
-
-    //Set the inclination angle to the global state.
-    public void setInclination(GlobalState gs, float inclination) {
-        gs.phi = inclination;
+    public void setLookAt(GLU glu) {
+        glu.gluLookAt(eye.x(), eye.y(), eye.z(),
+                center.x(), center.y(), center.z(),
+                up.x(), up.y(), up.z());
     }
 
     /**
@@ -97,12 +85,14 @@ class Camera {
         //Get the center point from the global state.
         center = gs.cnt;
         //Calculate the x coordinate of the eye point relative to the center point.
-        eye.x = Math.cos(getAzimuth(gs)) * Math.cos(getInclination(gs)) * gs.vDist;
+        final double xEyeLocal = Math.cos(getAzimuth(gs)) * Math.cos(getInclination(gs)) * gs.vDist;
         //Calculate the y coordinate of the eye point relative to the center point.
-        eye.y = Math.sin(getAzimuth(gs)) * Math.cos(getInclination(gs)) * gs.vDist;
+        final double yEyeLocal = Math.sin(getAzimuth(gs)) * Math.cos(getInclination(gs)) * gs.vDist;
         //Calculate the z coordinate of the eye point relative to the center point.
-        eye.z = Math.sin(getInclination(gs)) * gs.vDist;
-        //Add the (possible) relative offet of the center point to the newly calculated coordinates of the eye point.
+        final double zEyeLocal = Math.sin(getInclination(gs)) * gs.vDist;
+        //Create a new vector with the local eye coördinates, IE relative to the center.
+        eye = new Vector(xEyeLocal, yEyeLocal, zEyeLocal);
+        //Add the relative offet of the center point to the newly calculated coordinates of the eye point.
         eye = eye.add(gs.cnt);
         //Calculate the needed field of view angle to make the displayed portion of the line throughthe center point exactly vDist long.
         fovAngle = 40;

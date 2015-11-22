@@ -11,8 +11,8 @@ public enum Material {
      */
     GOLD (
         new float[] {0.8f, 0.8f, 0.8f, 1.0f},
-        new float[] {0.0f, 0.0f, 0.0f, 1.0f},
-        0f),
+        new float[] {0.8f, 0.8f, 0.0f, 1.0f},
+        0.8f),
 
     /**
      * Silver material properties.
@@ -29,7 +29,7 @@ public enum Material {
      */
     WOOD (
         new float[] {0.8f, 0.8f, 0.8f, 1.0f},
-        new float[] {0.0f, 0.0f, 0.0f, 1.0f},
+        new float[] {0.8f, 0.8f, 0.0f, 1.0f},
         0f),
 
     /**
