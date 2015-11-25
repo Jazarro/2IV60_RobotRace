@@ -214,8 +214,8 @@ public class RobotRace extends Base {
         }
 
         // Get the position and direction of the first robot.
-        robots[0].position = raceTracks[gs.trackNr].getLanePoint(0, 0);
-        robots[0].direction = raceTracks[gs.trackNr].getLaneTangent(0, 0);
+        robots[0].setPosition(raceTracks[gs.trackNr].getLanePoint(0, 0));
+        robots[0].setDirection(raceTracks[gs.trackNr].getLaneTangent(0, 0));
 
         // Draw the first robot.
         lighting.setMaterial(gl, robots[0].getMaterial());

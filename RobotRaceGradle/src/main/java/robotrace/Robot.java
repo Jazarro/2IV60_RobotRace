@@ -5,48 +5,57 @@ import javax.media.opengl.GL2;
 import javax.media.opengl.glu.GLU;
 
 /**
- Represents a Robot, to be implemented according to the Assignments.
+ * Represents a Robot, to be implemented according to the Assignments.
  */
-class Robot{
+class Robot {
 
     /**
-     The position of the robot.
+     * The position of the robot.
      */
-    public Vector position = new Vector(0, 0, 0);
-
+    private Vector position = new Vector(0, 0, 0);
     /**
-     The direction in which the robot is running.
+     * The direction in which the robot is running.
      */
-    public Vector direction = new Vector(1, 0, 0);
-
+    private Vector direction = new Vector(1, 0, 0);
     /**
-     The material from which this robot is built.
+     * The material from which this robot is built.
      */
     private final Material material;
     private final int robotType;
-
     private final Bender bender;
 
     /**
-     Constructs the robot with initial parameters.
+     * Constructs the robot with initial parameters.
      */
-    public Robot(Material material, Bender bender){
+    public Robot(Material material, Bender bender) {
         this.robotType = 0;
         this.material = material;
         this.bender = bender;
     }
 
-    public Robot(Material material, int robotType, Bender bender){
+    public Robot(Material material, int robotType, Bender bender) {
         this.robotType = robotType;
         this.material = material;
         this.bender = bender;
     }
 
+    public void setPosition(Vector position) {
+        this.position = position;
+    }
+
+    public void setDirection(Vector direction) {
+        this.direction = direction;
+    }
+
+    public Material getMaterial() {
+        return material;
+    }
+    
     /**
-     Draws this robot (as a {@code stickfigure} if specified).
+     * Draws this robot (as a {@code stickfigure} if specified).
      */
-    public void draw(GL2 gl, GLU glu, GLUT glut, boolean stickFigure, float tAnim){
-        switch(robotType){
+    public void draw(GL2 gl, GLU glu, GLUT glut, boolean stickFigure, float tAnim) {
+        switch (robotType) {
             case 0:
             default:
                 //Set benders color
@@ -70,4 +79,5 @@ class Robot{
                 break;
         }
     }
+
 }
