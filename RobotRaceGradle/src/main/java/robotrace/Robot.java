@@ -60,33 +60,31 @@ class Robot{
 
                 gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, bender.getVerticesBuffer());
                 gl.glVertexPointer(bender.getCoordCount(), GL2.GL_DOUBLE, 0, 0);
-                
-                
-                gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, bender.getShinyBuffer());
-                gl.glDrawElements(GL2.GL_POLYGON, bender.getSliceCount()+1, GL2.GL_UNSIGNED_INT, 0);
-                
-                gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, bender.getTorsoBuffer());
-                gl.glDrawElements(GL2.GL_QUAD_STRIP, (bender.getSliceCount()+1)*2, GL2.GL_UNSIGNED_INT, 0);
-                
-                gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, bender.getNeckBuffer());
-                gl.glDrawElements(GL2.GL_QUAD_STRIP, (bender.getSliceCount()+1)*2, GL2.GL_UNSIGNED_INT, 0);
-                
-                gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, bender.getHeadlBuffer());
-                gl.glDrawElements(GL2.GL_QUAD_STRIP, (bender.getSliceCount()+1)*2, GL2.GL_UNSIGNED_INT, 0);
 
-                //gl.glDrawArrays(GL2.GL_POLYGON, 0, bender.getSliceCount());
-                /*gl.glBindBuffer(gl.GL_ELEMENT_ARRAY_BUFFER, BND_Buffers[2]);
-                gl.glDrawElements(gl.GL_QUAD_STRIP, BND_Main_Many, gl.GL_UNSIGNED_INT, 0);
-                gl.glBindBuffer(gl.GL_ELEMENT_ARRAY_BUFFER, BND_Buffers[3]);
-                gl.glDrawElements(gl.GL_QUAD_STRIP, BND_Main_Many, gl.GL_UNSIGNED_INT, 0);
-                gl.glBindBuffer(gl.GL_ELEMENT_ARRAY_BUFFER, BND_Buffers[4]);
-                gl.glDrawElements(gl.GL_QUAD_STRIP, BND_Main_Many, gl.GL_UNSIGNED_INT, 0);*/
- /*gl.glColor3f(1f, 0f, 0f);
-                gl.glDrawElements(GL2.GL_POLYGON, 10, GL2.GL_UNSIGNED_INT, 0);
-                gl.glColor3f(0f, 1f, 0f);
-                gl.glDrawElements(GL2.GL_POLYGON, 4, GL2.GL_UNSIGNED_INT, 0);
-                gl.glColor3f(0f, 0f, 1f);
-                gl.glDrawElements(GL2.GL_POLYGON, 3, GL2.GL_UNSIGNED_INT, 0);*/
+                gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, bender.getShinyBuffer());
+                gl.glDrawElements(GL2.GL_POLYGON, bender.getSliceCount(), GL2.GL_UNSIGNED_INT, 0);
+
+                gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, bender.getTorsoBuffer());
+                gl.glDrawElements(GL2.GL_QUAD_STRIP, (bender.getSliceCount()) * 2, GL2.GL_UNSIGNED_INT, 0);
+
+                gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, bender.getNeckBuffer());
+                gl.glDrawElements(GL2.GL_QUAD_STRIP, (bender.getSliceCount()) * 2, GL2.GL_UNSIGNED_INT, 0);
+
+                gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, bender.getHeadlBuffer());
+                gl.glDrawElements(GL2.GL_QUAD_STRIP, (bender.getSliceCount()) * 2, GL2.GL_UNSIGNED_INT, 0);
+
+                gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, bender.getHeadhBuffer());
+                gl.glDrawElements(GL2.GL_QUAD_STRIP, (bender.getSliceCount()) * (bender.getStackCount() + 1) * 2, GL2.GL_UNSIGNED_INT, 0);
+
+                gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, bender.getAntbBuffer());
+                gl.glDrawElements(GL2.GL_QUAD_STRIP, (bender.getSliceCount()) * (bender.getStackCount()) * 2, GL2.GL_UNSIGNED_INT, 0);
+
+                gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, bender.getAntmBuffer());
+                gl.glDrawElements(GL2.GL_QUAD_STRIP, (bender.getSliceCount()) * 2, GL2.GL_UNSIGNED_INT, 0);
+
+                gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, bender.getAnttBuffer());
+                gl.glDrawElements(GL2.GL_QUAD_STRIP, (bender.getSliceCount()) * (bender.getStackCount()) * 4, GL2.GL_UNSIGNED_INT, 0);
+
                 gl.glDisableClientState(GL2.GL_VERTEX_ARRAY);
 
                 //gl.glBegin(gl.GL_QUAD_STRIP);
