@@ -62,7 +62,7 @@ public class RobotRace extends Base {
         final RobotRace robotRace = new RobotRace();
         robotRace.run();
     }
-    
+
     private final Camera camera = new Camera();
     private final Terrain terrain = new Terrain();
     private final Factory factory = new Factory();
@@ -77,7 +77,7 @@ public class RobotRace extends Base {
      * Instance of the race track.
      */
     private final RaceTrack[] raceTracks;
-    
+
     /**
      * Constructs this robot race by initializing robots, camera, track, and
      * terrain.
@@ -250,7 +250,6 @@ public class RobotRace extends Base {
      * (yellow).
      */
     public void drawAxisFrame() {
-        lighting.setMaterial(gl, Material.SILVER);
         //The radius of the sphere that sits at the origin.
         final float originSphereRadius = 0.05f;
         //Sets the color to yellow.
@@ -307,6 +306,5 @@ public class RobotRace extends Base {
         //Restore the original matrix.
         gl.glPopMatrix();
     }
-
 
 }

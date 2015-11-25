@@ -33,6 +33,8 @@ public class Lighting {
         final float[] specularLight = {1, 1, 1, 1};
         final float[] ambientLight = {0.1f, 0.1f, 0.1f, 1};
 
+
+        //todo: color material
         gl.glEnable(GL_COLOR_MATERIAL);
         gl.glShadeModel(GL_SMOOTH);
         gl.glEnable(GL_LIGHTING);
