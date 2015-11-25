@@ -1,8 +1,6 @@
 package robotrace;
 
-import com.jogamp.common.nio.Buffers;
 import com.jogamp.opengl.util.gl2.GLUT;
-import java.nio.IntBuffer;
 import javax.media.opengl.GL2;
 import javax.media.opengl.glu.GLU;
 
@@ -56,36 +54,7 @@ class Robot{
                 //Store the current matrix.
                 gl.glPushMatrix();
 
-                gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
-
-                gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, bender.getVerticesBuffer());
-                gl.glVertexPointer(bender.getCoordCount(), GL2.GL_DOUBLE, 0, 0);
-
-                gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, bender.getShinyBuffer());
-                gl.glDrawElements(GL2.GL_POLYGON, bender.getSliceCount(), GL2.GL_UNSIGNED_INT, 0);
-
-                gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, bender.getTorsoBuffer());
-                gl.glDrawElements(GL2.GL_QUAD_STRIP, (bender.getSliceCount()) * 2, GL2.GL_UNSIGNED_INT, 0);
-
-                gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, bender.getNeckBuffer());
-                gl.glDrawElements(GL2.GL_QUAD_STRIP, (bender.getSliceCount()) * 2, GL2.GL_UNSIGNED_INT, 0);
-
-                gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, bender.getHeadlBuffer());
-                gl.glDrawElements(GL2.GL_QUAD_STRIP, (bender.getSliceCount()) * 2, GL2.GL_UNSIGNED_INT, 0);
-
-                gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, bender.getHeadhBuffer());
-                gl.glDrawElements(GL2.GL_QUAD_STRIP, (bender.getSliceCount()) * (bender.getStackCount() + 1) * 2, GL2.GL_UNSIGNED_INT, 0);
-
-                gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, bender.getAntbBuffer());
-                gl.glDrawElements(GL2.GL_QUAD_STRIP, (bender.getSliceCount()) * (bender.getStackCount()) * 2, GL2.GL_UNSIGNED_INT, 0);
-
-                gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, bender.getAntmBuffer());
-                gl.glDrawElements(GL2.GL_QUAD_STRIP, (bender.getSliceCount()) * 2, GL2.GL_UNSIGNED_INT, 0);
-
-                gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, bender.getAnttBuffer());
-                gl.glDrawElements(GL2.GL_QUAD_STRIP, (bender.getSliceCount()) * (bender.getStackCount()) * 4, GL2.GL_UNSIGNED_INT, 0);
-
-                gl.glDisableClientState(GL2.GL_VERTEX_ARRAY);
+                bender.draw(gl);
 
                 //gl.glBegin(gl.GL_QUAD_STRIP);
                 //gl.glEnd();
