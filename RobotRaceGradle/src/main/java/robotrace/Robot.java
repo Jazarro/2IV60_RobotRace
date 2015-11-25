@@ -5,22 +5,22 @@ import javax.media.opengl.GL2;
 import javax.media.opengl.glu.GLU;
 
 /**
- * Represents a Robot, to be implemented according to the Assignments.
+ Represents a Robot, to be implemented according to the Assignments.
  */
-class Robot {
+class Robot{
 
     /**
-     * The position of the robot.
+     The position of the robot.
      */
     public Vector position = new Vector(0, 0, 0);
 
     /**
-     * The direction in which the robot is running.
+     The direction in which the robot is running.
      */
     public Vector direction = new Vector(1, 0, 0);
 
     /**
-     * The material from which this robot is built.
+     The material from which this robot is built.
      */
     private final Material material;
     private final int robotType;
@@ -28,29 +28,25 @@ class Robot {
     private final Bender bender;
 
     /**
-     * Constructs the robot with initial parameters.
+     Constructs the robot with initial parameters.
      */
-    public Robot(Material material, Bender bender) {
+    public Robot(Material material, Bender bender){
         this.robotType = 0;
         this.material = material;
         this.bender = bender;
     }
 
-    public Robot(Material material, int robotType, Bender bender) {
+    public Robot(Material material, int robotType, Bender bender){
         this.robotType = robotType;
         this.material = material;
         this.bender = bender;
     }
 
-    public Material getMaterial() {
-        return material;
-    }
-    
     /**
-     * Draws this robot (as a {@code stickfigure} if specified).
+     Draws this robot (as a {@code stickfigure} if specified).
      */
-    public void draw(GL2 gl, GLU glu, GLUT glut, boolean stickFigure, float tAnim) {
-        switch (robotType) {
+    public void draw(GL2 gl, GLU glu, GLUT glut, boolean stickFigure, float tAnim){
+        switch(robotType){
             case 0:
             default:
                 //Set benders color
@@ -58,38 +54,7 @@ class Robot {
                 //Store the current matrix.
                 gl.glPushMatrix();
 
-                gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
-
-                gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, bender.getVerticesBuffer());
-                gl.glVertexPointer(bender.getCoordCount(), GL2.GL_DOUBLE, 0, 0);
-
-
-                gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, bender.getShinyBuffer());
-                gl.glDrawElements(GL2.GL_POLYGON, bender.getSliceCount() + 1, GL2.GL_UNSIGNED_INT, 0);
-
-                gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, bender.getTorsoBuffer());
-                gl.glDrawElements(GL2.GL_QUAD_STRIP, (bender.getSliceCount() + 1) * 2, GL2.GL_UNSIGNED_INT, 0);
-
-                gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, bender.getNeckBuffer());
-                gl.glDrawElements(GL2.GL_QUAD_STRIP, (bender.getSliceCount() + 1) * 2, GL2.GL_UNSIGNED_INT, 0);
-
-                gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, bender.getHeadlBuffer());
-                gl.glDrawElements(GL2.GL_QUAD_STRIP, (bender.getSliceCount() + 1) * 2, GL2.GL_UNSIGNED_INT, 0);
-
-                //gl.glDrawArrays(GL2.GL_POLYGON, 0, bender.getSliceCount());
-                /*gl.glBindBuffer(gl.GL_ELEMENT_ARRAY_BUFFER, BND_Buffers[2]);
-                 gl.glDrawElements(gl.GL_QUAD_STRIP, BND_Main_Many, gl.GL_UNSIGNED_INT, 0);
-                 gl.glBindBuffer(gl.GL_ELEMENT_ARRAY_BUFFER, BND_Buffers[3]);
-                 gl.glDrawElements(gl.GL_QUAD_STRIP, BND_Main_Many, gl.GL_UNSIGNED_INT, 0);
-                 gl.glBindBuffer(gl.GL_ELEMENT_ARRAY_BUFFER, BND_Buffers[4]);
-                 gl.glDrawElements(gl.GL_QUAD_STRIP, BND_Main_Many, gl.GL_UNSIGNED_INT, 0);*/
-                /*gl.glColor3f(1f, 0f, 0f);
-                 gl.glDrawElements(GL2.GL_POLYGON, 10, GL2.GL_UNSIGNED_INT, 0);
-                 gl.glColor3f(0f, 1f, 0f);
-                 gl.glDrawElements(GL2.GL_POLYGON, 4, GL2.GL_UNSIGNED_INT, 0);
-                 gl.glColor3f(0f, 0f, 1f);
-                 gl.glDrawElements(GL2.GL_POLYGON, 3, GL2.GL_UNSIGNED_INT, 0);*/
-                gl.glDisableClientState(GL2.GL_VERTEX_ARRAY);
+                bender.draw(gl);
 
                 //gl.glBegin(gl.GL_QUAD_STRIP);
                 //gl.glEnd();
@@ -105,5 +70,4 @@ class Robot {
                 break;
         }
     }
-
 }
