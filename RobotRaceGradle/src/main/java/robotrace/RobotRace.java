@@ -64,7 +64,7 @@ public class RobotRace extends Base {
     }
 
     private final Camera camera = new Camera();
-    private final Terrain terrain = new Terrain();
+    private final Terrain terrain = new EasyTerrain();
     private final Factory factory = new Factory();
     private final Lighting lighting = new Lighting();
     /**
@@ -147,6 +147,7 @@ public class RobotRace extends Base {
         gl.glBindTexture(GL_TEXTURE_2D, 0);
 
         factory.initialize(gl);
+        terrain.initialize();
 
         // Try to load four textures, add more if you like.
         track = loadTexture("track.jpg");
@@ -215,7 +216,7 @@ public class RobotRace extends Base {
         raceTracks[gs.trackNr].draw(gl, glu, glut);
 
         // Draw the terrain.
-        terrain.draw(gl, glu, glut);
+        terrain.draw(gl, glu, glut, lighting);
 
 //        drawUnitBoxAroundOrigin();
 //        drawTranslatedRotatedScaledBox();
@@ -250,6 +251,7 @@ public class RobotRace extends Base {
      * (yellow).
      */
     public void drawAxisFrame() {
+        lighting.setMaterial(gl, Material.GOLD);
         //The radius of the sphere that sits at the origin.
         final float originSphereRadius = 0.05f;
         //Sets the color to yellow.

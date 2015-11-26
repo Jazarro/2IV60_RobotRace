@@ -15,11 +15,15 @@ class Terrain {
     public Terrain() {
         // code goes here ...
     }
+    
+    public void initialize(){
+        
+    }
 
     /**
      * Draws the terrain.
      */
-    public void draw(GL2 gl, GLU glu, GLUT glut) {
+    public void draw(GL2 gl, GLU glu, GLUT glut, Lighting lighting) {
         // code goes here ...
     }
 
