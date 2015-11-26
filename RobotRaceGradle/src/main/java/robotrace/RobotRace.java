@@ -49,8 +49,8 @@ import static javax.media.opengl.fixedfunc.GLMatrixFunc.GL_PROJECTION;
  */
 public class RobotRace extends Base {
 
-    private static final int DEFAULT_STACKS = 10;
-    private static final int DEFAULT_SLICES = 10;
+    private static final int DEFAULT_STACKS = 25;
+    private static final int DEFAULT_SLICES = 25;
 
     /**
      * Main program execution body, delegates to an instance of the RobotRace
@@ -67,12 +67,10 @@ public class RobotRace extends Base {
     private final Terrain terrain = new Terrain();
     private final Factory factory = new Factory();
     private final Lighting lighting = new Lighting();
-
     /**
      * Array of the four robots.
      */
     private final Robot[] robots;
-
     /**
      * Instance of the race track.
      */
@@ -196,16 +194,8 @@ public class RobotRace extends Base {
 
         // Background color.
         gl.glClearColor(1f, 1f, 1f, 0f);
-
-        // Clear background.
-        gl.glClear(GL_COLOR_BUFFER_BIT);
-
-        // Clear depth buffer.
-        gl.glClear(GL_DEPTH_BUFFER_BIT);
-
-        // Set color to black.
-        gl.glColor3f(0f, 0f, 0f);
-
+        // Clear background and depth buffer.
+        gl.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         gl.glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
         // Draw the axis frame.
@@ -219,7 +209,7 @@ public class RobotRace extends Base {
 
         // Draw the first robot.
         lighting.setMaterial(gl, robots[0].getMaterial());
-        robots[0].draw(gl, glu, glut, false, gs.tAnim);
+        robots[0].draw(gl, glu, glut, gs.showStick, gs.tAnim);
 
         // Draw the race track.
         raceTracks[gs.trackNr].draw(gl, glu, glut);
@@ -227,10 +217,20 @@ public class RobotRace extends Base {
         // Draw the terrain.
         terrain.draw(gl, glu, glut);
 
+//        drawUnitBoxAroundOrigin();
+//        drawTranslatedRotatedScaledBox();
+
+    }
+
+    @Deprecated//TODO: remove once you're done experimenting.
+    private void drawUnitBoxAroundOrigin() {
         lighting.setMaterial(gl, Material.GOLD);
         // Unit box around origin.
         glut.glutSolidCube(1f);
+    }
 
+    @Deprecated//TODO: remove once you're done experimenting.
+    private void drawTranslatedRotatedScaledBox() {
         // Move in x-direction.
         gl.glTranslatef(2f, 0f, 0f);
 
