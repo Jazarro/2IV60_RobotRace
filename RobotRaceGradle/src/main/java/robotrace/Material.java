@@ -9,9 +9,9 @@ public enum Material {
      * Gold material properties.
      */
     GOLD(
-            new float[]{0.2f, 0.2f, 0.2f, 1.0f},
             new float[]{0.8f, 0.8f, 0.4f, 1.0f},
-            2.0f),
+            new float[]{0.8f, 0.8f, 0.4f, 1.0f},
+            10.0f),
     /**
      * Silver material properties.
      */

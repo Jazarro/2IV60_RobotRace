@@ -14,7 +14,8 @@ import javax.media.opengl.glu.GLU;
 
 /**
  * Temporary setup for Terrain, just puts down some rough cubes to test things
- * out.
+ * out. Later we'll probably want to use a voxel based approach and read it out
+ * from Xml or something.
  *
  * @author Arjan Boschman
  */
