@@ -61,7 +61,7 @@ class Robot {
                 //Set benders color
                 gl.glColor3f(0.6f, 0.6f, 0.6f);
                 //Store the current matrix.
-                gl.glPushMatrix();
+                //gl.glPushMatrix();
 
                 bender.draw(gl);
 
@@ -74,7 +74,7 @@ class Robot {
                 //glut.glutSolidCone(axisThickness * 5, coneHeight, DEFAULT_SLICES, DEFAULT_STACKS);
                 //glut.glutSolidCube(axisThickness);
                 //Restore the original matrix.
-                gl.glPopMatrix();
+                //gl.glPopMatrix();
 
                 break;
         }
