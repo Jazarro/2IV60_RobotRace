@@ -1,5 +1,6 @@
 package robotrace;
 
+import robotrace.bender.Bender;
 import javax.media.opengl.GL2;
 
 public class Factory {

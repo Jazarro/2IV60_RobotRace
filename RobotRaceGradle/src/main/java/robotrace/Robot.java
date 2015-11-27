@@ -1,5 +1,6 @@
 package robotrace;
 
+import robotrace.bender.Bender;
 import com.jogamp.opengl.util.gl2.GLUT;
 import javax.media.opengl.GL2;
 import javax.media.opengl.glu.GLU;
