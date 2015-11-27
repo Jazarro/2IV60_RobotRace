@@ -23,7 +23,7 @@ import static javax.media.opengl.fixedfunc.GLLightingFunc.GL_SPECULAR;
  */
 public class Lighting {
 
-    private final float[] lightPos = {0.0f, 0.2f, 1.0f, 0.0f};
+    private final float[] lightPos = {0.0f, 2f, 0.1f, 0.0f};
     private final float[] diffuseLight = {1f, 1f, 1f, 1};
     private final float[] specularLight = {1, 1, 1, 1};
     private final float[] ambientLight = {0.1f, 0.1f, 0.1f, 1};

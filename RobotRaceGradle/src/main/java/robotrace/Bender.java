@@ -5,6 +5,13 @@ import java.nio.DoubleBuffer;
 import java.nio.IntBuffer;
 import javax.media.opengl.GL2;
 
+import static javax.media.opengl.GL.GL_ARRAY_BUFFER;
+import static javax.media.opengl.GL.GL_ELEMENT_ARRAY_BUFFER;
+import static javax.media.opengl.GL.GL_UNSIGNED_INT;
+import static javax.media.opengl.GL2GL3.GL_DOUBLE;
+import static javax.media.opengl.fixedfunc.GLPointerFunc.GL_NORMAL_ARRAY;
+import static javax.media.opengl.fixedfunc.GLPointerFunc.GL_VERTEX_ARRAY;
+
 public class Bender {
 
     private static final int NUMCOORD = 3;
@@ -38,12 +45,12 @@ public class Bender {
     private final int[] bodyBuff;
 
     public Bender() {
-        bodyVrtx = new double[(BODY_SLICE_COUNT + 1) * (BODY_TOTAL_EDGE_COUNT + 1) * NUMCOORD];
+        bodyVrtx = new double[(BODY_SLICE_COUNT + 1) + (BODY_SLICE_COUNT + 1) * (BODY_TOTAL_EDGE_COUNT + 1) * NUMCOORD];//Extra BodySliceCount+1 for normals
         bodyInds = new int[BODY_BUFF_COUNT][];
         for (int i = 0; i < BODY_BUFF_COUNT; i++) {
             bodyInds[i] = new int[BODY_BUFF_SIZE[i]];
         }
-        bodyBuff = new int[BODY_BUFF_COUNT + 1];
+        bodyBuff = new int[BODY_BUFF_COUNT + 1 + 1];//Extra plus 1 for normals
     }
 
     public void initialize(GL2 gl) {
@@ -51,9 +58,15 @@ public class Bender {
     }
 
     private void bodyInit(GL2 gl) {
+        final double[] normalArray = new double[(BODY_SLICE_COUNT + 1) * NUMCOORD];
+
         for (int i = 0; i <= BODY_SLICE_COUNT; i++) {
             for (int j = 0; j < BODY_SIMPLE_EDGE_COUNT; j++) {
-                System.arraycopy(calcCoord(i, BODY_RADII[j], BODY_HEIGHTS[j]), 0, bodyVrtx, (i * BODY_TOTAL_EDGE_COUNT + j) * NUMCOORD, 3);
+                final double[] coords = calcCoord(i, BODY_RADII[j], BODY_HEIGHTS[j]);
+                if (j == 0) {
+                    System.arraycopy(coords, 0, normalArray, i * NUMCOORD, coords.length);
+                }
+                System.arraycopy(coords, 0, bodyVrtx, (i * BODY_TOTAL_EDGE_COUNT + j) * NUMCOORD, 3);
             }
             bodyInds[0][i] = (i * BODY_TOTAL_EDGE_COUNT + 0);
             bodyInds[1][i * 2 + 0] = (i * BODY_TOTAL_EDGE_COUNT + 0);
@@ -93,7 +106,8 @@ public class Bender {
             bodyInds[7][((i + (((2 * BODY_STACK_COUNT) - 1) * (BODY_SLICE_COUNT + 1))) * 2) + 1] = ((i * BODY_TOTAL_EDGE_COUNT) + BODY_SIMPLE_EDGE_COUNT + 2 * BODY_STACK_COUNT + ((2 * (BODY_STACK_COUNT - 1)) - 1) + 1);
         }
 
-        gl.glGenBuffers(BODY_BUFF_COUNT + 1, bodyBuff, 0);
+        gl.glGenBuffers(BODY_BUFF_COUNT + 1 + 1, bodyBuff, 0);//Plus1 because of normal array.
+        System.arraycopy(normalArray, 0, bodyVrtx, bodyVrtx.length - normalArray.length, normalArray.length);//newly added
 
         DoubleBuffer bodyVrtxBuff = Buffers.newDirectDoubleBuffer(bodyVrtx);
         gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, bodyBuff[0]);
@@ -115,17 +129,23 @@ public class Bender {
     }
 
     public void draw(GL2 gl) {
-        gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
+        gl.glEnableClientState(GL_VERTEX_ARRAY);
+        gl.glEnableClientState(GL_NORMAL_ARRAY);
 
-        gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, bodyBuff[0]);
-        gl.glVertexPointer(NUMCOORD, GL2.GL_DOUBLE, 0, 0);
+        gl.glBindBuffer(GL_ARRAY_BUFFER, bodyBuff[0]);
+        gl.glVertexPointer(NUMCOORD, GL_DOUBLE, 0, 0);
+        gl.glBindBuffer(GL_ARRAY_BUFFER, bodyBuff[0]);
+        gl.glNormalPointer(GL_DOUBLE, 0, 0);
+//        gl.glGenBuffers()
+//        for (int i = 0; i < BODY_BUFF_COUNT; i++) {
+        gl.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, bodyBuff[1 + 1]);
+        gl.glDrawElements(BODY_BUFF_TYPE[1], bodyInds[1].length, GL_UNSIGNED_INT, 0);
+//        }
 
-        for (int i = 0; i < BODY_BUFF_COUNT; i++) {
-            gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, bodyBuff[i + 1]);
-            gl.glDrawElements(BODY_BUFF_TYPE[i], bodyInds[i].length, GL2.GL_UNSIGNED_INT, 0);
-        }
+        gl.glDisableClientState(GL_VERTEX_ARRAY);
+        gl.glDisableClientState(GL_NORMAL_ARRAY);
 
-        gl.glDisableClientState(GL2.GL_VERTEX_ARRAY);
+
     }
 
 }
