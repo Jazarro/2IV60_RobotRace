@@ -4,7 +4,11 @@ import javax.media.opengl.GL2;
 
 public class Bender{
 
-    public static final int NUMCOORD = 3;
+
+
+    private static final double LEG_OFFCENTER = 0.1d;
+    private static final double ARM_HEIGHT = 0.375d;
+    private static final double ARM_OFFCENTER = 0.2d;
 
     private final Body body;
     private final Limb limb;
@@ -18,14 +22,6 @@ public class Bender{
     private final double[] rightArmAnglesAxis = new double[Limb.RING_COUNT + 1];
     private final double[] rightArmAnglesBend = new double[Limb.RING_COUNT + 1];
 
-    public static double[] calcCoord(int angleIndex, double radius, double height, int sliceCount){
-        double coord[] = new double[3];
-        coord[0] = radius * Math.cos(Math.toRadians(angleIndex * 360 / sliceCount));
-        coord[1] = radius * Math.sin(Math.toRadians(angleIndex * 360 / sliceCount));
-        coord[2] = height;
-        return coord;
-    }
-
     public Bender(){
         body = new Body();
         limb = new Limb();
@@ -35,9 +31,9 @@ public class Bender{
         body.initialize(gl);
         limb.initialize(gl);
 
-        setLeftLegAngles(new double[]{0d, 0d, 0d, 0d, 0d, 0d, 0d}, new double[]{45d, -45d, 45d, -45d, 45d, -45d, 45d});
+        setLeftLegAngles(new double[]{45d, 45d, 45d, 45d, 45d, 45d, 45d}, new double[]{45d, -45d, 45d, -45d, 45d, -45d, 45d});
         setRightLegAngles(new double[]{0d, 0d, 0d, 0d, 0d, 0d, 0d}, new double[]{45d, -45d, 45d, -45d, 45d, -45d, 45d});
-        setLeftArmAngles(new double[]{0d, 0d, 0d, 0d, 0d, 0d, 0d}, new double[]{45d, -45d, 45d, -45d, 45d, -45d, 45d});
+        setLeftArmAngles(new double[]{45d, 45d, 45d, 45d, 45d, 45d, 45d}, new double[]{45d, -45d, 45d, -45d, 45d, -45d, 45d});
         setRightArmAngles(new double[]{0d, 0d, 0d, 0d, 0d, 0d, 0d}, new double[]{45d, -45d, 45d, -45d, 45d, -45d, 45d});
         
         /*setLeftLegAngles(new double[]{0d, 0d, 0d, 0d, 0d, 0d, 0d}, new double[]{0d, 0d, 0d, 0d, 0d, 0d, 0d});
@@ -47,35 +43,42 @@ public class Bender{
     }
 
     public void draw(GL2 gl){
+        double legHeight;
+        gl.glPushMatrix();
         gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
+        //gl.glEnableClientState(GL2.GL_NORMAL_ARRAY);
+
+        legHeight = Math.max(limb.height(leftLegAnglesAxis, leftLegAnglesBend, Limb.LEG, Limb.LEFT), limb.height(rightLegAnglesAxis, rightLegAnglesBend, Limb.LEG, Limb.LEFT));
+
+        gl.glTranslated(0d, 0d, legHeight);
 
         gl.glPushMatrix();
-
-        
-        gl.glPopMatrix();
-        gl.glPushMatrix();
-        gl.glTranslated(-0.1d, 0d, 0d);
+        /*gl.glTranslated(-LEG_OFFCENTER, 0d, 0d);
         limb.draw(gl, leftLegAnglesAxis, leftLegAnglesBend, Limb.LEG, Limb.LEFT);
-        /*gl.glPopMatrix();
-        gl.glPushMatrix();
-        gl.glTranslated(0.1d, 0d, 0.6d);
-        limb.draw(gl, rightLegAnglesAxis, rightLegAnglesBend, Limb.LEG, Limb.RIGHT);
-        
-        body.draw(gl);
-        
         gl.glPopMatrix();
         gl.glPushMatrix();
-        gl.glTranslated(-0.2d, 0d, 0.975d);
+        gl.glTranslated(LEG_OFFCENTER, 0d, 0d);
+        limb.draw(gl, rightLegAnglesAxis, rightLegAnglesBend, Limb.LEG, Limb.RIGHT);*/
+
+        gl.glPopMatrix();
+        gl.glPushMatrix();
+        body.draw(gl);
+
+/*        gl.glPopMatrix();
+        gl.glPushMatrix();
+        gl.glTranslated(-ARM_OFFCENTER, 0d, ARM_HEIGHT);
         gl.glRotated(90d, 0d, 1d, 0d);
         limb.draw(gl, leftArmAnglesAxis, leftArmAnglesBend, Limb.ARM, Limb.LEFT);
         gl.glPopMatrix();
         gl.glPushMatrix();
-        gl.glTranslated(0.2d, 0d, 0.975d);
+        gl.glTranslated(ARM_OFFCENTER, 0d, ARM_HEIGHT);
         gl.glRotated(-90d, 0d, 1d, 0d);
         limb.draw(gl, rightArmAnglesAxis, rightArmAnglesBend, Limb.ARM, Limb.RIGHT);*/
 
         gl.glPopMatrix();
+        //gl.glDisableClientState(GL2.GL_NORMAL_ARRAY);
         gl.glDisableClientState(GL2.GL_VERTEX_ARRAY);
+        gl.glPopMatrix();
     }
 
     public void setLeftLegAngles(double[] anglesAxis, double[] anglesBend){
