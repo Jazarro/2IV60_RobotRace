@@ -105,11 +105,13 @@ public class Body{
     }
 
     public void draw(GL2 gl){
+        gl.glPushMatrix();
         gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, buff[0]);
         gl.glVertexPointer(Bender.NUMCOORD, GL2.GL_DOUBLE, 0, 0);
         for(int i = 0; i < BUFF_COUNT; i++){
             gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, buff[i + 1]);
             gl.glDrawElements(BUFF_TYPE[i], BUFF_SIZE[i], GL2.GL_UNSIGNED_INT, 0);
         }
+        gl.glPopMatrix();
     }
 }
