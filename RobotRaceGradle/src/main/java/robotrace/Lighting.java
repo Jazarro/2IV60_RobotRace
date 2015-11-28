@@ -16,6 +16,8 @@ import static javax.media.opengl.fixedfunc.GLLightingFunc.GL_LIGHTING;
 import static javax.media.opengl.fixedfunc.GLLightingFunc.GL_POSITION;
 import static javax.media.opengl.fixedfunc.GLLightingFunc.GL_SHININESS;
 import static javax.media.opengl.fixedfunc.GLLightingFunc.GL_SPECULAR;
+import static utility.GsUtils.getAzimuth;
+import static utility.GsUtils.getInclination;
 
 /**
  *
@@ -23,18 +25,39 @@ import static javax.media.opengl.fixedfunc.GLLightingFunc.GL_SPECULAR;
  */
 public class Lighting {
 
-    private final float[] lightPos = {0.0f, 0.2f, 1.0f, 0.0f};
+    private final float[] lightPos = new float[4];//{0.0f, 0.2f, 1.0f, 0.0f};
     private final float[] diffuseLight = {1f, 1f, 1f, 1};
     private final float[] specularLight = {1, 1, 1, 1};
     private final float[] ambientLight = {0.1f, 0.1f, 0.1f, 1};
 
-    public void initialize(GL2 gl) {
+    public void initialize(GL2 gl, GlobalState gs) {
         gl.glEnable(GL_LIGHTING);
         gl.glEnable(GL_LIGHT0);
+        calculatePosition(gs);
         gl.glLightfv(GL_LIGHT0, GL_POSITION, lightPos, 0);
         gl.glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuseLight, 0);
         gl.glLightfv(GL_LIGHT0, GL_SPECULAR, specularLight, 0);
         gl.glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight, 0);
+    }
+
+    private void calculatePosition(GlobalState gs) {
+        //Calculate the light position to be 10 degrees above and to the left of the starting eye point.
+        final float azimuth = getAzimuth(gs) - 10;
+        final float inclination = getInclination(gs) - 10;
+        //Calculate the x coordinate of the eye point relative to the center point.
+        final double xEyeLocal = Math.cos(azimuth) * Math.cos(inclination) * gs.vDist;
+        //Calculate the y coordinate of the eye point relative to the center point.
+        final double yEyeLocal = Math.sin(azimuth) * Math.cos(inclination) * gs.vDist;
+        //Calculate the z coordinate of the eye point relative to the center point.
+        final double zEyeLocal = Math.sin(inclination) * gs.vDist;
+        //Create a new vector with the local eye coördinates, IE relative to the center point.
+        final Vector localSun = new Vector(xEyeLocal, yEyeLocal, zEyeLocal);
+        //Add the relative offet of the center point to the newly calculated coordinates of the eye point.
+        final Vector worldSun = localSun.add(gs.cnt);
+        this.lightPos[0]=(float) worldSun.x();
+        this.lightPos[1]=(float) worldSun.y();
+        this.lightPos[2]=(float) worldSun.z();
+        this.lightPos[3]=0;//Makes it infinite.
     }
 
     public void setView(GL2 gl) {

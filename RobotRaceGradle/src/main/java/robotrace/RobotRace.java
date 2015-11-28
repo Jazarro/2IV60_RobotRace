@@ -128,7 +128,7 @@ public class RobotRace extends Base {
      */
     @Override
     public void initialize() {
-        lighting.initialize(gl);
+        lighting.initialize(gl,gs);
 
         // Enable blending.
         gl.glEnable(GL_BLEND);

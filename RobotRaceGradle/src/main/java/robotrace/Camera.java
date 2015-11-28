@@ -23,7 +23,7 @@ class Camera {
      */
     private final Vector up = Vector.Z;
 
-    private float fovAngle = 40f;
+    private float fovAngle;
 
     public float getFovAngle() {
         return fovAngle;
