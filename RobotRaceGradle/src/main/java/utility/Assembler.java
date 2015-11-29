@@ -31,8 +31,9 @@ public class Assembler {
     }
 
     public SurfaceCompilation makeSurfaceCompilation() {
-        int vertexSize = rings.stream().mapToInt((ring) -> ring.size()).sum();
-        int normalSize = rings.stream().mapToInt((ring) -> ring.getNormalCoordsCount()).sum();
+        final int vertexSize = rings.stream().mapToInt((ring) -> ring.size()).sum();
+        int normalSize = rings.stream().skip(1L).mapToInt((ring) -> ring.getNormalCoordsCount(false)).sum();
+        normalSize += rings.get(0).getNormalCoordsCount(true) - 15;//TODO!!!!!
         int vertexDataPtr = 0;
         int normalDataPtr = 0;
         final double[] vertexData = new double[vertexSize];
@@ -61,13 +62,13 @@ public class Assembler {
             }
             if (i != 0) {
                 final int prevVertexPtr = vertexDataPtr - rings.get(i - 1).size();
-                final int prevNormalPtr = normalDataPtr - rings.get(i - 1).getNormalCoordsCount();
+                final int prevNormalPtr = normalDataPtr - rings.get(i - 1).getNormalCoordsCount(i - 1 == 0);
                 final Surface surface = makeSurfaceQuadStrip(rings.get(i - 1), rings.get(i),
                         prevVertexPtr / NUMCOORD, vertexDataPtr / NUMCOORD, prevNormalPtr / NUMCOORD, normalDataPtr / NUMCOORD);
                 surfaceCompilation.addSurface(surface);
             }
             vertexDataPtr += rings.get(i).size();
-            normalDataPtr += rings.get(i).getNormalCoordsCount();
+            normalDataPtr += rings.get(i).getNormalCoordsCount(i == 0);
         }
         return surfaceCompilation;
     }
@@ -156,6 +157,7 @@ public class Assembler {
     private static class Ring {
 
         private final double[] verticesCoords;
+        @Deprecated
         private final boolean sharp;
         private final boolean closed;
         private final double radius;
@@ -185,10 +187,10 @@ public class Assembler {
             return closed;
         }
 
-        private int getNormalCoordsCount() {
+        private int getNormalCoordsCount(boolean isFirst) {
             int counted = 1;
             counted += isClosed() ? 1 : 0;
-            counted += isSharp() ? 1 : 0;
+            counted += isSharp() && !isFirst ? 1 : 0;
             return counted * verticesCoords.length;
         }
 

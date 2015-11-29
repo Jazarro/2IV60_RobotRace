@@ -25,7 +25,7 @@ public class Surface {
     }
 
     public int getVertexCount() {
-        return vertexIndices.length / Assembler.NUMCOORD;
+        return vertexIndices.length;
     }
 
 }
