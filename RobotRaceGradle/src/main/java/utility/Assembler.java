@@ -1,8 +1,6 @@
 package utility;
 
-import java.util.ArrayList;
-import java.util.List;
-import robotrace.bender.Bender;
+import java.util.*;
 
 /**
 
@@ -24,8 +22,8 @@ public class Assembler{
             rings.add(makeRing(radiusLow, heightLow, sliceCount, true, closeLow));
         }
         for(int i = 1; i < stackCount; i++){
-            final double radiusInt = radiusHigh + (radiusLow - radiusHigh) * Math.cos(Math.toRadians((double)i * 90d / (double)stackCount));
-            final double heightInt = heightLow + (heightHigh - heightLow) * Math.sin(Math.toRadians((double)i * 90d / (double)stackCount));
+            final double radiusInt = radiusHigh + ((radiusLow - radiusHigh) * Math.cos(Math.toRadians((double)i * 90d / (double)stackCount)));
+            final double heightInt = heightLow + ((heightHigh - heightLow) * Math.sin(Math.toRadians((double)i * 90d / (double)stackCount)));
             rings.add(makeRing(radiusInt, heightInt, sliceCount, false, false));
         }
         rings.add(makeRing(radiusHigh, heightHigh, sliceCount, true, closeHigh));
@@ -46,7 +44,7 @@ public class Assembler{
                 surfaceCompilation.addSurface(new Surface(calcIndicesPolygon(rings.get(i), dataPtr / 3), true));
             }
             if(i != 0){
-                surfaceCompilation.addSurface(new Surface(calcIndicesQuadStrip(rings.get(i - 1), rings.get(i), (dataPtr - rings.get(i-1).size()) / 3, dataPtr / 3), false));
+                surfaceCompilation.addSurface(new Surface(calcIndicesQuadStrip(rings.get(i - 1), rings.get(i), (dataPtr - rings.get(i - 1).size()) / 3, dataPtr / 3), false));
             }
             dataPtr += rings.get(i).size();
         }
@@ -54,7 +52,7 @@ public class Assembler{
     }
 
     private int[] calcIndicesPolygon(Ring ring, int offset){
-        final int[] indices = new int[ring.size()];
+        final int[] indices = new int[ring.size() / NUMCOORD];
         for(int i = 0; i < indices.length; i++){
             indices[i] = offset + i;
         }
@@ -62,10 +60,10 @@ public class Assembler{
     }
 
     private int[] calcIndicesQuadStrip(Ring ring1, Ring ring2, int offset1, int offset2){
-        final int[] indices = new int[ring1.size() + ring2.size()];
+        final int[] indices = new int[(ring1.size() + ring2.size()) / NUMCOORD];
         for(int i = 0; i < (indices.length / 2); i++){
-            indices[i * 2 + 0] = offset1 + i;
-            indices[i * 2 + 1] = offset2 + i;
+            indices[(i * 2) + 0] = offset1 + i;
+            indices[(i * 2) + 1] = offset2 + i;
         }
         return indices;
     }
@@ -73,7 +71,7 @@ public class Assembler{
     private Ring makeRing(double radius, double height, int sliceCount, boolean isSharp, boolean isClosed){
         final double[] vrtx = new double[(sliceCount + 1) * NUMCOORD];
         for(int i = 0; i < sliceCount + 1; i++){
-            System.arraycopy(calcVrtx(i, radius, height, sliceCount), 0, vrtx, 0, NUMCOORD);
+            System.arraycopy(calcVrtx(i, radius, height, sliceCount), 0, vrtx, i * NUMCOORD, NUMCOORD);
         }
         return new Ring(vrtx, isSharp, isClosed);
     }
@@ -122,51 +120,6 @@ public class Assembler{
             Math.cos(stackAngle)
         };
         return norm;
-    }
-
-    public static class SurfaceCompilation{
-
-        private final double[] vertexNormal;
-        private final List<Surface> surfaces = new ArrayList<>();
-
-        public SurfaceCompilation(double[] vertexNormal){
-            this.vertexNormal = vertexNormal;
-        }
-
-        public void addSurface(Surface surface){
-            surfaces.add(surface);
-        }
-
-        public double[] getVertexNormal(){
-            return vertexNormal;
-        }
-
-        public List<Surface> getSurfaces(){
-            return surfaces;
-        }
-        
-        public int size(){
-            return surfaces.size();
-        }
-    }
-
-    public static class Surface{
-
-        private final int[] indices;
-        private final boolean polygon;
-
-        public Surface(int[] indices, boolean polygon){
-            this.indices = indices;
-            this.polygon = polygon;
-        }
-
-        public int[] getIndices(){
-            return indices;
-        }
-
-        public boolean isPolygon(){
-            return polygon;
-        }
     }
 
     private static class Ring{
