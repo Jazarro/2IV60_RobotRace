@@ -46,7 +46,7 @@ public class Bender{
         double legHeight;
         gl.glPushMatrix();
         gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
-        //gl.glEnableClientState(GL2.GL_NORMAL_ARRAY);
+        gl.glEnableClientState(GL2.GL_NORMAL_ARRAY);
 
         legHeight = Math.max(limb.height(leftLegAnglesAxis, leftLegAnglesBend, Limb.LEG, Limb.LEFT), limb.height(rightLegAnglesAxis, rightLegAnglesBend, Limb.LEG, Limb.LEFT));
 
@@ -76,7 +76,7 @@ public class Bender{
         limb.draw(gl, rightArmAnglesAxis, rightArmAnglesBend, Limb.ARM, Limb.RIGHT);*/
 
         gl.glPopMatrix();
-        //gl.glDisableClientState(GL2.GL_NORMAL_ARRAY);
+        gl.glDisableClientState(GL2.GL_NORMAL_ARRAY);
         gl.glDisableClientState(GL2.GL_VERTEX_ARRAY);
         gl.glPopMatrix();
     }
