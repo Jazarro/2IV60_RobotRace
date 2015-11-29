@@ -50,6 +50,32 @@ public class Assembler{
         }
         return surfaceCompilation;
     }
+    
+        /*public static void makeConicalFrustum(double radiusLow, double radiusHigh, double heightLow, double heightHigh, int sliceCount){
+        makePartialTorus(radiusLow, radiusHigh, heightLow, heightHigh, sliceCount, 1);
+    }
+
+    public static void makePartialTorus(double radiusLow, double radiusHigh, double heightLow, double heightHigh, int sliceCount, int stackCount){
+        final int elementCount = (sliceCount + 1) * (stackCount + 1);
+        final double[] arrVrtxNorm = new double[elementCount * NUMCOORD * 2];
+        final int[] arrIndx = new int[elementCount];
+        for(int j = 0; j < stackCount + 1; j++){
+            for(int i = 0; i < sliceCount + 1; i++){
+
+                //final double[] lowerCoords = calcVrtx(i, radiusLow, heightLow, sliceCount);
+                final double[] coords = calcVrtx(i,
+                                                 radiusHigh + (radiusLow - radiusHigh) * Math.cos(Math.toRadians(j * 90d / stackCount)),
+                                                 heightLow + (heightHigh - heightLow) * Math.sin(Math.toRadians(j * 90d / stackCount)),
+                                                 sliceCount);
+                final double[] norms = calcNorm(i, (radiusHigh - radiusLow), (heightHigh - heightLow), sliceCount);
+                final int indexInArray = ((j * (sliceCount + 1)) + i) * 2 * NUMCOORD;
+                //System.arraycopy(lowerCoords, 0, arrVrtxNorm, indexInArray + (0 * NUMCOORD), NUMCOORD);
+                System.arraycopy(coords, 0, arrVrtxNorm, indexInArray + (0 * NUMCOORD), NUMCOORD);
+                System.arraycopy(norms, 0, arrVrtxNorm, indexInArray + (1 * NUMCOORD), NUMCOORD);
+                arrIndx[indexInArray] =;
+            }
+        }
+    }*/
 
     private int[] calcIndicesPolygon(Ring ring, int offset){
         final int[] indices = new int[ring.size() / NUMCOORD];
@@ -76,31 +102,6 @@ public class Assembler{
         return new Ring(vrtx, isSharp, isClosed);
     }
 
-    /*public static void makeConicalFrustum(double radiusLow, double radiusHigh, double heightLow, double heightHigh, int sliceCount){
-        makePartialTorus(radiusLow, radiusHigh, heightLow, heightHigh, sliceCount, 1);
-    }
-
-    public static void makePartialTorus(double radiusLow, double radiusHigh, double heightLow, double heightHigh, int sliceCount, int stackCount){
-        final int elementCount = (sliceCount + 1) * (stackCount + 1);
-        final double[] arrVrtxNorm = new double[elementCount * NUMCOORD * 2];
-        final int[] arrIndx = new int[elementCount];
-        for(int j = 0; j < stackCount + 1; j++){
-            for(int i = 0; i < sliceCount + 1; i++){
-
-                //final double[] lowerCoords = calcVrtx(i, radiusLow, heightLow, sliceCount);
-                final double[] coords = calcVrtx(i,
-                                                 radiusHigh + (radiusLow - radiusHigh) * Math.cos(Math.toRadians(j * 90d / stackCount)),
-                                                 heightLow + (heightHigh - heightLow) * Math.sin(Math.toRadians(j * 90d / stackCount)),
-                                                 sliceCount);
-                final double[] norms = calcNorm(i, (radiusHigh - radiusLow), (heightHigh - heightLow), sliceCount);
-                final int indexInArray = ((j * (sliceCount + 1)) + i) * 2 * NUMCOORD;
-                //System.arraycopy(lowerCoords, 0, arrVrtxNorm, indexInArray + (0 * NUMCOORD), NUMCOORD);
-                System.arraycopy(coords, 0, arrVrtxNorm, indexInArray + (0 * NUMCOORD), NUMCOORD);
-                System.arraycopy(norms, 0, arrVrtxNorm, indexInArray + (1 * NUMCOORD), NUMCOORD);
-                arrIndx[indexInArray] =;
-            }
-        }
-    }*/
     public static double[] calcVrtx(int angleIndex, double radius, double height, int sliceCount){
         final double sliceAngle = Math.toRadians((double)angleIndex * 360d / (double)sliceCount);
         final double[] vrtx = {

@@ -56,14 +56,14 @@ public class Body{
         glBufferNames = new int[surfaceCompilation.size() + 1];
         gl.glGenBuffers(surfaceCompilation.size() + 1, glBufferNames, 0);
 
-        DoubleBuffer vrtxBuff = Buffers.newDirectDoubleBuffer(surfaceCompilation.getVertexNormal());
+        DoubleBuffer vrtxBuff = Buffers.newDirectDoubleBuffer(surfaceCompilation.getVertices());
         gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, glBufferNames[0]);
-        gl.glBufferData(GL2.GL_ARRAY_BUFFER, surfaceCompilation.getVertexNormal().length * Double.BYTES, vrtxBuff, GL2.GL_STATIC_DRAW);
+        gl.glBufferData(GL2.GL_ARRAY_BUFFER, surfaceCompilation.getVertices().length * Double.BYTES, vrtxBuff, GL2.GL_STATIC_DRAW);
 
         for(int i = 0; i < surfaceCompilation.size(); i++){
-            IntBuffer indsBuff = Buffers.newDirectIntBuffer(surfaceCompilation.getSurfaces().get(i).getIndices());
+            IntBuffer indsBuff = Buffers.newDirectIntBuffer(surfaceCompilation.getSurfaces().get(i).getVertexIndices());
             gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, glBufferNames[i + 1]);
-            gl.glBufferData(GL2.GL_ELEMENT_ARRAY_BUFFER, surfaceCompilation.getSurfaces().get(i).getIndices().length * Integer.BYTES, indsBuff, GL2.GL_STATIC_DRAW);
+            gl.glBufferData(GL2.GL_ELEMENT_ARRAY_BUFFER, surfaceCompilation.getSurfaces().get(i).getVertexIndices().length * Integer.BYTES, indsBuff, GL2.GL_STATIC_DRAW);
         }
 
     }
@@ -82,6 +82,6 @@ public class Body{
     private void drawBuffer(GL2 gl, int buffInd){
         gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, glBufferNames[buffInd + 1]);
         gl.glDrawElements((surfaceCompilation.getSurfaces().get(buffInd).isPolygon() ? (GL2.GL_POLYGON) : (GL2.GL_QUAD_STRIP)),
-                          surfaceCompilation.getSurfaces().get(buffInd).getIndices().length, GL2.GL_UNSIGNED_INT, 0);
+                          surfaceCompilation.getSurfaces().get(buffInd).getVertexIndices().length, GL2.GL_UNSIGNED_INT, 0);
     }
 }

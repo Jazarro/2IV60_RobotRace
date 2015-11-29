@@ -2,16 +2,22 @@ package utility;
 
 public class Surface{
 
-    private final int[] indices;
+    private final int[] vertexIndices;
+    private final int[] normalIndices;
     private final boolean polygon;
 
-    public Surface(int[] indices, boolean polygon){
-        this.indices = indices;
+    public Surface(int[] vertexIndices, int[] normalIndices, boolean polygon){
+        this.vertexIndices = vertexIndices;
+        this.normalIndices = normalIndices;
         this.polygon = polygon;
     }
 
-    public int[] getIndices(){
-        return indices;
+    public int[] getVertexIndices(){
+        return vertexIndices;
+    }
+
+    public int[] getNormalIndices(){
+        return normalIndices;
     }
 
     public boolean isPolygon(){
