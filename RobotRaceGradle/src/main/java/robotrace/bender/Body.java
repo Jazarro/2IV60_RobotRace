@@ -8,7 +8,7 @@ import utility.Assembler;
 import utility.Surface;
 import utility.SurfaceCompilation;
 
-public class Body {
+public class Body{
 
     private static final double RADIUS_SHINY = 0.175d;
     private static final double RADIUS_TORSO = 0.225d;
@@ -30,15 +30,15 @@ public class Body {
     private static final double HEIGHT_ANTENNA_BALL_MIDDLE = 1.1875d;
     private static final double HEIGHT_ANTENNA_BALL_TOP = 1.2d;
 
-    private static final int SLICE_COUNT = 50;
-    private static final int STACK_COUNT = 50;
+    private static final int SLICE_COUNT = 4;
+    private static final int STACK_COUNT = 4;
 
     private int[] glIndexBufferNames;
     private int glVertexBufferName;
     private int glNormalBufferName;
     private SurfaceCompilation surfaceCompilation;
 
-    public void initialize(GL2 gl) {
+    public void initialize(GL2 gl){
         final Assembler bodyAssembler = new Assembler();
         bodyAssembler.addConicalFrustum(SLICE_COUNT, RADIUS_SHINY, RADIUS_TORSO, HEIGHT_SHINY, HEIGHT_TORSO, true, false);
         bodyAssembler.addConicalFrustum(SLICE_COUNT, RADIUS_TORSO, RADIUS_NECK, HEIGHT_TORSO, HEIGHT_NECK, false, false);
@@ -57,8 +57,13 @@ public class Body {
         System.arraycopy(tempBufferNames, 2, glIndexBufferNames, 0, glIndexBufferNames.length);
         this.glVertexBufferName = tempBufferNames[0];
         this.glNormalBufferName = tempBufferNames[1];
+        
+        final double all[] = new double[surfaceCompilation.getVertices().length + surfaceCompilation.getNormals().length];
+        System.arraycopy(surfaceCompilation.getVertices(), 0, all, 0, surfaceCompilation.getVertices().length);
+        System.arraycopy(surfaceCompilation.getNormals(), 0, all, surfaceCompilation.getVertices().length, surfaceCompilation.getNormals().length);
 
-        final DoubleBuffer vertexBuff = Buffers.newDirectDoubleBuffer(surfaceCompilation.getVertices());
+        //final DoubleBuffer vertexBuff = Buffers.newDirectDoubleBuffer(surfaceCompilation.getVertices());
+        final DoubleBuffer vertexBuff = Buffers.newDirectDoubleBuffer(all);
         gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, glVertexBufferName);
         gl.glBufferData(GL2.GL_ARRAY_BUFFER, surfaceCompilation.getVertices().length * Double.BYTES, vertexBuff, GL2.GL_STATIC_DRAW);
 
@@ -66,36 +71,38 @@ public class Body {
         gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, glNormalBufferName);
         gl.glBufferData(GL2.GL_ARRAY_BUFFER, surfaceCompilation.getNormals().length * Double.BYTES, normalBuff, GL2.GL_STATIC_DRAW);
 
-        for (int surfaceIndex = 0; surfaceIndex < surfaceCompilation.size(); surfaceIndex++) {
+        for(int surfaceIndex = 0; surfaceIndex < surfaceCompilation.size(); surfaceIndex++){
             final Surface surface = surfaceCompilation.getSurfaces().get(surfaceIndex);
-            final int[] combinedIndices = new int[surface.getVertexCount() * 2];
-            for (int vertexIndex = 0; vertexIndex < surface.getVertexCount(); vertexIndex++) {
+            final int[] combinedIndices = new int[surface.getVertexIndices().length * 2];
+            for(int vertexIndex = 0; vertexIndex < surface.getVertexIndices().length; vertexIndex++){
                 combinedIndices[vertexIndex * 2 + 0] = surface.getVertexIndices()[vertexIndex];
                 combinedIndices[vertexIndex * 2 + 1] = surface.getNormalIndices()[vertexIndex];
             }
             final IntBuffer indexBuff = Buffers.newDirectIntBuffer(combinedIndices);
+            //final IntBuffer indexBuff = Buffers.newDirectIntBuffer(surface.getVertexIndices());
             gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, glIndexBufferNames[surfaceIndex]);
             gl.glBufferData(GL2.GL_ELEMENT_ARRAY_BUFFER, combinedIndices.length * Integer.BYTES, indexBuff, GL2.GL_STATIC_DRAW);
         }
 
     }
 
-    public void draw(GL2 gl) {
+    public void draw(GL2 gl){
         gl.glPushMatrix();
         gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, glVertexBufferName);
+        //gl.glVertexPointer(Assembler.NUMCOORD, GL2.GL_DOUBLE, 0, 0);
         gl.glVertexPointer(Assembler.NUMCOORD, GL2.GL_DOUBLE, 0, 0);
-        gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, glNormalBufferName);
+        //gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, glNormalBufferName);
         gl.glNormalPointer(GL2.GL_DOUBLE, 0, 0);
-        for (int i = 0; i < surfaceCompilation.size(); i++) {
+        for(int i = 0; i < surfaceCompilation.size(); i++){
             drawBuffer(gl, i);
         }
         gl.glPopMatrix();
     }
 
-    private void drawBuffer(GL2 gl, int buffInd) {
+    private void drawBuffer(GL2 gl, int buffInd){
         gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, glIndexBufferNames[buffInd]);
         gl.glDrawElements((surfaceCompilation.getSurfaces().get(buffInd).isPolygon() ? (GL2.GL_POLYGON) : (GL2.GL_QUAD_STRIP)),
-                surfaceCompilation.getSurfaces().get(buffInd).getVertexIndices().length, GL2.GL_UNSIGNED_INT, 0);
+                          surfaceCompilation.getSurfaces().get(buffInd).getVertexIndices().length, GL2.GL_UNSIGNED_INT, 0);
     }
 
 }

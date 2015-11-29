@@ -2,42 +2,43 @@ package utility;
 
 import java.util.ArrayList;
 import java.util.List;
+import javafx.beans.property.*;
 
 /**
- *
- * @author Arjan Boschman
- * @author Robke Geenen
+
+ @author Arjan Boschman
+ @author Robke Geenen
  */
-public class Assembler {
+public class Assembler{
 
     public static final int NUMCOORD = 3;
 
     private final List<Ring> rings = new ArrayList<>();
 
-    public void addConicalFrustum(int sliceCount, double radiusLow, double radiusHigh, double heightLow, double heightHigh, boolean closeLow, boolean closeHigh) {
+    public void addConicalFrustum(int sliceCount, double radiusLow, double radiusHigh, double heightLow, double heightHigh, boolean closeLow, boolean closeHigh){
         addPartialTorus(sliceCount, 1, radiusLow, radiusHigh, heightLow, heightHigh, closeLow, closeHigh);
     }
 
-    public void addPartialTorus(int sliceCount, int stackCount, double radiusLow, double radiusHigh, double heightLow, double heightHigh, boolean closeLow, boolean closeHigh) {
-        if (rings.isEmpty()) {//TODO: also if sliceCount does not cioncide
+    public void addPartialTorus(int sliceCount, int stackCount, double radiusLow, double radiusHigh, double heightLow, double heightHigh, boolean closeLow, boolean closeHigh){
+        if(rings.isEmpty()){//TODO: also if sliceCount does not cioncide
             rings.add(makeRing(radiusLow, heightLow, sliceCount, true, closeLow));
         }
-        for (int i = 1; i < stackCount; i++) {
-            final double radiusInt = radiusHigh + ((radiusLow - radiusHigh) * Math.cos(Math.toRadians((double) i * 90d / (double) stackCount)));
-            final double heightInt = heightLow + ((heightHigh - heightLow) * Math.sin(Math.toRadians((double) i * 90d / (double) stackCount)));
+        for(int i = 1; i < stackCount; i++){
+            final double radiusInt = radiusHigh + ((radiusLow - radiusHigh) * Math.cos(Math.toRadians((double)i * 90d / (double)stackCount)));
+            final double heightInt = heightLow + ((heightHigh - heightLow) * Math.sin(Math.toRadians((double)i * 90d / (double)stackCount)));
             rings.add(makeRing(radiusInt, heightInt, sliceCount, false, false));
         }
         rings.add(makeRing(radiusHigh, heightHigh, sliceCount, true, closeHigh));
     }
 
-    public SurfaceCompilation makeSurfaceCompilation() {
-        int vertexSize = rings.stream().mapToInt((ring) -> ring.size()).sum();
-        int normalSize = rings.stream().mapToInt((ring) -> ring.getNormalCoordsCount()).sum();
-        int vertexDataPtr = 0;
-        int normalDataPtr = 0;
-        final double[] vertexData = new double[vertexSize];
-        final double[] normalData = new double[normalSize];
-        for (int i = 0; i < rings.size(); i++) {
+    public SurfaceCompilation makeSurfaceCompilation(){
+        //int vertexSize = rings.stream().mapToInt((ring) -> ring.size()).sum();
+        //int normalSize = rings.stream().mapToInt((ring) -> ring.getNormalCoordsCount()).sum();
+        //int vertexDataPtr = 0;
+        //int normalDataPtr = 0;
+        //final double[] vertexData = new double[vertexSize];
+        //final double[] normalData = new double[normalSize];
+        /*for (int i = 0; i < rings.size(); i++) {
             final Ring thisRing = rings.get(i);
             final Ring nextRing = (i + 1 == rings.size()) ? null : rings.get(i + 1);
             int counted = 1;
@@ -49,30 +50,58 @@ public class Assembler {
             normalDataPtr = nextNormalDataPtr;
             System.arraycopy(thisRing.getVerticesCoords(), 0, vertexData, vertexDataPtr, thisRing.size());
             vertexDataPtr += thisRing.size();
-        }
+        }*/
 
-        final SurfaceCompilation surfaceCompilation = new SurfaceCompilation(vertexData, normalData);
-        vertexDataPtr = 0;
-        normalDataPtr = 0;
-        for (int i = 0; i < rings.size(); i++) {
-            if (rings.get(i).isClosed()) {
-                final Surface surface = makeSurfacePolygon(rings.get(i), vertexDataPtr / NUMCOORD, normalDataPtr / NUMCOORD);
+        final SurfaceCompilation surfaceCompilation = new SurfaceCompilation();
+        for(int i = 0; i < rings.size(); i++){
+            if(rings.get(i).isClosed()){
+                final Surface surface = makeSurfacePolygon(rings.get(i));
                 surfaceCompilation.addSurface(surface);
             }
-            if (i != 0) {
-                final int prevVertexPtr = vertexDataPtr - rings.get(i - 1).size();
-                final int prevNormalPtr = normalDataPtr - rings.get(i - 1).getNormalCoordsCount();
-                final Surface surface = makeSurfaceQuadStrip(rings.get(i - 1), rings.get(i),
-                        prevVertexPtr / NUMCOORD, vertexDataPtr / NUMCOORD, prevNormalPtr / NUMCOORD, normalDataPtr / NUMCOORD);
+            if(i != 0){
+                final Surface surface = makeSurfaceQuadStrip(rings.get(i - 1), rings.get(i), (i == 1) ? null : surfaceCompilation.getSurfaces().get(i - 2));
                 surfaceCompilation.addSurface(surface);
             }
-            vertexDataPtr += rings.get(i).size();
-            normalDataPtr += rings.get(i).getNormalCoordsCount();
         }
         return surfaceCompilation;
     }
 
-    private void calcNormals(double[] normals, Ring ring, Ring nextRing, boolean isFirstRing, int thisRingNormalPtr, int nextRingNormalPtr) {
+    private Surface makeSurfacePolygon(Ring ring){
+        final double[] vrtx = ring.getVerticesCoords();
+        final double[] nrml = new double[vrtx.length];
+        for(int i = 0; i < vrtx.length / NUMCOORD; i++){
+            nrml[i * NUMCOORD + 0] = 0d;
+            nrml[i * NUMCOORD + 1] = 0d;
+            nrml[i * NUMCOORD + 2] = -1d;//todo: check
+        }
+        return new Surface(vrtx, null, nrml, null, true);
+    }
+
+    private Surface makeSurfaceQuadStrip(Ring ring1, Ring ring2, Surface prevSurface){
+        final double[] vrtx1 = ring1.getVerticesCoords();
+        final double[] vrtx2 = ring2.getVerticesCoords();
+        final double[] vrtx = new double[vrtx1.length + vrtx2.length];
+        for(int i = 0; i < vrtx.length / NUMCOORD / 2; i++){
+            for(int j = 0; j < NUMCOORD; j++){
+                vrtx[(i * NUMCOORD * 2) + j] = vrtx1[(i * NUMCOORD) + j];
+                vrtx[((i + 1) * NUMCOORD * 2) + j] = vrtx2[(i * NUMCOORD) + j];
+            }
+        }
+        final double[] nrml = new double[vrtx.length];
+
+        
+        boolean[] sharedNormalIndices = null;
+        if(prevSurface != null){
+            final int newIndices = prevSurface.getVertexIndices().length - prevSurface.getSharedVrtxNrml();
+            sharedVertexIndices = new int[newIndices];
+            sharedNormalIndices = new int[newIndices];
+            System.arraycopy(prevSurface.getVertexIndices(), prevSurface.getSharedVrtxNrml(), sharedVertexIndices, 0, newIndices);
+            System.arraycopy(prevSurface.getNormalIndices(), prevSurface.getSharedVrtxNrml(), sharedNormalIndices, 0, newIndices);
+        }
+        return new Surface(vrtx, sharedVertexIndices, nrml, sharedNormalIndices, false);
+    }
+
+    /*private void calcNormals(double[] normals, Ring ring, Ring nextRing, boolean isFirstRing, int thisRingNormalPtr, int nextRingNormalPtr) {
         final int closedOffset = ring.isClosed() ? ring.getVerticesCoords().length : 0;
         final int sharpOffset = (ring.isSharp() && !isFirstRing) ? ring.getVerticesCoords().length : 0;
 
@@ -100,9 +129,9 @@ public class Assembler {
                 System.arraycopy(avgNormal, 0, normals, thisRingNormalPtr + closedOffset + (i * NUMCOORD), NUMCOORD);
             }
         }
-    }
+    }*/
 
-    private Surface makeSurfacePolygon(Ring ring, int vertexOffset, int normalOffset) {
+ /*private Surface makeSurfacePolygon(Ring ring, int vertexOffset, int normalOffset) {
         final int[] vertexIndices = new int[ring.size() / NUMCOORD];
         final int[] normalIndices = new int[ring.size() / NUMCOORD];
         for (int i = 0; i < vertexIndices.length; i++) {
@@ -122,18 +151,17 @@ public class Assembler {
             normalIndices[(i * 2) + 1] = normalOffset2 + i;
         }
         return new Surface(vertexIndices, normalIndices, false);
-    }
-
-    private Ring makeRing(double radius, double height, int sliceCount, boolean isSharp, boolean isClosed) {
+    }*/
+    private Ring makeRing(double radius, double height, int sliceCount, boolean isSharp, boolean isClosed){
         final double[] vrtx = new double[(sliceCount + 1) * NUMCOORD];
-        for (int i = 0; i < sliceCount + 1; i++) {
+        for(int i = 0; i < sliceCount + 1; i++){
             System.arraycopy(calcVrtx(i, radius, height, sliceCount), 0, vrtx, i * NUMCOORD, NUMCOORD);
         }
         return new Ring(vrtx, isSharp, isClosed, radius, height);
     }
 
-    public static double[] calcVrtx(int angleIndex, double radius, double height, int sliceCount) {
-        final double sliceAngle = Math.toRadians((double) angleIndex * 360d / (double) sliceCount);
+    public static double[] calcVrtx(int angleIndex, double radius, double height, int sliceCount){
+        final double sliceAngle = Math.toRadians((double)angleIndex * 360d / (double)sliceCount);
         final double[] vrtx = {
             radius * Math.cos(sliceAngle),
             radius * Math.sin(sliceAngle),
@@ -142,8 +170,8 @@ public class Assembler {
         return vrtx;
     }
 
-    public static double[] calcNorm(int angleIndex, double deltaRadius, double deltaHeight, int sliceCount) {
-        final double sliceAngle = Math.toRadians((double) angleIndex * 360d / (double) sliceCount);
+    public static double[] calcNorm(int angleIndex, double deltaRadius, double deltaHeight, int sliceCount){
+        final double sliceAngle = Math.toRadians((double)angleIndex * 360d / (double)sliceCount);
         final double stackAngle = (Math.PI / 2d) - Math.atan(deltaRadius / deltaHeight);
         final double[] norm = {
             Math.cos(sliceAngle) * Math.sin(stackAngle),
@@ -153,7 +181,7 @@ public class Assembler {
         return norm;
     }
 
-    private static class Ring {
+    private static class Ring{
 
         private final double[] verticesCoords;
         private final boolean sharp;
@@ -161,7 +189,7 @@ public class Assembler {
         private final double radius;
         private final double height;
 
-        public Ring(double[] verticesCoords, boolean sharp, boolean closed, double radius, double height) {
+        public Ring(double[] verticesCoords, boolean sharp, boolean closed, double radius, double height){
             this.verticesCoords = verticesCoords;
             this.sharp = sharp;
             this.closed = closed;
@@ -169,34 +197,34 @@ public class Assembler {
             this.height = height;
         }
 
-        private double[] getVerticesCoords() {
+        private double[] getVerticesCoords(){
             return verticesCoords;
         }
 
-        private int size() {
+        private int size(){
             return verticesCoords.length;
         }
 
-        private boolean isSharp() {
+        private boolean isSharp(){
             return sharp;
         }
 
-        private boolean isClosed() {
+        private boolean isClosed(){
             return closed;
         }
 
-        private int getNormalCoordsCount() {
+        private int getNormalCoordsCount(){
             int counted = 1;
             counted += isClosed() ? 1 : 0;
             counted += isSharp() ? 1 : 0;
             return counted * verticesCoords.length;
         }
 
-        public double getRadius() {
+        public double getRadius(){
             return radius;
         }
 
-        public double getHeight() {
+        public double getHeight(){
             return height;
         }
 

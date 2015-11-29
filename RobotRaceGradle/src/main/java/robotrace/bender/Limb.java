@@ -1,9 +1,8 @@
 package robotrace.bender;
 
-import com.jogamp.common.nio.Buffers;
-import java.nio.DoubleBuffer;
-import java.nio.IntBuffer;
-import javax.media.opengl.GL2;
+import com.jogamp.common.nio.*;
+import java.nio.*;
+import javax.media.opengl.*;
 import utility.*;
 
 public class Limb{
