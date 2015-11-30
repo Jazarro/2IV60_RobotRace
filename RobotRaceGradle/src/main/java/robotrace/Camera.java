@@ -95,7 +95,9 @@ class Camera{
         eye = eye.add(gs.cnt);
         //Calculate the needed field of view angle to make the displayed portion 
         //of the line through the center point exactly vDist long.
-        fovAngle = (float)Math.toDegrees(2 * Math.atan(gs.vDist / (2 * gs.vWidth)));
+        
+        fovAngle = 40f;//todo: figure out why calculation below is weird
+        /*fovAngle = (float)Math.toDegrees(2 * Math.atan(gs.vDist / (2 * gs.vWidth)));*/
     }
 
     /**

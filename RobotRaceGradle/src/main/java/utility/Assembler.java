@@ -15,12 +15,11 @@ import static utility.Vertex.IND_Z;
 
 /**
 
- @author Arjan Boschman
  @author Robke Geenen
+ @author Arjan Boschman
  */
 public final class Assembler{
 
-    //public static final int NUMCOORD = 3;
     private final List<Ring> rings = new ArrayList<>();
     private SurfaceCompilation surfaceCompilation;
 
@@ -29,20 +28,25 @@ public final class Assembler{
     }
 
     public void addPartialTorus(int sliceCount, int stackCount, double radiusLow, double radiusHigh, double heightLow, double heightHigh, boolean closeLow, boolean closeHigh){
-        if(rings.isEmpty()){//todo: also check if sliceCount does not coincide
+        if((rings.isEmpty()) || (sliceCount != rings.get(rings.size() - 1).getSliceCount())){
             rings.add(makeRing(radiusLow, heightLow, sliceCount, true, closeLow));
         }
-        for(int i = 1; i < stackCount; i++){//todo: check radii
-            final double radiusInterpolated;
-            final double heightInterpolated;
-            //if(radiusHigh <= radiusLow){
-                radiusInterpolated = radiusHigh + ((radiusLow - radiusHigh) * cos(toRadians((double)i * 90d / (double)stackCount)));
-                heightInterpolated = heightLow + ((heightHigh - heightLow) * sin(toRadians((double)i * 90d / (double)stackCount)));
-            /*}
-            else{
-                radiusInterpolated = radiusHigh + ((radiusLow - radiusHigh) * sin(toRadians(((double)i * 90d / (double)stackCount) - 90d)));
-                heightInterpolated = heightLow + ((heightHigh - heightLow) * cos(toRadians(((double)i * 90d / (double)stackCount) + 90d)));
-            }*/
+        final double radiusFrom, radiusTo, heightFrom, heightTo;
+        if(radiusHigh > radiusLow){
+            radiusFrom = radiusLow;
+            radiusTo = radiusHigh - radiusLow;
+            heightFrom = heightHigh;
+            heightTo = heightLow - heightHigh;
+        }
+        else{
+            radiusFrom = radiusHigh;
+            radiusTo = radiusLow - radiusHigh;
+            heightFrom = heightLow;
+            heightTo = heightHigh - heightLow;
+        }
+        for(int i = 1; i < stackCount; i++){
+            final double radiusInterpolated = radiusFrom + (radiusTo * cos(toRadians((double)i * 90d / (double)stackCount)));;
+            final double heightInterpolated = heightFrom + (heightTo * sin(toRadians((double)i * 90d / (double)stackCount)));;
             rings.add(makeRing(radiusInterpolated, heightInterpolated, sliceCount, false, false));
         }
         rings.add(makeRing(radiusHigh, heightHigh, sliceCount, true, closeHigh));
@@ -116,7 +120,7 @@ public final class Assembler{
         final double[] normal = new double[COORD_COUNT];
         normal[IND_X] = 0d;
         normal[IND_Y] = 0d;
-        normal[IND_Z] = -1d; //todo: check
+        normal[IND_Z] = -1d; //todo: check if this normal is correct
         return normal;
     }
 
@@ -126,7 +130,7 @@ public final class Assembler{
         final Iterator<IndexedVertex> sharedVertices = (knownVertices == null) ? Collections.emptyIterator() : knownVertices.iterator();
         final List<IndexedVertex> indexedVertices = new ArrayList<>();
         while(vertices1.hasNext() || vertices2.hasNext()){
-            if(vertices1.hasNext()){
+            if(vertices1.hasNext() && (ring1 != null)){
                 final Vertex vertex = vertices1.next();
                 final IndexedVertex newVertex;
                 if(sharedVertices.hasNext()){
@@ -138,7 +142,7 @@ public final class Assembler{
                 }
                 indexedVertices.add(newVertex);
             }
-            if(vertices2.hasNext()){
+            if(vertices2.hasNext() && (ring2 != null)){
                 final Vertex vertex = vertices2.next();
                 vertex.setNormal(calculateQuadStripNormal(ring2.getVertices().indexOf(vertex), ring1, ring2, ring3));
                 indexedVertices.add(IndexedVertex.makeIndexedVertex(vertex));
@@ -149,7 +153,7 @@ public final class Assembler{
 
     private double[] calculateQuadStripNormal(int index, Ring ring0, Ring ring1, Ring ring2){
         final double[] vertexNormal;
-        if(ring1.isNormalCalculated() && false){
+        if(ring1.isNormalCalculated() && false){//todo: remove double calculation of normals
             vertexNormal = ring1.getVertices().get(index).getNormal();
         }
         else{
@@ -186,7 +190,7 @@ public final class Assembler{
         for(int i = 0; i < sliceCount + 1; i++){
             vertices.add(new Vertex(calculatePosition(i, radius, height, sliceCount)));
         }
-        return new Ring(vertices, isSharp, isClosed, radius, height);
+        return new Ring(vertices, isSharp, isClosed, radius, height, sliceCount);
     }
 
     private static double[] calculatePosition(int angleIndex, double radius, double height, int sliceCount){
@@ -216,14 +220,16 @@ public final class Assembler{
         private boolean normalCalculated;
         private final double radius;
         private final double height;
+        private final double sliceCount;
 
-        private Ring(List<Vertex> vertices, boolean sharp, boolean closed, double radius, double height){
+        private Ring(List<Vertex> vertices, boolean sharp, boolean closed, double radius, double height, double sliceCount){
             this.vertices = vertices;
             this.sharp = sharp;
             this.closed = closed;
             this.normalCalculated = false;
             this.radius = radius;
             this.height = height;
+            this.sliceCount = sliceCount;
         }
 
         private List<Vertex> getVertices(){
@@ -256,6 +262,10 @@ public final class Assembler{
 
         private double getHeight(){
             return height;
+        }
+
+        public double getSliceCount(){
+            return sliceCount;
         }
 
     }

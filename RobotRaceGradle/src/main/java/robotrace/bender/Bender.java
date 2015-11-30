@@ -50,7 +50,6 @@ public class Bender{
     public void draw(GL2 gl){
         gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
         gl.glEnableClientState(GL2.GL_NORMAL_ARRAY);
-        //gl.glRotated(180d, 0d, 0d, 1d);
         //todo: check seam on body?
         gl.glPushMatrix();
         {
