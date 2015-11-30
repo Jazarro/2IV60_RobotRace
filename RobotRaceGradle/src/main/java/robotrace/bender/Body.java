@@ -1,7 +1,5 @@
 package robotrace.bender;
 
-import com.jogamp.common.nio.*;
-import com.jogamp.graph.geom.*;
 import java.nio.*;
 import java.util.*;
 import javax.media.opengl.*;
@@ -42,14 +40,14 @@ public class Body{
     public void initialize(GL2 gl){
         final Assembler bodyAssembler = new Assembler();
         bodyAssembler.addConicalFrustum(SLICE_COUNT, RADIUS_SHINY, RADIUS_TORSO, HEIGHT_SHINY, HEIGHT_TORSO, true, false);
-        bodyAssembler.addConicalFrustum(SLICE_COUNT, RADIUS_TORSO, RADIUS_NECK, HEIGHT_TORSO, HEIGHT_NECK, false, false);
-        bodyAssembler.addConicalFrustum(SLICE_COUNT, RADIUS_NECK, RADIUS_HEAD, HEIGHT_NECK, HEIGHT_HEAD, false, false);
-        bodyAssembler.addPartialTorus(SLICE_COUNT, STACK_COUNT, RADIUS_HEAD, RADIUS_ANTENNA_BOTTOM, HEIGHT_HEAD, HEIGHT_ANTENNA_BOTTOM, false, false);
-        bodyAssembler.addPartialTorus(SLICE_COUNT, STACK_COUNT, RADIUS_ANTENNA_BOTTOM, RADIUS_ANTENNA_MIDDLE, HEIGHT_ANTENNA_BOTTOM, HEIGHT_ANTENNA_MIDDLE, false, false);
-        bodyAssembler.addConicalFrustum(SLICE_COUNT, RADIUS_ANTENNA_MIDDLE, RADIUS_ANTENNA_TOP, HEIGHT_ANTENNA_MIDDLE, HEIGHT_ANTENNA_TOP, false, false);
-        bodyAssembler.addPartialTorus(SLICE_COUNT, STACK_COUNT, RADIUS_ANTENNA_TOP, RADIUS_ANTENNA_BALL_MIDDLE, HEIGHT_ANTENNA_TOP, HEIGHT_ANTENNA_BALL_MIDDLE, false, false);
+        //bodyAssembler.addConicalFrustum(SLICE_COUNT, RADIUS_TORSO, RADIUS_NECK, HEIGHT_TORSO, HEIGHT_NECK, false, false);
+        //bodyAssembler.addConicalFrustum(SLICE_COUNT, RADIUS_NECK, RADIUS_HEAD, HEIGHT_NECK, HEIGHT_HEAD, false, false);
+        //bodyAssembler.addPartialTorus(SLICE_COUNT, STACK_COUNT, RADIUS_HEAD, RADIUS_ANTENNA_BOTTOM, HEIGHT_HEAD, HEIGHT_ANTENNA_BOTTOM, false, false);
+        //bodyAssembler.addPartialTorus(SLICE_COUNT, STACK_COUNT, RADIUS_ANTENNA_BOTTOM, RADIUS_ANTENNA_MIDDLE, HEIGHT_ANTENNA_BOTTOM, HEIGHT_ANTENNA_MIDDLE, false, false);
+        //bodyAssembler.addConicalFrustum(SLICE_COUNT, RADIUS_ANTENNA_MIDDLE, RADIUS_ANTENNA_TOP, HEIGHT_ANTENNA_MIDDLE, HEIGHT_ANTENNA_TOP, false, false);
+        //bodyAssembler.addPartialTorus(SLICE_COUNT, STACK_COUNT, RADIUS_ANTENNA_TOP, RADIUS_ANTENNA_BALL_MIDDLE, HEIGHT_ANTENNA_TOP, HEIGHT_ANTENNA_BALL_MIDDLE, false, false);
         //TODO: Fix ball on antenna
-        bodyAssembler.addPartialTorus(SLICE_COUNT, STACK_COUNT, RADIUS_ANTENNA_BALL_MIDDLE, RADIUS_ANTENNA_BALL_TOP, HEIGHT_ANTENNA_BALL_MIDDLE, HEIGHT_ANTENNA_BALL_TOP, false, false);
+        //bodyAssembler.addPartialTorus(SLICE_COUNT, STACK_COUNT, RADIUS_ANTENNA_BALL_MIDDLE, RADIUS_ANTENNA_BALL_TOP, HEIGHT_ANTENNA_BALL_MIDDLE, HEIGHT_ANTENNA_BALL_TOP, false, false);
 
         bodyAssembler.compileSurfaceCompilation();
         dataBuffer = bodyAssembler.getDataBuffer();

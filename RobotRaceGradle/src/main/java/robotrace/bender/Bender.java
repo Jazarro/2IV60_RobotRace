@@ -1,10 +1,8 @@
 package robotrace.bender;
 
-import javax.media.opengl.GL2;
+import javax.media.opengl.*;
 
 public class Bender{
-
-
 
     private static final double LEG_OFFCENTER = 0.1d;
     private static final double ARM_HEIGHT = 0.375d;
@@ -35,7 +33,7 @@ public class Bender{
         setRightLegAngles(new double[]{0d, 0d, 0d, 0d, 0d, 0d, 0d}, new double[]{45d, -45d, 45d, -45d, 45d, -45d, 45d});
         setLeftArmAngles(new double[]{45d, 45d, 45d, 45d, 45d, 45d, 45d}, new double[]{45d, -45d, 45d, -45d, 45d, -45d, 45d});
         setRightArmAngles(new double[]{0d, 0d, 0d, 0d, 0d, 0d, 0d}, new double[]{45d, -45d, 45d, -45d, 45d, -45d, 45d});
-        
+
         /*setLeftLegAngles(new double[]{0d, 0d, 0d, 0d, 0d, 0d, 0d}, new double[]{0d, 0d, 0d, 0d, 0d, 0d, 0d});
         setRightLegAngles(new double[]{0d, 0d, 0d, 0d, 0d, 0d, 0d}, new double[]{0d, 0d, 0d, 0d, 0d, 0d, 0d});
         setLeftArmAngles(new double[]{0d, 0d, 0d, 0d, 0d, 0d, 0d}, new double[]{0d, 0d, 0d, 0d, 0d, 0d, 0d});

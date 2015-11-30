@@ -5,9 +5,8 @@
  */
 package robotrace;
 
-import javax.media.opengl.GL2;
-
 import static javax.media.opengl.GL.GL_FRONT;
+import javax.media.opengl.*;
 import static javax.media.opengl.fixedfunc.GLLightingFunc.GL_AMBIENT;
 import static javax.media.opengl.fixedfunc.GLLightingFunc.GL_AMBIENT_AND_DIFFUSE;
 import static javax.media.opengl.fixedfunc.GLLightingFunc.GL_DIFFUSE;
@@ -20,17 +19,17 @@ import static utility.GsUtils.getAzimuth;
 import static utility.GsUtils.getInclination;
 
 /**
- *
- * @author Arjan Boschman
+
+ @author Arjan Boschman
  */
-public class Lighting {
+public class Lighting{
 
     private final float[] lightPos = new float[4];//{0.0f, 0.2f, 1.0f, 0.0f};
     private final float[] diffuseLight = {1f, 1f, 1f, 1};
     private final float[] specularLight = {1, 1, 1, 1};
     private final float[] ambientLight = {0.1f, 0.1f, 0.1f, 1};
 
-    public void initialize(GL2 gl, GlobalState gs) {
+    public void initialize(GL2 gl, GlobalState gs){
         gl.glEnable(GL_LIGHTING);
         gl.glEnable(GL_LIGHT0);
         calculatePosition(gs);
@@ -40,7 +39,7 @@ public class Lighting {
         gl.glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight, 0);
     }
 
-    private void calculatePosition(GlobalState gs) {
+    private void calculatePosition(GlobalState gs){
         //Calculate the light position to be 10 degrees above and to the left of the starting eye point.
         final float azimuth = getAzimuth(gs) - 10;
         final float inclination = getInclination(gs) - 10;
@@ -54,21 +53,21 @@ public class Lighting {
         final Vector localSun = new Vector(xEyeLocal, yEyeLocal, zEyeLocal);
         //Add the relative offet of the center point to the newly calculated coordinates of the eye point.
         final Vector worldSun = localSun.add(gs.cnt);
-        this.lightPos[0]=(float) worldSun.x();
-        this.lightPos[1]=(float) worldSun.y();
-        this.lightPos[2]=(float) worldSun.z();
-        this.lightPos[3]=0;//Makes it infinite.
+        this.lightPos[0] = (float)worldSun.x();
+        this.lightPos[1] = (float)worldSun.y();
+        this.lightPos[2] = (float)worldSun.z();
+        this.lightPos[3] = 0;//Makes it infinite.
     }
 
-    public void setView(GL2 gl) {
+    public void setView(GL2 gl){
         gl.glLightfv(GL_LIGHT0, GL_POSITION, lightPos, 0);
     }
 
-    public void drawScene(GL2 gl) {
+    public void drawScene(GL2 gl){
         //Do nothing, for now.
     }
 
-    public void setMaterial(GL2 gl, Material material) {
+    public void setMaterial(GL2 gl, Material material){
         gl.glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, material.diffuse, 0);
         gl.glMaterialfv(GL_FRONT, GL_SPECULAR, material.specular, 0);
         gl.glMaterialf(GL_FRONT, GL_SHININESS, material.shininess);
