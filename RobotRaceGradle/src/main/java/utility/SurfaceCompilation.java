@@ -2,34 +2,34 @@ package utility;
 
 import java.util.*;
 
-public class SurfaceCompilation{
-
-    private final double[] vertices;
-    private final double[] normals;
+final class SurfaceCompilation{
+    
+    private final List<IndexedVertex> vertices = new ArrayList<>();
     private final List<Surface> surfaces = new ArrayList<>();
-
-    public SurfaceCompilation(double[] vertices, double[] normals){
-        this.vertices = vertices;
-        this.normals = normals;
-    }
-
-    public void addSurface(Surface surface){
+    
+    public List<IndexedVertex> addSurface(Surface surface){
         surfaces.add(surface);
+        final List<IndexedVertex> surfaceVertices = surface.getVertices();
+        final List<IndexedVertex> knownVertices = new ArrayList<>();
+        for(IndexedVertex vertex : surfaceVertices){
+            if(!vertex.isShared()){
+                vertex.setIndex(vertices.size());
+                surface.setVertex(vertex, surfaceVertices.indexOf(vertex));
+                vertices.add(vertex);
+            }
+            else{
+                knownVertices.add(vertex);
+            }
+        }
+        return knownVertices;
     }
-
-    public double[] getVertices(){
+    
+    public List<IndexedVertex> getVertices(){
         return vertices;
     }
-
-    public double[] getNormals(){
-        return normals;
-    }
-
+    
     public List<Surface> getSurfaces(){
         return surfaces;
     }
-
-    public int size(){
-        return surfaces.size();
-    }
+    
 }

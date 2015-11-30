@@ -1,31 +1,34 @@
 package utility;
 
-public class Surface {
+import java.util.*;
 
-    private final int[] vertexIndices;
-    private final int[] normalIndices;
+final class Surface{
+
+    private final List<IndexedVertex> vertices;
     private final boolean polygon;
 
-    public Surface(int[] vertexIndices, int[] normalIndices, boolean polygon) {
-        this.vertexIndices = vertexIndices;
-        this.normalIndices = normalIndices;
+    public Surface(List<IndexedVertex> vertices, boolean polygon){
+        this.vertices = vertices;
         this.polygon = polygon;
     }
 
-    public int[] getVertexIndices() {
-        return vertexIndices;
+    public List<IndexedVertex> getVertices(){
+        return vertices;
     }
 
-    public int[] getNormalIndices() {
-        return normalIndices;
+    public void setVertex(IndexedVertex vertex, int index){
+        this.vertices.set(index, vertex);
     }
 
-    public boolean isPolygon() {
+    public boolean isPolygon(){
         return polygon;
     }
 
-    public int getVertexCount() {
-        return vertexIndices.length / Assembler.NUMCOORD;
+    public List<Integer> getIndices(){
+        final List<Integer> indices = new ArrayList<>();
+        for(IndexedVertex vertex : vertices){
+            indices.add(vertex.getIndex());
+        }
+        return indices;
     }
-
 }
