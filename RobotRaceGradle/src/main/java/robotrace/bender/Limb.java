@@ -192,7 +192,9 @@ public class Limb{
 
                 gl.glTranslated(0d, 0d, -HEIGHT_HAND);
 
-                for(int j = 0; j < FINGER_COUNT; j++){//todo: add FINGER_PHASE
+                for(int j = 0; j < FINGER_COUNT; j++){
+                    //todo: add FINGER_PHASE
+                    //todo: add fingerAngle
                     gl.glPushMatrix();
                     gl.glTranslated(FINGER_OFFCENTER * cos(toRadians(j * 360 / FINGER_COUNT)), FINGER_OFFCENTER * sin(toRadians(j * 360 / FINGER_COUNT)), 0d);
                     gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, fingerGLDataBufferName);

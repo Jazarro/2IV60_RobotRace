@@ -120,7 +120,7 @@ public final class Assembler{
         final double[] normal = new double[COORD_COUNT];
         normal[IND_X] = 0d;
         normal[IND_Y] = 0d;
-        normal[IND_Z] = -1d; //todo: check
+        normal[IND_Z] = -1d; //todo: check if this normal is correct
         return normal;
     }
 
