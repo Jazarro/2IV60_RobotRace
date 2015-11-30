@@ -1,14 +1,13 @@
 package robotrace;
 
-import static javax.media.opengl.GL.GL_BLEND;
+import javax.media.opengl.GL;
+
 import static javax.media.opengl.GL.GL_COLOR_BUFFER_BIT;
 import static javax.media.opengl.GL.GL_DEPTH_BUFFER_BIT;
 import static javax.media.opengl.GL.GL_DEPTH_TEST;
 import static javax.media.opengl.GL.GL_FRONT_AND_BACK;
 import static javax.media.opengl.GL.GL_LESS;
 import static javax.media.opengl.GL.GL_NICEST;
-import static javax.media.opengl.GL.GL_ONE_MINUS_SRC_ALPHA;
-import static javax.media.opengl.GL.GL_SRC_ALPHA;
 import static javax.media.opengl.GL.GL_TEXTURE_2D;
 import static javax.media.opengl.GL2ES1.GL_PERSPECTIVE_CORRECTION_HINT;
 import static javax.media.opengl.GL2GL3.GL_FILL;
@@ -128,11 +127,11 @@ public class RobotRace extends Base {
      */
     @Override
     public void initialize() {
-        lighting.initialize(gl,gs);
+        lighting.initialize(gl, gs);
 
-        // Enable blending.
-        gl.glEnable(GL_BLEND);
-        gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        // Enable blending.//todo check if it's better with this on.
+        gl.glEnable(GL.GL_BLEND);
+        gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
 
         // Enable depth testing.
         gl.glEnable(GL_DEPTH_TEST);
@@ -251,11 +250,10 @@ public class RobotRace extends Base {
      * (yellow).
      */
     public void drawAxisFrame() {
-        lighting.setMaterial(gl, Material.GOLD);
         //The radius of the sphere that sits at the origin.
         final float originSphereRadius = 0.05f;
         //Sets the color to yellow.
-        gl.glColor3f(1f, 1f, 0f);
+        lighting.setColor(gl, 1f, 1f, 0f, 1f);
         //Draw a yellow sphere at the origin.
         glut.glutSolidSphere(originSphereRadius, DEFAULT_SLICES, DEFAULT_STACKS);
 
@@ -276,7 +274,7 @@ public class RobotRace extends Base {
         //The length of axis beams' long edge.
         final float axisLength = 1 - coneHeight;
         //Sets the color relative to the axis being drawn. (x=red,y=green,z=blue)
-        gl.glColor3f(x, y, z);
+        lighting.setColor(gl, x,y,z, 1f);
 
         //Store the current matrix.
         gl.glPushMatrix();

@@ -25,10 +25,11 @@ import static utility.GsUtils.getInclination;
  */
 public class Lighting {
 
-    private final float[] lightPos = new float[4];//{0.0f, 0.2f, 1.0f, 0.0f};
-    private final float[] diffuseLight = {1f, 1f, 1f, 1};
-    private final float[] specularLight = {1, 1, 1, 1};
-    private final float[] ambientLight = {0.1f, 0.1f, 0.1f, 1};
+    private static final float[] COLOUR_BLACK = new float[]{0, 0, 0, 0};
+    private final float[] lightPos = new float[4];
+    private final float[] diffuseLight = {1f, 1f, 1f, 1f};
+    private final float[] specularLight = {1f, 1f, 1f, 1f};
+    private final float[] ambientLight = {0.1f, 0.1f, 0.1f, 1f};
 
     public void initialize(GL2 gl, GlobalState gs) {
         gl.glEnable(GL_LIGHTING);
@@ -54,10 +55,10 @@ public class Lighting {
         final Vector localSun = new Vector(xEyeLocal, yEyeLocal, zEyeLocal);
         //Add the relative offet of the center point to the newly calculated coordinates of the eye point.
         final Vector worldSun = localSun.add(gs.cnt);
-        this.lightPos[0]=(float) worldSun.x();
-        this.lightPos[1]=(float) worldSun.y();
-        this.lightPos[2]=(float) worldSun.z();
-        this.lightPos[3]=0;//Makes it infinite.
+        this.lightPos[0] = (float) worldSun.x();
+        this.lightPos[1] = (float) worldSun.y();
+        this.lightPos[2] = (float) worldSun.z();
+        this.lightPos[3] = 0;//Makes it infinite.
     }
 
     public void setView(GL2 gl) {
@@ -72,6 +73,12 @@ public class Lighting {
         gl.glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, material.diffuse, 0);
         gl.glMaterialfv(GL_FRONT, GL_SPECULAR, material.specular, 0);
         gl.glMaterialf(GL_FRONT, GL_SHININESS, material.shininess);
+    }
+
+    public void setColor(GL2 gl, float red, float green, float blue, float alpha) {
+        gl.glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, new float[]{red, green, blue, alpha}, 0);
+        gl.glMaterialfv(GL_FRONT, GL_SPECULAR, COLOUR_BLACK, 0);
+        gl.glMaterialf(GL_FRONT, GL_SHININESS, 0);
     }
 
 }

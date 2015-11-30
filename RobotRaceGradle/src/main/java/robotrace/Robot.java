@@ -1,9 +1,9 @@
 package robotrace;
 
-import robotrace.bender.Bender;
 import com.jogamp.opengl.util.gl2.GLUT;
 import javax.media.opengl.GL2;
 import javax.media.opengl.glu.GLU;
+import robotrace.bender.Bender;
 
 /**
  * Represents a Robot, to be implemented according to the Assignments.
@@ -17,7 +17,7 @@ class Robot {
     /**
      * The direction in which the robot is running.
      */
-    private Vector direction = new Vector(1, 0, 0);
+    private Vector direction = new Vector(0, 1, 0);
     /**
      * The material from which this robot is built.
      */
@@ -45,13 +45,19 @@ class Robot {
     }
 
     public void setDirection(Vector direction) {
-        this.direction = direction;
+        /**
+         * TODO: Restore this setter to its proper functionality. Right now the
+         * lane tangents are not implemented yet (because it's part of the
+         * second assignment) and this would be set to the O vector.
+         */
+//        this.direction = direction;
+        this.direction = Vector.X;
     }
 
     public Material getMaterial() {
         return material;
     }
-    
+
     /**
      * Draws this robot (as a {@code stickfigure} if specified).
      */
@@ -59,26 +65,23 @@ class Robot {
         switch (robotType) {
             case 0:
             default:
-                //Set benders color
-                gl.glColor3f(0.6f, 0.6f, 0.6f);
-                //Store the current matrix.
-                //gl.glPushMatrix();
-
+                gl.glPushMatrix();
+                final Vector rotationAxis = calcRotationAxis();
+                gl.glRotated(calcRotationAngle(), rotationAxis.x, rotationAxis.y, rotationAxis.z);
                 bender.draw(gl);
-
-                //gl.glBegin(gl.GL_QUAD_STRIP);
-                //gl.glEnd();
-                //glut.glutSolidTeapot(0.5);
-                //gl.glTranslatef(1,1,1);
-                //gl.glRotatef(1,1,1);
-                //gl.glScalef(1,1,1);
-                //glut.glutSolidCone(axisThickness * 5, coneHeight, DEFAULT_SLICES, DEFAULT_STACKS);
-                //glut.glutSolidCube(axisThickness);
-                //Restore the original matrix.
-                //gl.glPopMatrix();
-
+                gl.glPopMatrix();
                 break;
         }
+    }
+
+    private double calcRotationAngle() {
+        double f = Math.toDegrees(Math.acos(direction.dot(Bender.ORIENTATION)));
+        return f;
+    }
+
+    private Vector calcRotationAxis() {
+        Vector c= direction.cross(Bender.ORIENTATION).normalized();
+        return c;
     }
 
 }
