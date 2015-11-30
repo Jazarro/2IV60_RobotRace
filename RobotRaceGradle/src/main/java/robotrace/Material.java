@@ -12,8 +12,6 @@ public enum Material {
 
     /**
      * Gold material properties.
-     *//**
-     * Gold material properties.
      */
     GOLD(new float[]{0.24725f, 0.1995f, 0.0745f, 1.0f},
             new float[]{0.75164f, 0.60648f, 0.22648f, 1.0f},
@@ -62,7 +60,7 @@ public enum Material {
             0f);
 
     /**
-     * The diffuse RGBA reflectance of the material.
+     * The ambient RGBA reflectance of the material.
      */
     final float[] ambient;
 
