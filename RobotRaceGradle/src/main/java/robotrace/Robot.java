@@ -57,9 +57,9 @@ public class Robot {
      */
     public void draw(GL2 gl, GLU glu, GLUT glut, boolean stickFigure, float tAnim) {
         gl.glPushMatrix();
+        gl.glTranslated(position.x(), position.y(), position.z());
         final Vector rotationAxis = calcRotationAxis();
         gl.glRotated(calcRotationAngle(), rotationAxis.x(), rotationAxis.y(), rotationAxis.z());
-        gl.glTranslated(position.x(), position.y(), position.z());
         bender.draw(gl);
         gl.glPopMatrix();
     }
