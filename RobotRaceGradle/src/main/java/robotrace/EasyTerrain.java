@@ -41,7 +41,7 @@ public class EasyTerrain extends Terrain{
     private Shape makeGround(){
         final Vector translation = new Vector(0, 0, GROUND_LEVEL);
         final Vector scaling = new Vector(100, 100, 1);
-        return new Shape(translation, Vector.O, 0, scaling, Material.GROUND);
+        return new Shape(translation, Vector.O, 0, scaling, Material.DIRT);
     }
 
     private Shape makeRandomCube(Random rand){

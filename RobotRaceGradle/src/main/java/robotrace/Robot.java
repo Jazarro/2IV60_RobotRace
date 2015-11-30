@@ -1,91 +1,92 @@
 package robotrace;
 
-import com.jogamp.opengl.util.gl2.*;
-import javax.media.opengl.*;
-import javax.media.opengl.glu.*;
-import robotrace.bender.*;
+import com.jogamp.opengl.util.gl2.GLUT;
+import javax.media.opengl.GL2;
+import javax.media.opengl.glu.GLU;
+import robotrace.bender.Bender;
 
 /**
- Represents a Robot, to be implemented according to the Assignments.
+ * Represents a Robot, to be implemented according to the Assignments.
  */
-class Robot{
+public class Robot {
 
     /**
-     The position of the robot.
+     * The position of the robot.
      */
     private Vector position = new Vector(0, 0, 0);
     /**
-     The direction in which the robot is running.
+     * The direction in which the robot is running.
      */
     private Vector direction = new Vector(0, 1, 0);
     /**
-     The material from which this robot is built.
+     * The material from which this robot is built.
      */
     private final Material material;
     private final int robotType;
     private final Bender bender;
 
     /**
-     Constructs the robot with initial parameters.
+     * Constructs the robot with initial parameters.
      */
-    public Robot(Material material, Bender bender){
+    public Robot(Material material, Bender bender) {
         this.robotType = 0;
         this.material = material;
         this.bender = bender;
     }
 
-    public Robot(Material material, int robotType, Bender bender){
+    public Robot(Material material, int robotType, Bender bender) {
         this.robotType = robotType;
         this.material = material;
         this.bender = bender;
     }
 
-    public void setPosition(Vector position){
+    public void setPosition(Vector position) {
         this.position = position;
     }
 
-    public void setDirection(Vector direction){
-        /**
-         TODO: Restore this setter to its proper functionality. Right now the
-         lane tangents are not implemented yet (because it's part of the
-         second assignment) and this would be set to the O vector.
-         */
-//        this.direction = direction;
-        this.direction = Vector.X;
+    public void setDirection(Vector direction) {
+        this.direction = direction;
     }
 
-    public Material getMaterial(){
+    public Material getMaterial() {
         return material;
     }
 
     /**
-     Draws this robot (as a {@code stickfigure} if specified).
+     * Draws this robot (as a {@code stickfigure} if specified).
      */
-    public void draw(GL2 gl, GLU glu, GLUT glut, boolean stickFigure, float tAnim){
-        switch(robotType){
-            case 0:
-            default:
-                gl.glPushMatrix();
-                final Vector rotationAxis = calcRotationAxis();
-                gl.glRotated(calcRotationAngle(), rotationAxis.x, rotationAxis.y, rotationAxis.z);
-                bender.draw(gl);
-                gl.glTranslated(0.05d, 0.125d, 1.3d);//todo: draw real eyes, remove these lines
-                glut.glutSolidSphere(0.025d, 50, 50);//todo: draw real eyes, remove these lines
-                gl.glTranslated(-0.1d, 0d, 0d);//todo: draw real eyes, remove these lines
-                glut.glutSolidSphere(0.025d, 50, 50);//todo: draw real eyes, remove these lines
-                gl.glPopMatrix();
-                break;
-        }
+    public void draw(GL2 gl, GLU glu, GLUT glut, boolean stickFigure, float tAnim) {
+        gl.glPushMatrix();
+        final Vector rotationAxis = calcRotationAxis();
+        gl.glRotated(calcRotationAngle(), rotationAxis.x(), rotationAxis.y(), rotationAxis.z());
+        gl.glTranslated(position.x(), position.y(), position.z());
+        bender.draw(gl);
+        gl.glPopMatrix();
     }
 
-    private double calcRotationAngle(){
-        double f = Math.toDegrees(Math.acos(direction.dot(Bender.ORIENTATION)));
-        return f;
+    /**
+     * Calculate the rotation angle for this robot at it's current orientation.
+     *
+     * @return The angle in degrees that the robot body must be rotated around
+     *         its current rotation axis in order to match the current robot
+     *         direction.
+     * @see #calcRotationAxis()
+     */
+    private double calcRotationAngle() {
+        return Math.toDegrees(Math.acos(direction.dot(Bender.ORIENTATION)));
     }
 
-    private Vector calcRotationAxis(){
-        Vector c = direction.cross(Bender.ORIENTATION).normalized();
-        return c;
+    /**
+     * Calculate the rotational axis for this robot at it's current orientation.
+     * This is the axis around which the robot must be rotated in order to get
+     * from the robot body's default, static orientation to the robot's dynamic
+     * orientation.
+     *
+     * @return A normalized vector representing a rotational axis.
+     * @see #calcRotationAngle()
+     */
+    private Vector calcRotationAxis() {
+        return direction.cross(Bender.ORIENTATION).normalized();
     }
 
 }

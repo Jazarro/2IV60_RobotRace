@@ -1,6 +1,7 @@
 package robotrace;
 
-import javax.media.opengl.*;
+import javax.media.opengl.GL;
+
 import static javax.media.opengl.GL.GL_COLOR_BUFFER_BIT;
 import static javax.media.opengl.GL.GL_DEPTH_BUFFER_BIT;
 import static javax.media.opengl.GL.GL_DEPTH_TEST;
@@ -15,93 +16,77 @@ import static javax.media.opengl.fixedfunc.GLMatrixFunc.GL_MODELVIEW;
 import static javax.media.opengl.fixedfunc.GLMatrixFunc.GL_PROJECTION;
 
 /**
- Handles all of the RobotRace graphics functionality, which should be extended
- per the assignment.
-
- OpenGL functionality: - Basic commands are called via the gl object; -
- Utility commands are called via the glu and glut objects;
-
- GlobalState: The gs object contains the GlobalState as described in the
- assignment: - The camera viewpoint angles, phi and theta, are changed
- interactively by holding the left mouse button and dragging; - The camera
- view width, vWidth, is changed interactively by holding the right mouse
- button and dragging upwards or downwards; - The center point can be moved up
- and down by pressing the 'q' and 'z' keys, forwards and backwards with the
- 'w' and 's' keys, and left and right with the 'a' and 'd' keys; - Other
- settings are changed via the menus at the top of the screen.
-
- Textures: Place your "track.jpg", "brick.jpg", "head.jpg", and "torso.jpg"
- files in the same folder as this file. These will then be loaded as the
- texture objects track, bricks, head, and torso respectively. Be aware, these
- objects are already defined and cannot be used for other purposes. The
- texture objects can be used as follows:
-
- gl.glColor3f(1f, 1f, 1f); track.bind(gl); gl.glBegin(GL_QUADS);
- gl.glTexCoord2d(0, 0); gl.glVertex3d(0, 0, 0); gl.glTexCoord2d(1, 0);
- gl.glVertex3d(1, 0, 0); gl.glTexCoord2d(1, 1); gl.glVertex3d(1, 1, 0);
- gl.glTexCoord2d(0, 1); gl.glVertex3d(0, 1, 0); gl.glEnd();
-
- Note that it is hard or impossible to texture objects drawn with GLUT. Either
- define the primitives of the object yourself (as seen above) or add
- additional textured primitives to the GLUT object.
+ * Handles all of the RobotRace graphics functionality, which should be extended
+ * per the assignment.
+ *
+ * OpenGL functionality: - Basic commands are called via the gl object; -
+ * Utility commands are called via the glu and glut objects;
+ *
+ * GlobalState: The gs object contains the GlobalState as described in the
+ * assignment: - The camera viewpoint angles, phi and theta, are changed
+ * interactively by holding the left mouse button and dragging; - The camera
+ * view width, vWidth, is changed interactively by holding the right mouse
+ * button and dragging upwards or downwards; - The center point can be moved up
+ * and down by pressing the 'q' and 'z' keys, forwards and backwards with the
+ * 'w' and 's' keys, and left and right with the 'a' and 'd' keys; - Other
+ * settings are changed via the menus at the top of the screen.
+ *
+ * Textures: Place your "track.jpg", "brick.jpg", "head.jpg", and "torso.jpg"
+ * files in the same folder as this file. These will then be loaded as the
+ * texture objects track, bricks, head, and torso respectively. Be aware, these
+ * objects are already defined and cannot be used for other purposes. The
+ * texture objects can be used as follows:
+ *
+ * gl.glColor3f(1f, 1f, 1f); track.bind(gl); gl.glBegin(GL_QUADS);
+ * gl.glTexCoord2d(0, 0); gl.glVertex3d(0, 0, 0); gl.glTexCoord2d(1, 0);
+ * gl.glVertex3d(1, 0, 0); gl.glTexCoord2d(1, 1); gl.glVertex3d(1, 1, 0);
+ * gl.glTexCoord2d(0, 1); gl.glVertex3d(0, 1, 0); gl.glEnd();
+ *
+ * Note that it is hard or impossible to texture objects drawn with GLUT. Either
+ * define the primitives of the object yourself (as seen above) or add
+ * additional textured primitives to the GLUT object.
  */
-public class RobotRace extends Base{
+public class RobotRace extends Base {
 
     private static final int DEFAULT_STACKS = 25;
     private static final int DEFAULT_SLICES = 25;
+    private static final int NUMBER_ROBOTS = 4;
 
     /**
-     Main program execution body, delegates to an instance of the RobotRace
-     implementation.
-
-     @param args
+     * Main program execution body, delegates to an instance of the RobotRace
+     * implementation.
+     *
+     * @param args
      */
-    public static void main(String args[]){
+    public static void main(String args[]) {
         final RobotRace robotRace = new RobotRace();
         robotRace.run();
     }
 
     private final Camera camera = new Camera();
     private final Terrain terrain = new EasyTerrain();
-    private final Factory factory = new Factory();
+    private final RobotFactory factory = new RobotFactory();
     private final Lighting lighting = new Lighting();
-    /**
-     Array of the four robots.
-     */
     private final Robot[] robots;
-    /**
-     Instance of the race track.
-     */
     private final RaceTrack[] raceTracks;
 
     /**
-     Constructs this robot race by initializing robots, camera, track, and
-     terrain.
+     * Constructs this robot race by initializing robots, camera, track, and
+     * terrain.
      */
-    public RobotRace(){
-        // Create a new array of four robots
-        robots = new Robot[4];
+    public RobotRace() {
+        this.robots = new Robot[NUMBER_ROBOTS];
+        this.raceTracks = new RaceTrack[5];
+        setupObjects();
+    }
 
-        // Initialize robot 0
-        robots[0] = factory.createRobot(Material.GOLD
-        /* add other parameters that characterize this robot */);
+    private void setupObjects() {
+        robots[0] = factory.makeRobotAt(Material.GOLD, new Vector(-3,1,0), Vector.X);
+        robots[1] = factory.makeRobotAt(Material.SILVER, new Vector(-1,1,0), Vector.X);
+        robots[2] = factory.makeRobotAt(Material.WOOD, new Vector(1,1,0), Vector.X);
+        robots[3] = factory.makeRobotAt(Material.PLASTIC_ORANGE, new Vector(3,1,0), Vector.X);
 
-        // Initialize robot 1
-        robots[1] = factory.createRobot(Material.SILVER
-        /* add other parameters that characterize this robot */);
-
-        // Initialize robot 2
-        robots[2] = factory.createRobot(Material.WOOD
-        /* add other parameters that characterize this robot */);
-
-        // Initialize robot 3
-        robots[3] = factory.createRobot(Material.ORANGE
-        /* add other parameters that characterize this robot */);
-
-        // Initialize the race tracks
-        raceTracks = new RaceTrack[5];
-
-        // Test track
+// Test track
         raceTracks[0] = new RaceTrack();
 
         // O-track
@@ -121,11 +106,11 @@ public class RobotRace extends Base{
     }
 
     /**
-     Called upon the start of the application. Primarily used to configure
-     OpenGL.
+     * Called upon the start of the application. Primarily used to configure
+     * OpenGL.
      */
     @Override
-    public void initialize(){
+    public void initialize() {
         lighting.initialize(gl, gs);
 
         // Enable blending.//todo check if it's better with this on.
@@ -155,10 +140,10 @@ public class RobotRace extends Base{
     }
 
     /**
-     Configures the viewing transform.
+     * Configures the viewing transform.
      */
     @Override
-    public void setView(){
+    public void setView() {
         lighting.setView(gl);
         // Update the view according to the camera mode and robot of interest.
         // For camera modes 1 to 4, determine which robot to focus on.
@@ -174,7 +159,7 @@ public class RobotRace extends Base{
 
         // Set the perspective.
         // Modify this to meet the requirements in the assignment.
-        glu.gluPerspective(camera.getFovAngle(), (float)gs.w / gs.h, 0.1 * gs.vDist, 10 * gs.vDist);
+        glu.gluPerspective(camera.getFovAngle(), (float) gs.w / gs.h, 0.1 * gs.vDist, 10 * gs.vDist);
 
         // Set camera.
         gl.glMatrixMode(GL_MODELVIEW);
@@ -185,10 +170,10 @@ public class RobotRace extends Base{
     }
 
     /**
-     Draws the entire scene.
+     * Draws the entire scene.
      */
     @Override
-    public void drawScene(){
+    public void drawScene() {
         lighting.drawScene(gl);
 
         // Background color.
@@ -198,17 +183,15 @@ public class RobotRace extends Base{
         gl.glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
         // Draw the axis frame.
-        if(gs.showAxes){
+        if (gs.showAxes) {
             drawAxisFrame();
         }
 
-        // Get the position and direction of the first robot.
-        robots[0].setPosition(raceTracks[gs.trackNr].getLanePoint(0, 0));
-        robots[0].setDirection(raceTracks[gs.trackNr].getLaneTangent(0, 0));
-
-        // Draw the first robot.
-        lighting.setMaterial(gl, robots[0].getMaterial());
-        robots[0].draw(gl, glu, glut, gs.showStick, gs.tAnim);
+        //Draw the robots.
+        for (Robot robot : robots) {
+            lighting.setMaterial(gl, robot.getMaterial());
+            robot.draw(gl, glu, glut, gs.showStick, gs.tAnim);
+        }
 
         // Draw the race track.
         raceTracks[gs.trackNr].draw(gl, glu, glut);
@@ -216,38 +199,13 @@ public class RobotRace extends Base{
         // Draw the terrain.
         terrain.draw(gl, glu, glut, lighting);
 
-//        drawUnitBoxAroundOrigin();
-//        drawTranslatedRotatedScaledBox();
-    }
-
-    @Deprecated//TODO: remove once you're done experimenting.
-    private void drawUnitBoxAroundOrigin(){
-        lighting.setMaterial(gl, Material.GOLD);
-        // Unit box around origin.
-        glut.glutSolidCube(1f);
-    }
-
-    @Deprecated//TODO: remove once you're done experimenting.
-    private void drawTranslatedRotatedScaledBox(){
-        // Move in x-direction.
-        gl.glTranslatef(2f, 0f, 0f);
-
-        // Rotate 30 degrees, around z-axis.
-        gl.glRotatef(30f, 0f, 0f, 1f);
-
-        // Scale in z-direction.
-        gl.glScalef(1f, 1f, 2f);
-
-        // Translated, rotated, scaled box.
-        lighting.setMaterial(gl, Material.WOOD);
-        glut.glutSolidCube(1f);
     }
 
     /**
-     Draws the x-axis (red), y-axis (green), z-axis (blue), and origin
-     (yellow).
+     * Draws the x-axis (red), y-axis (green), z-axis (blue), and origin
+     * (yellow).
      */
-    public void drawAxisFrame(){
+    public void drawAxisFrame() {
         //The radius of the sphere that sits at the origin.
         final float originSphereRadius = 0.05f;
         //Sets the color to yellow.
@@ -264,7 +222,7 @@ public class RobotRace extends Base{
         gl.glColor3f(0f, 0f, 0f);
     }
 
-    private void drawAxis(float x, float y, float z){
+    private void drawAxis(float x, float y, float z) {
         //The width of the axis beams' short edges.
         final float axisThickness = 0.01f;
         //The height of the cone topping the axis.
@@ -279,9 +237,9 @@ public class RobotRace extends Base{
         //Translate the cone to the correct position, depending on the axis being drawn.
         gl.glTranslatef(x * axisLength, y * axisLength, z * axisLength);
         /**
-         Rotate the cone so that it points along the axis. The cone is rotated
-         around the axis perpendicular to the one being drawn. The z-cone is
-         already rotated correctly, so it is not rotated.
+         * Rotate the cone so that it points along the axis. The cone is rotated
+         * around the axis perpendicular to the one being drawn. The z-cone is
+         * already rotated correctly, so it is not rotated.
          */
         gl.glRotatef(z == 1 ? 0 : 90, -y, x, 0);
         //Draw the cone, make base five times wider than the axis beam.
@@ -293,12 +251,12 @@ public class RobotRace extends Base{
         gl.glPushMatrix();
         //Translate the beam half its length into the direction of its axis.
         gl.glTranslatef(axisLength / 2 * x,
-                        axisLength / 2 * y,
-                        axisLength / 2 * z);
+                axisLength / 2 * y,
+                axisLength / 2 * z);
         //Stretch the beam along its axis to make it fit the previously defined axisLength.
         gl.glScalef(x == 0 ? 1f : axisLength / axisThickness,
-                    y == 0 ? 1f : axisLength / axisThickness,
-                    z == 0 ? 1f : axisLength / axisThickness);
+                y == 0 ? 1f : axisLength / axisThickness,
+                z == 0 ? 1f : axisLength / axisThickness);
         //Draw the beam.
         glut.glutSolidCube(axisThickness);
         //Restore the original matrix.
