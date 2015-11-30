@@ -1,3 +1,9 @@
+/*
+ * Course: Computer Graphics
+ * Course Code: 2IV60
+ * Assignment: RobotRace
+ * Students: Arjan Boschman & Robke Geenen
+ */
 package robotrace;
 
 import com.jogamp.opengl.util.gl2.GLUT;

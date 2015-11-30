@@ -1,8 +1,14 @@
+/*
+ * Course: Computer Graphics
+ * Course Code: 2IV60
+ * Assignment: RobotRace
+ * Students: Arjan Boschman & Robke Geenen
+ */
 package robotrace;
 
-import com.jogamp.opengl.util.gl2.*;
-import javax.media.opengl.*;
-import javax.media.opengl.glu.*;
+import com.jogamp.opengl.util.gl2.GLUT;
+import javax.media.opengl.GL2;
+import javax.media.opengl.glu.GLU;
 
 /**
  Implementation of the terrain.

@@ -1,16 +1,24 @@
+/*
+ * Course: Computer Graphics
+ * Course Code: 2IV60
+ * Assignment: RobotRace
+ * Students: Arjan Boschman & Robke Geenen
+ */
 package robotrace.bender.bodyassembly;
 
-import com.jogamp.common.nio.*;
+import com.jogamp.common.nio.Buffers;
+import java.nio.DoubleBuffer;
+import java.nio.IntBuffer;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 import static java.lang.Math.PI;
 import static java.lang.Math.atan;
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 import static java.lang.Math.toRadians;
-
-import java.nio.*;
-import java.util.*;
-
 import static robotrace.bender.bodyassembly.Vertex.COORD_COUNT;
 import static robotrace.bender.bodyassembly.Vertex.IND_X;
 import static robotrace.bender.bodyassembly.Vertex.IND_Y;
