@@ -53,18 +53,18 @@ public class Bender{
         gl.glTranslated(0d, 0d, legHeight);
 
         gl.glPushMatrix();
-        /*gl.glTranslated(-LEG_OFFCENTER, 0d, 0d);
+        gl.glTranslated(-LEG_OFFCENTER, 0d, 0d);
         limb.draw(gl, leftLegAnglesAxis, leftLegAnglesBend, Limb.LEG, Limb.LEFT);
         gl.glPopMatrix();
         gl.glPushMatrix();
         gl.glTranslated(LEG_OFFCENTER, 0d, 0d);
-        limb.draw(gl, rightLegAnglesAxis, rightLegAnglesBend, Limb.LEG, Limb.RIGHT);*/
+        limb.draw(gl, rightLegAnglesAxis, rightLegAnglesBend, Limb.LEG, Limb.RIGHT);
 
         gl.glPopMatrix();
         gl.glPushMatrix();
         body.draw(gl);
 
-/*        gl.glPopMatrix();
+        gl.glPopMatrix();
         gl.glPushMatrix();
         gl.glTranslated(-ARM_OFFCENTER, 0d, ARM_HEIGHT);
         gl.glRotated(90d, 0d, 1d, 0d);
@@ -73,7 +73,7 @@ public class Bender{
         gl.glPushMatrix();
         gl.glTranslated(ARM_OFFCENTER, 0d, ARM_HEIGHT);
         gl.glRotated(-90d, 0d, 1d, 0d);
-        limb.draw(gl, rightArmAnglesAxis, rightArmAnglesBend, Limb.ARM, Limb.RIGHT);*/
+        limb.draw(gl, rightArmAnglesAxis, rightArmAnglesBend, Limb.ARM, Limb.RIGHT);
 
         gl.glPopMatrix();
         gl.glDisableClientState(GL2.GL_NORMAL_ARRAY);

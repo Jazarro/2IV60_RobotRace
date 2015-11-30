@@ -1,7 +1,7 @@
 package robotrace.bender;
 
-import com.jogamp.common.nio.*;
 import java.nio.*;
+import java.util.*;
 import javax.media.opengl.*;
 import utility.*;
 
@@ -12,116 +12,151 @@ public class Limb{
     public static final int LEG = 0;
     public static final int ARM = 1;
     public static final int RING_COUNT = 6;
-
-    private static final double RING_HEIGHT = 0.5d / 6d;
-    private static final double RING_RADIUS = 0.04d;
-    private static final double FOOT_HEIGHT = 0.1d;
-    private static final double FOOT_RADIUS = Math.sqrt(Math.pow(FOOT_HEIGHT, 2d) + Math.pow(RING_RADIUS, 2d));
-    private static final double HAND_RADIUS = 0.06d;
-    private static final double HAND_HEIGHT = 0.07d;
-    private static final double FINGER_RADIUS = 0.0125d;
-    private static final double FINGER_HEIGHT = 0.07d + FINGER_RADIUS;
     private static final int FINGER_COUNT = 3;
+
+    private static final double HEIGHT_RING = 0.5d / 6d;
+    private static final double HEIGHT_FOOT = 0.1d;
+    private static final double HEIGHT_HAND = 0.07d;
+    private static final double HEIGHT_FINGER = 0.0825d;
+
+    private static final double RADIUS_RING = 0.04d;
+    private static final double RADIUS_FOOT = Math.sqrt(Math.pow(HEIGHT_FOOT, 2d) + Math.pow(RADIUS_RING, 2d));
+    private static final double RADIUS_HAND = 0.06d;
+    private static final double RADIUS_FINGER = HEIGHT_FINGER - 0.07d;
+
     private static final int SLICE_COUNT = 50;
-    private static final int STACK_COUNT = 50;
-    private static final int SIMPLE_EDGE_COUNT = 5;
-    private static final int TOTAL_EDGE_COUNT = SIMPLE_EDGE_COUNT + 2 * STACK_COUNT;
-    private static final int BUFF_COUNT = 7;
-    private static final int BUFF_SIZE[] = {(SLICE_COUNT + 1) * 2,
-                                            (SLICE_COUNT + 1) * 2,
-                                            SLICE_COUNT + 1,
-                                            (SLICE_COUNT + 1) * 2,
-                                            (SLICE_COUNT + 1) * 2 * STACK_COUNT,
-                                            (SLICE_COUNT + 1) * 2 * STACK_COUNT,
-                                            SLICE_COUNT + 1};
-    private static final int BUFF_TYPE[] = {GL2.GL_QUAD_STRIP,
-                                            GL2.GL_QUAD_STRIP,
-                                            GL2.GL_POLYGON,
-                                            GL2.GL_QUAD_STRIP,
-                                            GL2.GL_QUAD_STRIP,
-                                            GL2.GL_QUAD_STRIP,
-                                            GL2.GL_POLYGON};
+    private static final int STACK_COUNT = 20;
 
-    private final double[] vrtx;
-    private final int[][] inds;
-    private final int[] buff;
+    private int ringGLDataBufferName;
+    private int[] ringGLIndicesBufferNames;
+    DoubleBuffer ringDataBuffer;
+    List<IntBuffer> ringIndicesBufferList;
+    List<Boolean> ringSurfaceTypeList;
 
-    public Limb(){
-        vrtx = new double[(SLICE_COUNT + 1) * (TOTAL_EDGE_COUNT) * Assembler.NUMCOORD];
-        inds = new int[BUFF_COUNT][];
-        for(int i = 0; i < BUFF_COUNT; i++){
-            inds[i] = new int[BUFF_SIZE[i]];
-        }
-        buff = new int[BUFF_COUNT + 1];
-    }
+    private int footGLDataBufferName;
+    private int[] footGLIndicesBufferNames;
+    DoubleBuffer footDataBuffer;
+    List<IntBuffer> footIndicesBufferList;
+    List<Boolean> footSurfaceTypeList;
+
+    private int handGLDataBufferName;
+    private int[] handGLIndicesBufferNames;
+    DoubleBuffer handDataBuffer;
+    List<IntBuffer> handIndicesBufferList;
+    List<Boolean> handSurfaceTypeList;
+
+    private int fingerGLDataBufferName;
+    private int[] fingerGLIndicesBufferNames;
+    DoubleBuffer fingerDataBuffer;
+    List<IntBuffer> fingerIndicesBufferList;
+    List<Boolean> fingerSurfaceTypeList;
 
     public void initialize(GL2 gl){
-        for(int i = 0; i <= SLICE_COUNT; i++){
-            System.arraycopy(Assembler.calcVrtx(i, RING_RADIUS, 0, SLICE_COUNT), 0, vrtx, (i * TOTAL_EDGE_COUNT + 0) * Assembler.NUMCOORD, Assembler.NUMCOORD);
-            System.arraycopy(Assembler.calcVrtx(i, RING_RADIUS, -RING_HEIGHT, SLICE_COUNT), 0, vrtx, (i * TOTAL_EDGE_COUNT + 1) * Assembler.NUMCOORD, Assembler.NUMCOORD);
-            inds[0][i * 2 + 0] = (i * TOTAL_EDGE_COUNT + 0);
-            inds[0][i * 2 + 1] = (i * TOTAL_EDGE_COUNT + 1);
+        final Assembler ringAssembler = new Assembler();
+        ringAssembler.addConicalFrustum(SLICE_COUNT, RADIUS_RING, RADIUS_RING, 0d, -HEIGHT_RING, true, true);
+        ringAssembler.compileSurfaceCompilation();
+        ringDataBuffer = ringAssembler.getDataBuffer();
+        ringIndicesBufferList = ringAssembler.getIndicesBuffers();
+        ringSurfaceTypeList = ringAssembler.getSurfaceTypeList();
 
-            System.arraycopy(Assembler.calcVrtx(i, HAND_RADIUS, -HAND_HEIGHT, SLICE_COUNT), 0, vrtx, (i * TOTAL_EDGE_COUNT + 2) * Assembler.NUMCOORD, Assembler.NUMCOORD);
-            inds[1][i * 2 + 0] = (i * TOTAL_EDGE_COUNT + 0);
-            inds[1][i * 2 + 1] = (i * TOTAL_EDGE_COUNT + 2);
-            inds[2][i] = (i * TOTAL_EDGE_COUNT + 2);
-            System.arraycopy(Assembler.calcVrtx(i, FINGER_RADIUS, FINGER_RADIUS, SLICE_COUNT), 0, vrtx, (i * TOTAL_EDGE_COUNT + 3) * Assembler.NUMCOORD, Assembler.NUMCOORD);
-            System.arraycopy(Assembler.calcVrtx(i, FINGER_RADIUS, -FINGER_HEIGHT + FINGER_RADIUS, SLICE_COUNT), 0, vrtx, (i * TOTAL_EDGE_COUNT + 4) * Assembler.NUMCOORD, Assembler.NUMCOORD);
-            inds[3][i * 2 + 0] = (i * TOTAL_EDGE_COUNT + 3);
-            inds[3][i * 2 + 1] = (i * TOTAL_EDGE_COUNT + 4);
-            for(int k = 0; k < STACK_COUNT; k++){
-                System.arraycopy(Assembler.calcVrtx(i,
-                                                  FINGER_RADIUS * Math.cos(Math.toRadians(k * 90 / STACK_COUNT)),
-                                                  FINGER_RADIUS * (1 - Math.sin(Math.toRadians(k * 90 / STACK_COUNT))),
-                                                  SLICE_COUNT),
-                                 0, vrtx, ((i * TOTAL_EDGE_COUNT) + SIMPLE_EDGE_COUNT + k) * Assembler.NUMCOORD, Assembler.NUMCOORD);
-                inds[4][((i + (k * (SLICE_COUNT + 1))) * 2) + 0] = ((i * TOTAL_EDGE_COUNT) + SIMPLE_EDGE_COUNT + k + 0);
-                inds[4][((i + (k * (SLICE_COUNT + 1))) * 2) + 1] = ((i * TOTAL_EDGE_COUNT) + SIMPLE_EDGE_COUNT + k + 1);
-            }
-            inds[4][((i + ((STACK_COUNT - 1) * (SLICE_COUNT + 1))) * 2) + 1] = ((i * TOTAL_EDGE_COUNT) + SIMPLE_EDGE_COUNT + (STACK_COUNT - 1) + 0);
+        final Assembler footAssembler = new Assembler();
+        footAssembler.addPartialTorus(SLICE_COUNT, STACK_COUNT, RADIUS_FOOT, 0d, 0d, HEIGHT_FOOT, true, false);
+        footAssembler.compileSurfaceCompilation();
+        footDataBuffer = footAssembler.getDataBuffer();
+        footIndicesBufferList = footAssembler.getIndicesBuffers();
+        footSurfaceTypeList = footAssembler.getSurfaceTypeList();
 
-            for(int k = 0; k < STACK_COUNT; k++){
-                System.arraycopy(Assembler.calcVrtx(i,
-                                                  FOOT_RADIUS * Math.cos(Math.toRadians(k * 90 / STACK_COUNT)),
-                                                  FOOT_RADIUS * Math.sin(Math.toRadians(k * 90 / STACK_COUNT)),
-                                                  SLICE_COUNT),
-                                 0, vrtx, ((i * TOTAL_EDGE_COUNT) + SIMPLE_EDGE_COUNT + STACK_COUNT + k) * Assembler.NUMCOORD, Assembler.NUMCOORD);
-                inds[5][((i + (k * (SLICE_COUNT + 1))) * 2) + 0] = ((i * TOTAL_EDGE_COUNT) + SIMPLE_EDGE_COUNT + STACK_COUNT + k + 0);
-                inds[5][((i + (k * (SLICE_COUNT + 1))) * 2) + 1] = ((i * TOTAL_EDGE_COUNT) + SIMPLE_EDGE_COUNT + STACK_COUNT + k + 1);
-            }
-            inds[6][i] = ((i * TOTAL_EDGE_COUNT) + SIMPLE_EDGE_COUNT + STACK_COUNT + 0);
+        final Assembler handAssembler = new Assembler();
+        handAssembler.addConicalFrustum(SLICE_COUNT, RADIUS_RING, RADIUS_HAND, 0d, -HEIGHT_HAND, true, true);
+        handAssembler.compileSurfaceCompilation();
+        handDataBuffer = handAssembler.getDataBuffer();
+        handIndicesBufferList = handAssembler.getIndicesBuffers();
+        handSurfaceTypeList = handAssembler.getSurfaceTypeList();
 
+        final Assembler fingerAssembler = new Assembler();
+        fingerAssembler.addConicalFrustum(SLICE_COUNT, RADIUS_FINGER, RADIUS_FINGER, RADIUS_FINGER, -HEIGHT_FINGER + RADIUS_FINGER, false, false);
+        fingerAssembler.addPartialTorus(SLICE_COUNT, STACK_COUNT, RADIUS_FINGER, 0d, -HEIGHT_FINGER + RADIUS_FINGER, -HEIGHT_FINGER, false, false);
+        fingerAssembler.compileSurfaceCompilation();
+        fingerDataBuffer = fingerAssembler.getDataBuffer();
+        fingerIndicesBufferList = fingerAssembler.getIndicesBuffers();
+        fingerSurfaceTypeList = fingerAssembler.getSurfaceTypeList();
+
+        final int[] ringTempBufferNames = new int[ringIndicesBufferList.size() + 1];
+        gl.glGenBuffers(ringTempBufferNames.length, ringTempBufferNames, 0);
+        this.ringGLIndicesBufferNames = new int[ringIndicesBufferList.size()];
+        System.arraycopy(ringTempBufferNames, 0, ringGLIndicesBufferNames, 0, ringGLIndicesBufferNames.length);
+        this.ringGLDataBufferName = ringTempBufferNames[ringTempBufferNames.length - 1];
+
+        gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, ringGLDataBufferName);
+        gl.glBufferData(GL2.GL_ARRAY_BUFFER, ringDataBuffer.capacity() * Double.BYTES, ringDataBuffer, GL2.GL_STATIC_DRAW);
+
+        for(IntBuffer buffer : ringIndicesBufferList){
+            gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, ringGLIndicesBufferNames[ringIndicesBufferList.indexOf(buffer)]);
+            gl.glBufferData(GL2.GL_ELEMENT_ARRAY_BUFFER, buffer.capacity() * Integer.BYTES, buffer, GL2.GL_STATIC_DRAW);
         }
 
-        gl.glGenBuffers(BUFF_COUNT + 1, buff, 0);
+        final int[] footTempBufferNames = new int[footIndicesBufferList.size() + 1];
+        gl.glGenBuffers(footTempBufferNames.length, footTempBufferNames, 0);
+        this.footGLIndicesBufferNames = new int[footIndicesBufferList.size()];
+        System.arraycopy(footTempBufferNames, 0, footGLIndicesBufferNames, 0, footGLIndicesBufferNames.length);
+        this.footGLDataBufferName = footTempBufferNames[footTempBufferNames.length - 1];
 
-        DoubleBuffer limbVrtxBuff = Buffers.newDirectDoubleBuffer(vrtx);
-        gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, buff[0]);
-        gl.glBufferData(GL2.GL_ARRAY_BUFFER, vrtx.length * Double.BYTES, limbVrtxBuff, GL2.GL_STATIC_DRAW);
+        gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, footGLDataBufferName);
+        gl.glBufferData(GL2.GL_ARRAY_BUFFER, footDataBuffer.capacity() * Double.BYTES, footDataBuffer, GL2.GL_STATIC_DRAW);
 
-        for(int i = 0; i < BUFF_COUNT; i++){
-            IntBuffer limbIndsBuff = Buffers.newDirectIntBuffer(inds[i]);
-            gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, buff[i + 1]);
-            gl.glBufferData(GL2.GL_ELEMENT_ARRAY_BUFFER, BUFF_SIZE[i] * Integer.BYTES, limbIndsBuff, GL2.GL_STATIC_DRAW);
+        for(IntBuffer buffer : footIndicesBufferList){
+            gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, footGLIndicesBufferNames[footIndicesBufferList.indexOf(buffer)]);
+            gl.glBufferData(GL2.GL_ELEMENT_ARRAY_BUFFER, buffer.capacity() * Integer.BYTES, buffer, GL2.GL_STATIC_DRAW);
         }
+
+        final int[] handTempBufferNames = new int[handIndicesBufferList.size() + 1];
+        gl.glGenBuffers(handTempBufferNames.length, handTempBufferNames, 0);
+        this.handGLIndicesBufferNames = new int[handIndicesBufferList.size()];
+        System.arraycopy(handTempBufferNames, 0, handGLIndicesBufferNames, 0, handGLIndicesBufferNames.length);
+        this.handGLDataBufferName = handTempBufferNames[handTempBufferNames.length - 1];
+
+        gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, handGLDataBufferName);
+        gl.glBufferData(GL2.GL_ARRAY_BUFFER, handDataBuffer.capacity() * Double.BYTES, handDataBuffer, GL2.GL_STATIC_DRAW);
+
+        for(IntBuffer buffer : handIndicesBufferList){
+            gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, handGLIndicesBufferNames[handIndicesBufferList.indexOf(buffer)]);
+            gl.glBufferData(GL2.GL_ELEMENT_ARRAY_BUFFER, buffer.capacity() * Integer.BYTES, buffer, GL2.GL_STATIC_DRAW);
+        }
+
+        final int[] fingerTempBufferNames = new int[fingerIndicesBufferList.size() + 1];
+        gl.glGenBuffers(fingerTempBufferNames.length, fingerTempBufferNames, 0);
+        this.fingerGLIndicesBufferNames = new int[fingerIndicesBufferList.size()];
+        System.arraycopy(fingerTempBufferNames, 0, fingerGLIndicesBufferNames, 0, fingerGLIndicesBufferNames.length);
+        this.fingerGLDataBufferName = fingerTempBufferNames[fingerTempBufferNames.length - 1];
+
+        gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, fingerGLDataBufferName);
+        gl.glBufferData(GL2.GL_ARRAY_BUFFER, fingerDataBuffer.capacity() * Double.BYTES, fingerDataBuffer, GL2.GL_STATIC_DRAW);
+
+        for(IntBuffer buffer : fingerIndicesBufferList){
+            gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, fingerGLIndicesBufferNames[fingerIndicesBufferList.indexOf(buffer)]);
+            gl.glBufferData(GL2.GL_ELEMENT_ARRAY_BUFFER, buffer.capacity() * Integer.BYTES, buffer, GL2.GL_STATIC_DRAW);
+        }
+
     }
 
     public void draw(GL2 gl, double[] anglesAxis, double[] anglesBend, int type, int side){
         double currAngleAxis;
         double currAngleBend;
         double newPos[] = {0d, 0d, 0d};
-        gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, buff[0]);
-        gl.glVertexPointer(Assembler.NUMCOORD, GL2.GL_DOUBLE, 0, 0);
+        gl.glPushMatrix();
+        gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, ringGLDataBufferName);
+        gl.glVertexPointer(3, GL2.GL_DOUBLE, 3 * 2 * Double.BYTES, 0);//todo: COORD_COUNT
+        gl.glNormalPointer(GL2.GL_DOUBLE, 3 * 2 * Double.BYTES, 3 * Double.BYTES);//todo: COORD_COUNT
         for(int i = 0; i < RING_COUNT; i++){
             gl.glPushMatrix();
             currAngleAxis = (side == RIGHT) ? (-anglesAxis[i]) : (anglesAxis[i]);
             currAngleBend = anglesBend[i];
             gl.glTranslated(newPos[0], newPos[1], newPos[2]);
             gl.glRotated(currAngleBend, Math.cos(Math.toRadians(currAngleAxis)), Math.sin(Math.toRadians(currAngleAxis)), 0d);
-            newPos = nextPos(newPos, RING_HEIGHT, currAngleBend, currAngleAxis);
-            gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, buff[1]);
-            gl.glDrawElements(BUFF_TYPE[0], BUFF_SIZE[0], GL2.GL_UNSIGNED_INT, 0);
+            newPos = nextPos(newPos, HEIGHT_RING, currAngleBend, currAngleAxis);
+            for(int j = 0; j < ringIndicesBufferList.size(); j++){
+                ringDrawBuffer(gl, j);
+            }
             gl.glPopMatrix();
         }
         gl.glPushMatrix();
@@ -129,30 +164,41 @@ public class Limb{
         currAngleBend = anglesBend[RING_COUNT];
         switch(type){
             case LEG:
-                newPos = nextPos(newPos, FOOT_HEIGHT, currAngleBend, currAngleAxis);
+                newPos = nextPos(newPos, HEIGHT_FOOT, currAngleBend, currAngleAxis);
                 gl.glTranslated(newPos[0], newPos[1], newPos[2]);
                 gl.glRotated(currAngleBend, Math.cos(Math.toRadians(currAngleAxis)), Math.sin(Math.toRadians(currAngleAxis)), 0d);
-                gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, buff[6]);
-                gl.glDrawElements(BUFF_TYPE[5], BUFF_SIZE[5], GL2.GL_UNSIGNED_INT, 0);
-                gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, buff[7]);
-                gl.glDrawElements(BUFF_TYPE[6], BUFF_SIZE[6], GL2.GL_UNSIGNED_INT, 0);
+
+                gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, footGLDataBufferName);
+                gl.glVertexPointer(3, GL2.GL_DOUBLE, 3 * 2 * Double.BYTES, 0);//todo: COORD_COUNT
+                gl.glNormalPointer(GL2.GL_DOUBLE, 3 * 2 * Double.BYTES, 3 * Double.BYTES);//todo: COORD_COUNT
+                for(int i = 0; i < footIndicesBufferList.size(); i++){
+                    footDrawBuffer(gl, i);
+                }
+
                 break;
             case ARM:
                 gl.glTranslated(newPos[0], newPos[1], newPos[2]);
                 gl.glRotated(currAngleBend, Math.cos(Math.toRadians(currAngleAxis)), Math.sin(Math.toRadians(currAngleAxis)), 0d);
-                gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, buff[2]);
-                gl.glDrawElements(BUFF_TYPE[1], BUFF_SIZE[1], GL2.GL_UNSIGNED_INT, 0);
-                gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, buff[3]);
-                gl.glDrawElements(BUFF_TYPE[2], BUFF_SIZE[2], GL2.GL_UNSIGNED_INT, 0);
 
-                gl.glTranslated(0d, 0d, -HAND_HEIGHT);
-                gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, buff[4]);
-                gl.glDrawElements(BUFF_TYPE[3], BUFF_SIZE[3], GL2.GL_UNSIGNED_INT, 0);
-                gl.glTranslated(0d, 0d, -FINGER_HEIGHT);
-                gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, buff[5]);
-                gl.glDrawElements(BUFF_TYPE[4], BUFF_SIZE[4], GL2.GL_UNSIGNED_INT, 0);
+                gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, handGLDataBufferName);
+                gl.glVertexPointer(3, GL2.GL_DOUBLE, 3 * 2 * Double.BYTES, 0);//todo: COORD_COUNT
+                gl.glNormalPointer(GL2.GL_DOUBLE, 3 * 2 * Double.BYTES, 3 * Double.BYTES);//todo: COORD_COUNT
+                for(int i = 0; i < handIndicesBufferList.size(); i++){
+                    handDrawBuffer(gl, i);
+                }
+
+                gl.glTranslated(0d, 0d, -HEIGHT_HAND);
+
+                gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, fingerGLDataBufferName);
+                gl.glVertexPointer(3, GL2.GL_DOUBLE, 3 * 2 * Double.BYTES, 0);//todo: COORD_COUNT
+                gl.glNormalPointer(GL2.GL_DOUBLE, 3 * 2 * Double.BYTES, 3 * Double.BYTES);//todo: COORD_COUNT
+                for(int i = 0; i < fingerIndicesBufferList.size(); i++){
+                    fingerDrawBuffer(gl, i);
+                }
+
                 break;
         }
+        gl.glPopMatrix();
         gl.glPopMatrix();
     }
 
@@ -163,14 +209,14 @@ public class Limb{
         for(int i = 0; i < RING_COUNT; i++){
             currAngleAxis = (side == RIGHT) ? (-anglesAxis[i]) : (anglesAxis[i]);
             currAngleBend = anglesBend[i];
-            newPos = nextPos(newPos, RING_HEIGHT, currAngleBend, currAngleAxis);
+            newPos = nextPos(newPos, HEIGHT_RING, currAngleBend, currAngleAxis);
         }
         currAngleAxis = (side == RIGHT) ? (-anglesAxis[RING_COUNT]) : (anglesAxis[RING_COUNT]);
         currAngleBend = anglesBend[RING_COUNT];
         switch(type){
             case LEG:
-                newPos = nextPos(newPos, FOOT_HEIGHT, currAngleBend, currAngleAxis);
-                newPos[2] -= FOOT_RADIUS * Math.sin(Math.toRadians(currAngleBend));
+                newPos = nextPos(newPos, HEIGHT_FOOT, currAngleBend, currAngleAxis);
+                newPos[2] -= RADIUS_FOOT * Math.sin(Math.toRadians(currAngleBend));
                 break;
             case ARM:
                 //newPos[2] -= ?;
@@ -186,8 +232,23 @@ public class Limb{
         return currPos;
     }
 
-    private void drawBuffer(GL2 gl, int buffInd){
-        gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, buff[buffInd + 1]);
-        gl.glDrawElements(BUFF_TYPE[buffInd], BUFF_SIZE[buffInd], GL2.GL_UNSIGNED_INT, 0);
+    private void ringDrawBuffer(GL2 gl, int buffInd){
+        gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, ringGLIndicesBufferNames[buffInd]);
+        gl.glDrawElements((ringSurfaceTypeList.get(buffInd) ? (GL2.GL_POLYGON) : (GL2.GL_QUAD_STRIP)), ringIndicesBufferList.get(buffInd).capacity(), GL2.GL_UNSIGNED_INT, 0);
+    }
+
+    private void footDrawBuffer(GL2 gl, int buffInd){
+        gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, footGLIndicesBufferNames[buffInd]);
+        gl.glDrawElements((footSurfaceTypeList.get(buffInd) ? (GL2.GL_POLYGON) : (GL2.GL_QUAD_STRIP)), footIndicesBufferList.get(buffInd).capacity(), GL2.GL_UNSIGNED_INT, 0);
+    }
+
+    private void handDrawBuffer(GL2 gl, int buffInd){
+        gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, handGLIndicesBufferNames[buffInd]);
+        gl.glDrawElements((handSurfaceTypeList.get(buffInd) ? (GL2.GL_POLYGON) : (GL2.GL_QUAD_STRIP)), handIndicesBufferList.get(buffInd).capacity(), GL2.GL_UNSIGNED_INT, 0);
+    }
+
+    private void fingerDrawBuffer(GL2 gl, int buffInd){
+        gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, fingerGLIndicesBufferNames[buffInd]);
+        gl.glDrawElements((fingerSurfaceTypeList.get(buffInd) ? (GL2.GL_POLYGON) : (GL2.GL_QUAD_STRIP)), fingerIndicesBufferList.get(buffInd).capacity(), GL2.GL_UNSIGNED_INT, 0);
     }
 }
