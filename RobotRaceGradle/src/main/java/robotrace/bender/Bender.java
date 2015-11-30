@@ -74,7 +74,7 @@ public class Bender implements GLRobotBody {
              * rest of the body, arms and head are always drawn on top of them.
              * Note that the legs are currently drawn below zero
              */
-            final double legHeight = Math.max(limb.height(leftLegAnglesAxis, leftLegAnglesBend, Limb.LEG, Limb.LEFT), limb.height(rightLegAnglesAxis, rightLegAnglesBend, Limb.LEG, Limb.LEFT));
+            final double legHeight = Math.max(limb.height(leftLegAnglesAxis, leftLegAnglesBend, Limb.LimbType.LEFT_LEG), limb.height(rightLegAnglesAxis, rightLegAnglesBend, Limb.LimbType.RIGHT_LEG));
             gl.glTranslated(0d, 0d, legHeight);
 
             //Draws the torso and head:
@@ -93,27 +93,27 @@ public class Bender implements GLRobotBody {
             //Draws the left leg and foot.
             gl.glPushMatrix();
             gl.glTranslated(-LEG_OFFCENTER, 0d, 0d);
-            limb.draw(gl, leftLegAnglesAxis, leftLegAnglesBend, Limb.LEG, Limb.LEFT);
+            limb.draw(gl, leftLegAnglesAxis, leftLegAnglesBend, Limb.LimbType.LEFT_LEG);
             gl.glPopMatrix();
 
             //Draws the right leg and foot.
             gl.glPushMatrix();
             gl.glTranslated(LEG_OFFCENTER, 0d, 0d);
-            limb.draw(gl, rightLegAnglesAxis, rightLegAnglesBend, Limb.LEG, Limb.RIGHT);
+            limb.draw(gl, rightLegAnglesAxis, rightLegAnglesBend,Limb.LimbType.RIGHT_LEG);
             gl.glPopMatrix();
 
             //Draws the left arm and hand.
             gl.glPushMatrix();
             gl.glTranslated(-SHOULDER_OFFCENTER, 0d, SHOULDER_HEIGHT);
             gl.glRotated(90d, 0d, 1d, 0d);
-            limb.draw(gl, leftArmAnglesAxis, leftArmAnglesBend, Limb.ARM, Limb.LEFT);
+            limb.draw(gl, leftArmAnglesAxis, leftArmAnglesBend,Limb.LimbType.RIGHT_ARM);
             gl.glPopMatrix();
 
             //Draws the right arm and hand.
             gl.glPushMatrix();
             gl.glTranslated(SHOULDER_OFFCENTER, 0d, SHOULDER_HEIGHT);
             gl.glRotated(-90d, 0d, 1d, 0d);
-            limb.draw(gl, rightArmAnglesAxis, rightArmAnglesBend, Limb.ARM, Limb.RIGHT);
+            limb.draw(gl, rightArmAnglesAxis, rightArmAnglesBend, Limb.LimbType.LEFT_ARM);
             gl.glPopMatrix();
         }
         gl.glPopMatrix();
