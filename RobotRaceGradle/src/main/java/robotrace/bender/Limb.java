@@ -1,5 +1,6 @@
 package robotrace.bender;
 
+import static java.lang.Math.*;
 import java.nio.*;
 import java.util.*;
 import javax.media.opengl.*;
@@ -12,17 +13,19 @@ public class Limb{
     public static final int LEG = 0;
     public static final int ARM = 1;
     public static final int RING_COUNT = 6;
+
     private static final int FINGER_COUNT = 3;
+    private static final double FINGER_OFFCENTER = 0.03d;
 
     private static final double HEIGHT_RING = 0.5d / 6d;
     private static final double HEIGHT_FOOT = 0.1d;
     private static final double HEIGHT_HAND = 0.07d;
-    private static final double HEIGHT_FINGER = 0.0825d;
+    private static final double HEIGHT_FINGER = 0.0625d;
 
     private static final double RADIUS_RING = 0.04d;
     private static final double RADIUS_FOOT = Math.sqrt(Math.pow(HEIGHT_FOOT, 2d) + Math.pow(RADIUS_RING, 2d));
     private static final double RADIUS_HAND = 0.06d;
-    private static final double RADIUS_FINGER = HEIGHT_FINGER - 0.07d;
+    private static final double RADIUS_FINGER = HEIGHT_FINGER - 0.05d;
 
     private static final int SLICE_COUNT = 50;
     private static final int STACK_COUNT = 20;
@@ -51,7 +54,7 @@ public class Limb{
     List<IntBuffer> fingerIndicesBufferList;
     List<Boolean> fingerSurfaceTypeList;
 
-    public void initialize(GL2 gl){
+    public void initialize(GL2 gl){//todo: refactor heavily
         final Assembler ringAssembler = new Assembler();
         ringAssembler.addConicalFrustum(SLICE_COUNT, RADIUS_RING, RADIUS_RING, 0d, -HEIGHT_RING, true, true);
         ringAssembler.compileSurfaceCompilation();
@@ -189,11 +192,16 @@ public class Limb{
 
                 gl.glTranslated(0d, 0d, -HEIGHT_HAND);
 
-                gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, fingerGLDataBufferName);
-                gl.glVertexPointer(3, GL2.GL_DOUBLE, 3 * 2 * Double.BYTES, 0);//todo: COORD_COUNT
-                gl.glNormalPointer(GL2.GL_DOUBLE, 3 * 2 * Double.BYTES, 3 * Double.BYTES);//todo: COORD_COUNT
-                for(int i = 0; i < fingerIndicesBufferList.size(); i++){
-                    fingerDrawBuffer(gl, i);
+                for(int j = 0; j < FINGER_COUNT; j++){//todo: add FINGER_PHASE
+                    gl.glPushMatrix();
+                    gl.glTranslated(FINGER_OFFCENTER * cos(toRadians(j * 360 / FINGER_COUNT)), FINGER_OFFCENTER * sin(toRadians(j * 360 / FINGER_COUNT)), 0d);
+                    gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, fingerGLDataBufferName);
+                    gl.glVertexPointer(3, GL2.GL_DOUBLE, 3 * 2 * Double.BYTES, 0);//todo: COORD_COUNT
+                    gl.glNormalPointer(GL2.GL_DOUBLE, 3 * 2 * Double.BYTES, 3 * Double.BYTES);//todo: COORD_COUNT
+                    for(int i = 0; i < fingerIndicesBufferList.size(); i++){
+                        fingerDrawBuffer(gl, i);
+                    }
+                    gl.glPopMatrix();
                 }
 
                 break;
@@ -218,7 +226,7 @@ public class Limb{
                 newPos = nextPos(newPos, HEIGHT_FOOT, currAngleBend, currAngleAxis);
                 newPos[2] -= RADIUS_FOOT * Math.sin(Math.toRadians(currAngleBend));
                 break;
-            case ARM:
+            case ARM://todo: arm does not return correct height
                 //newPos[2] -= ?;
                 break;
         }

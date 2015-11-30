@@ -3,10 +3,10 @@ package utility;
 import java.util.*;
 
 final class SurfaceCompilation{
-    
+
     private final List<IndexedVertex> vertices = new ArrayList<>();
     private final List<Surface> surfaces = new ArrayList<>();
-    
+
     public List<IndexedVertex> addSurface(Surface surface){
         surfaces.add(surface);
         final List<IndexedVertex> surfaceVertices = surface.getVertices();
@@ -23,13 +23,13 @@ final class SurfaceCompilation{
         }
         return knownVertices;
     }
-    
+
     public List<IndexedVertex> getVertices(){
         return vertices;
     }
-    
+
     public List<Surface> getSurfaces(){
         return surfaces;
     }
-    
+
 }
