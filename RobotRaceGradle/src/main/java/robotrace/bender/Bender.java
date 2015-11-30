@@ -36,7 +36,7 @@ public class Bender implements GLRobotBody {
      */
     private static final double SHOULDER_OFFCENTER = 0.2d;
 
-    private final BenderBody body;
+    private final Body body;
     private final Limb limb;
 
     private final double[] leftLegAnglesAxis = new double[Limb.RING_COUNT + 1];
@@ -49,7 +49,7 @@ public class Bender implements GLRobotBody {
     private final double[] rightArmAnglesBend = new double[Limb.RING_COUNT + 1];
 
     public Bender() {
-        body = new BenderBody();
+        body = new Body();
         limb = new Limb();
     }
 

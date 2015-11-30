@@ -7,7 +7,13 @@ import javax.media.opengl.GL2;
 import robotrace.bender.bodyassembly.Assembler;
 import robotrace.bender.bodyassembly.Vertex;
 
-public class BenderBody {
+/**
+ * Convenience class used by {@link Bender} to draw the torso and head.
+ *
+ * @author Arjan Boschman
+ * @author Robke Geenen
+ */
+public class Body {
 
     /**
      * Radius of the body at the hips.

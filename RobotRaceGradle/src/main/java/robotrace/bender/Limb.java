@@ -1,23 +1,32 @@
 package robotrace.bender;
 
-import robotrace.bender.bodyassembly.Assembler;
-import robotrace.bender.bodyassembly.Vertex;
 import java.nio.DoubleBuffer;
 import java.nio.IntBuffer;
 import java.util.List;
 import javax.media.opengl.GL2;
+import robotrace.bender.bodyassembly.Assembler;
+import robotrace.bender.bodyassembly.Vertex;
 
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 import static java.lang.Math.toRadians;
 
+/**
+ * Convenience class used by {@link Bender} to draw the arms, legs, hands and
+ * feet.
+ *
+ * @author Arjan Boschman
+ * @author Robke Geenen
+ */
 public class Limb {
 
     /**
-     * The number of
+     * The number of cylinders to use for each limb.
      */
     public static final int RING_COUNT = 6;
-
+    /**
+     * The number of fingers to use on each hand.
+     */
     private static final int FINGER_COUNT = 3;
     private static final double FINGER_OFFCENTER = 0.03d;
 
@@ -31,7 +40,13 @@ public class Limb {
     private static final double RADIUS_HAND = 0.06d;
     private static final double RADIUS_FINGER = HEIGHT_FINGER - 0.05d;
 
+    /**
+     * The number of edges to give the rings of the various shapes.
+     */
     private static final int SLICE_COUNT = 50;
+    /**
+     * The number of rings to use when calculating a partial torus curve.
+     */
     private static final int STACK_COUNT = 20;
 
     private int ringGLDataBufferName;
@@ -58,8 +73,16 @@ public class Limb {
     private List<IntBuffer> fingerIndicesBufferList;
     private List<Boolean> fingerSurfaceTypeList;
 
+    /**
+     * NB: Due to lack of time there is significant code duplication here. This
+     * will be cleaned up by the next submission. The pattern followed is
+     * basically the same as in the {@link Body} class. Please refer to that
+     * class for explanation.
+     *
+     * @param gl The instance of GL2 responsible for drawing the body.
+     */
     public void initialize(GL2 gl) {//todo: refactor heavily
-        
+
         final Assembler ringAssembler = new Assembler();
         ringAssembler.addConicalFrustum(SLICE_COUNT, RADIUS_RING, RADIUS_RING, 0d, -HEIGHT_RING, true, true);
         ringAssembler.compileSurfaceCompilation();
@@ -147,6 +170,25 @@ public class Limb {
 
     }
 
+    /**
+     * To be called in the draw loop. Uses the given instance of GL2 to draw the
+     * body.
+     *
+     * Drawing the shapes here works much the same as in {@link Body}, however
+     * the limbs have six independently rotatable cylinders and a foot/hand at
+     * the end. The rotations are given as arguments, the translations are
+     * inferred from those.
+     *
+     * @param gl         The instance of GL2 responsible for drawing the body.
+     * @param anglesAxis Describes the vectors around which the limbs are
+     *                   rotated. This array is in the form x2,y2,z2,x2,y2,z2
+     *                   etc...
+     * @param anglesBend An array of angles, in degrees. Each angle is relative
+     *                   to the bender body. The zeroth element is for the
+     *                   cylinder at the shoulder, each consecutive element is
+     *                   for the next cylinder, all the way down to the wrist.
+     * @param limbType
+     */
     public void draw(GL2 gl, double[] anglesAxis, double[] anglesBend, LimbType limbType) {
         double currAngleAxis;
         double currAngleBend;
@@ -212,6 +254,21 @@ public class Limb {
         gl.glPopMatrix();
     }
 
+    /**
+     * Used in order to be able to calculate the distance of the torso to the
+     * ground. Returns the height of the 'highest' leg.
+     *
+     * @param anglesAxis Describes the vectors around which the limbs are
+     *                   rotated. This array is in the form x2,y2,z2,x2,y2,z2
+     *                   etc...
+     * @param anglesBend An array of angles, in degrees. Each angle is relative
+     *                   to the bender body. The zeroth element is for the
+     *                   cylinder at the shoulder, each consecutive element is
+     *                   for the next cylinder, all the way down to the wrist.
+     * @param limbType   Only works for leg types.
+     * @return The distance of the torso to the ground, assuming that at least
+     *         one leg touches the ground.
+     */
     public double height(double[] anglesAxis, double[] anglesBend, LimbType limbType) {
         double currAngleAxis;
         double currAngleBend;
@@ -240,26 +297,58 @@ public class Limb {
         return currPos;
     }
 
+    /**
+     * Draw one of the limb's cylinders.
+     *
+     * @param gl      The instance of GL2 responsible for drawing the body.
+     * @param buffInd The index at which to find the name of the relevant
+     *                element array buffer.
+     */
     private void ringDrawBuffer(GL2 gl, int buffInd) {
         gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, ringGLIndicesBufferNames[buffInd]);
         gl.glDrawElements((ringSurfaceTypeList.get(buffInd) ? (GL2.GL_POLYGON) : (GL2.GL_QUAD_STRIP)), ringIndicesBufferList.get(buffInd).capacity(), GL2.GL_UNSIGNED_INT, 0);
     }
 
+    /**
+     * Draw a foot.
+     *
+     * @param gl      The instance of GL2 responsible for drawing the body.
+     * @param buffInd The index at which to find the name of the relevant
+     *                element array buffer.
+     */
     private void footDrawBuffer(GL2 gl, int buffInd) {
         gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, footGLIndicesBufferNames[buffInd]);
         gl.glDrawElements((footSurfaceTypeList.get(buffInd) ? (GL2.GL_POLYGON) : (GL2.GL_QUAD_STRIP)), footIndicesBufferList.get(buffInd).capacity(), GL2.GL_UNSIGNED_INT, 0);
     }
 
+    /**
+     * Draw the main part of a hand. (Excluding fingers.)
+     *
+     * @param gl      The instance of GL2 responsible for drawing the body.
+     * @param buffInd The index at which to find the name of the relevant
+     *                element array buffer.
+     */
     private void handDrawBuffer(GL2 gl, int buffInd) {
         gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, handGLIndicesBufferNames[buffInd]);
         gl.glDrawElements((handSurfaceTypeList.get(buffInd) ? (GL2.GL_POLYGON) : (GL2.GL_QUAD_STRIP)), handIndicesBufferList.get(buffInd).capacity(), GL2.GL_UNSIGNED_INT, 0);
     }
 
+    /**
+     * Draw a finger.
+     *
+     * @param gl      The instance of GL2 responsible for drawing the body.
+     * @param buffInd The index at which to find the name of the relevant
+     *                element array buffer.
+     */
     private void fingerDrawBuffer(GL2 gl, int buffInd) {
         gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, fingerGLIndicesBufferNames[buffInd]);
         gl.glDrawElements((fingerSurfaceTypeList.get(buffInd) ? (GL2.GL_POLYGON) : (GL2.GL_QUAD_STRIP)), fingerIndicesBufferList.get(buffInd).capacity(), GL2.GL_UNSIGNED_INT, 0);
     }
 
+    /**
+     * Convenience class used to announce what limb this is. Will probably be
+     * replaced by a more elegant solution later.
+     */
     public enum LimbType {
 
         RIGHT_ARM(true, true),
