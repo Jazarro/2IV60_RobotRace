@@ -53,16 +53,6 @@ public class Bender implements GLRobotBody {
         limb = new Limb();
     }
 
-    /**
-     *
-     * @param body
-     * @param limb
-     */
-    public Bender(BenderBody body, Limb limb) {
-        this.body = body;
-        this.limb = limb;
-    }
-
     @Override
     public void initialize(GL2 gl) {
         body.initialize(gl);
