@@ -4,6 +4,7 @@ import com.jogamp.opengl.util.gl2.GLUT;
 import javax.media.opengl.GL2;
 import javax.media.opengl.glu.GLU;
 import robotrace.bender.Bender;
+import robotrace.bender.GLRobotBody;
 
 /**
  * Represents a Robot, to be implemented according to the Assignments.
@@ -13,31 +14,29 @@ public class Robot {
     /**
      * The position of the robot.
      */
-    private Vector position = new Vector(0, 0, 0);
+    private Vector position = Vector.O;
     /**
-     * The direction in which the robot is running.
+     * The direction in which the robot is facing.
      */
-    private Vector direction = new Vector(0, 1, 0);
+    private Vector direction = Vector.Y;
     /**
      * The material from which this robot is built.
      */
     private final Material material;
-    private final int robotType;
-    private final Bender bender;
+    /**
+     * The object in charge of drawing the robot's actual physical body.
+     */
+    private final GLRobotBody robotBody;
 
     /**
-     * Constructs the robot with initial parameters.
+     * Constructs a new instance of robot.
+     *
+     * @param material  The material that the robot is to be made of.
+     * @param robotBody The aesthetics of the body used by this robot.
      */
-    public Robot(Material material, Bender bender) {
-        this.robotType = 0;
+    public Robot(Material material, GLRobotBody robotBody) {
         this.material = material;
-        this.bender = bender;
-    }
-
-    public Robot(Material material, int robotType, Bender bender) {
-        this.robotType = robotType;
-        this.material = material;
-        this.bender = bender;
+        this.robotBody = robotBody;
     }
 
     public void setPosition(Vector position) {
@@ -53,18 +52,26 @@ public class Robot {
     }
 
     /**
-     * Draws this robot (as a {@code stickfigure} if specified).
+     * Draws this robot on the screen.
+     *
+     * @param gl          The instance of GL2 responsible for drawing the robot
+     *                    on the screen.
+     * @param glu         An instance of GLU to optionally aid in drawing the
+     *                    robot body.
+     * @param glut        An instance of GLUT to optionally aid in drawing the
+     *                    robot body.
+     * @param stickFigure If true, the robot must draw itself as a stick figure
+     *                    rather than a solid body.
+     * @param tAnim       Time since the start of the animation in seconds.
      */
     public void draw(GL2 gl, GLU glu, GLUT glut, boolean stickFigure, float tAnim) {
         gl.glPushMatrix();
-        gl.glTranslated(position.x(), position.y(), position.z());
-        final Vector rotationAxis = calcRotationAxis();
-        gl.glRotated(calcRotationAngle(), rotationAxis.x(), rotationAxis.y(), rotationAxis.z());
-        bender.draw(gl);
-        gl.glTranslated(0.05d, -0.125d, 1.3d);//todo: draw real eyes, remove these lines, watch out, temp eyes on backside of head
-        glut.glutSolidSphere(0.025d, 50, 50);//todo: draw real eyes, remove these lines, watch out, temp eyes on backside of head
-        gl.glTranslated(-0.1d, 0d, 0d);//todo: draw real eyes, remove these lines, watch out, temp eyes on backside of head
-        glut.glutSolidSphere(0.025d, 50, 50);//todo: draw real eyes, remove these lines, watch out, temp eyes on backside of head
+        {
+            gl.glTranslated(position.x(), position.y(), position.z());
+            final Vector rotationAxis = calcRotationAxis();
+            gl.glRotated(calcRotationAngle(), rotationAxis.x(), rotationAxis.y(), rotationAxis.z());
+            robotBody.draw(gl, glut);
+        }
         gl.glPopMatrix();
     }
 

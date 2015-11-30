@@ -1,10 +1,15 @@
 package robotrace.bender;
 
-import static java.lang.Math.*;
-import java.nio.*;
-import java.util.*;
-import javax.media.opengl.*;
-import utility.*;
+import java.nio.DoubleBuffer;
+import java.nio.IntBuffer;
+import java.util.List;
+import javax.media.opengl.GL2;
+import utility.Assembler;
+import utility.Vertex;
+
+import static java.lang.Math.cos;
+import static java.lang.Math.sin;
+import static java.lang.Math.toRadians;
 
 public class Limb{
 
@@ -12,6 +17,9 @@ public class Limb{
     public static final int RIGHT = 1;
     public static final int LEG = 0;
     public static final int ARM = 1;
+    /**
+     * The number of 
+     */
     public static final int RING_COUNT = 6;
 
     private static final int FINGER_COUNT = 3;
