@@ -1,18 +1,13 @@
 package utility;
 
-import com.jogamp.common.nio.Buffers;
-import java.nio.DoubleBuffer;
-import java.nio.IntBuffer;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-
+import com.jogamp.common.nio.*;
 import static java.lang.Math.PI;
 import static java.lang.Math.atan;
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 import static java.lang.Math.toRadians;
+import java.nio.*;
+import java.util.*;
 import static utility.Vertex.COORD_COUNT;
 import static utility.Vertex.IND_X;
 import static utility.Vertex.IND_Y;
@@ -34,13 +29,21 @@ public final class Assembler{
     }
 
     public void addPartialTorus(int sliceCount, int stackCount, double radiusLow, double radiusHigh, double heightLow, double heightHigh, boolean closeLow, boolean closeHigh){
-        if(rings.isEmpty()){//TODO: also check if sliceCount does not coincide
+        if(rings.isEmpty()){//todo: also check if sliceCount does not coincide
             rings.add(makeRing(radiusLow, heightLow, sliceCount, true, closeLow));
         }
-        for(int i = 1; i < stackCount; i++){
-            final double radiusInt = radiusHigh + ((radiusLow - radiusHigh) * cos(toRadians((double)i * 90d / (double)stackCount)));
-            final double heightInt = heightLow + ((heightHigh - heightLow) * sin(toRadians((double)i * 90d / (double)stackCount)));
-            rings.add(makeRing(radiusInt, heightInt, sliceCount, false, false));
+        for(int i = 1; i < stackCount; i++){//todo: check radii
+            final double radiusInterpolated;
+            final double heightInterpolated;
+            //if(radiusHigh <= radiusLow){
+                radiusInterpolated = radiusHigh + ((radiusLow - radiusHigh) * cos(toRadians((double)i * 90d / (double)stackCount)));
+                heightInterpolated = heightLow + ((heightHigh - heightLow) * sin(toRadians((double)i * 90d / (double)stackCount)));
+            /*}
+            else{
+                radiusInterpolated = radiusHigh + ((radiusLow - radiusHigh) * sin(toRadians(((double)i * 90d / (double)stackCount) - 90d)));
+                heightInterpolated = heightLow + ((heightHigh - heightLow) * cos(toRadians(((double)i * 90d / (double)stackCount) + 90d)));
+            }*/
+            rings.add(makeRing(radiusInterpolated, heightInterpolated, sliceCount, false, false));
         }
         rings.add(makeRing(radiusHigh, heightHigh, sliceCount, true, closeHigh));
     }

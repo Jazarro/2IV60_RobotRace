@@ -1,14 +1,14 @@
 package robotrace.bender;
 
-import javax.media.opengl.GL2;
-import robotrace.Vector;
+import javax.media.opengl.*;
+import robotrace.*;
 
-public class Bender {
+public class Bender{
 
     /**
-     * The orientation of the robot body as a unit vector. Use this together
-     * with the robots dynamic orientation to get the angle and axis needed to
-     * perform the OpenGL rotation.
+     The orientation of the robot body as a unit vector. Use this together
+     with the robots dynamic orientation to get the angle and axis needed to
+     perform the OpenGL rotation.
      */
     public static final Vector ORIENTATION = new Vector(0, 1, 0);
     private static final double LEG_OFFCENTER = 0.1d;
@@ -27,12 +27,12 @@ public class Bender {
     private final double[] rightArmAnglesAxis = new double[Limb.RING_COUNT + 1];
     private final double[] rightArmAnglesBend = new double[Limb.RING_COUNT + 1];
 
-    public Bender() {
+    public Bender(){
         body = new Body();
         limb = new Limb();
     }
 
-    public void initialize(GL2 gl) {
+    public void initialize(GL2 gl){
         body.initialize(gl);
         limb.initialize(gl);
 
@@ -47,9 +47,11 @@ public class Bender {
          setRightArmAngles(new double[]{0d, 0d, 0d, 0d, 0d, 0d, 0d}, new double[]{0d, 0d, 0d, 0d, 0d, 0d, 0d});*/
     }
 
-    public void draw(GL2 gl) {
+    public void draw(GL2 gl){
         gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
         gl.glEnableClientState(GL2.GL_NORMAL_ARRAY);
+        //gl.glRotated(180d, 0d, 0d, 1d);
+        //todo: check seam on body?
         gl.glPushMatrix();
         {
             final double legHeight = Math.max(limb.height(leftLegAnglesAxis, leftLegAnglesBend, Limb.LEG, Limb.LEFT), limb.height(rightLegAnglesAxis, rightLegAnglesBend, Limb.LEG, Limb.LEFT));
@@ -86,22 +88,22 @@ public class Bender {
         gl.glDisableClientState(GL2.GL_VERTEX_ARRAY);
     }
 
-    public void setLeftLegAngles(double[] anglesAxis, double[] anglesBend) {
+    public void setLeftLegAngles(double[] anglesAxis, double[] anglesBend){
         System.arraycopy(anglesAxis, 0, this.leftLegAnglesAxis, 0, Limb.RING_COUNT + 1);
         System.arraycopy(anglesBend, 0, this.leftLegAnglesBend, 0, Limb.RING_COUNT + 1);
     }
 
-    public void setRightLegAngles(double[] anglesAxis, double[] anglesBend) {
+    public void setRightLegAngles(double[] anglesAxis, double[] anglesBend){
         System.arraycopy(anglesAxis, 0, this.rightLegAnglesAxis, 0, Limb.RING_COUNT + 1);
         System.arraycopy(anglesBend, 0, this.rightLegAnglesBend, 0, Limb.RING_COUNT + 1);
     }
 
-    public void setLeftArmAngles(double[] anglesAxis, double[] anglesBend) {
+    public void setLeftArmAngles(double[] anglesAxis, double[] anglesBend){
         System.arraycopy(anglesAxis, 0, this.leftArmAnglesAxis, 0, Limb.RING_COUNT + 1);
         System.arraycopy(anglesBend, 0, this.leftArmAnglesBend, 0, Limb.RING_COUNT + 1);
     }
 
-    public void setRightArmAngles(double[] anglesAxis, double[] anglesBend) {
+    public void setRightArmAngles(double[] anglesAxis, double[] anglesBend){
         System.arraycopy(anglesAxis, 0, this.rightArmAnglesAxis, 0, Limb.RING_COUNT + 1);
         System.arraycopy(anglesBend, 0, this.rightArmAnglesBend, 0, Limb.RING_COUNT + 1);
     }
