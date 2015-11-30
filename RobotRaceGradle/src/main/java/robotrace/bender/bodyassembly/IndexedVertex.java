@@ -1,4 +1,4 @@
-package bodyassembly;
+package robotrace.bender.bodyassembly;
 
 /**
 

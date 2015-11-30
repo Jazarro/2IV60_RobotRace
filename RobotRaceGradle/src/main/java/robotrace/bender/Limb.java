@@ -1,11 +1,11 @@
 package robotrace.bender;
 
+import robotrace.bender.bodyassembly.Assembler;
+import robotrace.bender.bodyassembly.Vertex;
 import java.nio.DoubleBuffer;
 import java.nio.IntBuffer;
 import java.util.List;
 import javax.media.opengl.GL2;
-import bodyassembly.Assembler;
-import bodyassembly.Vertex;
 
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
@@ -59,6 +59,7 @@ public class Limb {
     private List<Boolean> fingerSurfaceTypeList;
 
     public void initialize(GL2 gl) {//todo: refactor heavily
+        
         final Assembler ringAssembler = new Assembler();
         ringAssembler.addConicalFrustum(SLICE_COUNT, RADIUS_RING, RADIUS_RING, 0d, -HEIGHT_RING, true, true);
         ringAssembler.compileSurfaceCompilation();

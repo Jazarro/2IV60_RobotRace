@@ -1,4 +1,4 @@
-package bodyassembly;
+package robotrace.bender.bodyassembly;
 
 import com.jogamp.common.nio.*;
 
@@ -11,10 +11,10 @@ import static java.lang.Math.toRadians;
 import java.nio.*;
 import java.util.*;
 
-import static bodyassembly.Vertex.COORD_COUNT;
-import static bodyassembly.Vertex.IND_X;
-import static bodyassembly.Vertex.IND_Y;
-import static bodyassembly.Vertex.IND_Z;
+import static robotrace.bender.bodyassembly.Vertex.COORD_COUNT;
+import static robotrace.bender.bodyassembly.Vertex.IND_X;
+import static robotrace.bender.bodyassembly.Vertex.IND_Y;
+import static robotrace.bender.bodyassembly.Vertex.IND_Z;
 
 /**
 
