@@ -1,17 +1,20 @@
-package utility;
+package bodyassembly;
 
 import com.jogamp.common.nio.*;
+
 import static java.lang.Math.PI;
 import static java.lang.Math.atan;
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 import static java.lang.Math.toRadians;
+
 import java.nio.*;
 import java.util.*;
-import static utility.Vertex.COORD_COUNT;
-import static utility.Vertex.IND_X;
-import static utility.Vertex.IND_Y;
-import static utility.Vertex.IND_Z;
+
+import static bodyassembly.Vertex.COORD_COUNT;
+import static bodyassembly.Vertex.IND_X;
+import static bodyassembly.Vertex.IND_Y;
+import static bodyassembly.Vertex.IND_Z;
 
 /**
 

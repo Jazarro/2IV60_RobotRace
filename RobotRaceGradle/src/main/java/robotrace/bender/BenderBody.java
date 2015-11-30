@@ -4,8 +4,8 @@ import java.nio.DoubleBuffer;
 import java.nio.IntBuffer;
 import java.util.List;
 import javax.media.opengl.GL2;
-import utility.Assembler;
-import utility.Vertex;
+import bodyassembly.Assembler;
+import bodyassembly.Vertex;
 
 public class BenderBody {
 
