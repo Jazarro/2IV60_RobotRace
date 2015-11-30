@@ -69,6 +69,10 @@ class Robot{
                 final Vector rotationAxis = calcRotationAxis();
                 gl.glRotated(calcRotationAngle(), rotationAxis.x, rotationAxis.y, rotationAxis.z);
                 bender.draw(gl);
+                gl.glTranslated(0.05d, 0.125d, 1.3d);//todo: draw real eyes, remove these lines
+                glut.glutSolidSphere(0.025d, 50, 50);//todo: draw real eyes, remove these lines
+                gl.glTranslated(-0.1d, 0d, 0d);//todo: draw real eyes, remove these lines
+                glut.glutSolidSphere(0.025d, 50, 50);//todo: draw real eyes, remove these lines
                 gl.glPopMatrix();
                 break;
         }

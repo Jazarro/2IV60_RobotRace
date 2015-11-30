@@ -148,8 +148,8 @@ public class Limb{
         double newPos[] = {0d, 0d, 0d};
         gl.glPushMatrix();
         gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, ringGLDataBufferName);
-        gl.glVertexPointer(3, GL2.GL_DOUBLE, 3 * 2 * Double.BYTES, 0);//todo: COORD_COUNT
-        gl.glNormalPointer(GL2.GL_DOUBLE, 3 * 2 * Double.BYTES, 3 * Double.BYTES);//todo: COORD_COUNT
+        gl.glVertexPointer(3, GL2.GL_DOUBLE, 2 * Vertex.COORD_COUNT * Double.BYTES, 0);
+        gl.glNormalPointer(GL2.GL_DOUBLE, 2 * Vertex.COORD_COUNT * Double.BYTES, Vertex.COORD_COUNT * Double.BYTES);
         for(int i = 0; i < RING_COUNT; i++){
             gl.glPushMatrix();
             currAngleAxis = (side == RIGHT) ? (-anglesAxis[i]) : (anglesAxis[i]);
@@ -172,8 +172,8 @@ public class Limb{
                 gl.glRotated(currAngleBend, Math.cos(Math.toRadians(currAngleAxis)), Math.sin(Math.toRadians(currAngleAxis)), 0d);
 
                 gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, footGLDataBufferName);
-                gl.glVertexPointer(3, GL2.GL_DOUBLE, 3 * 2 * Double.BYTES, 0);//todo: COORD_COUNT
-                gl.glNormalPointer(GL2.GL_DOUBLE, 3 * 2 * Double.BYTES, 3 * Double.BYTES);//todo: COORD_COUNT
+                gl.glVertexPointer(3, GL2.GL_DOUBLE, 2 * Vertex.COORD_COUNT * Double.BYTES, 0);
+                gl.glNormalPointer(GL2.GL_DOUBLE, 2 * Vertex.COORD_COUNT * Double.BYTES, Vertex.COORD_COUNT * Double.BYTES);
                 for(int i = 0; i < footIndicesBufferList.size(); i++){
                     footDrawBuffer(gl, i);
                 }
@@ -184,8 +184,8 @@ public class Limb{
                 gl.glRotated(currAngleBend, Math.cos(Math.toRadians(currAngleAxis)), Math.sin(Math.toRadians(currAngleAxis)), 0d);
 
                 gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, handGLDataBufferName);
-                gl.glVertexPointer(3, GL2.GL_DOUBLE, 3 * 2 * Double.BYTES, 0);//todo: COORD_COUNT
-                gl.glNormalPointer(GL2.GL_DOUBLE, 3 * 2 * Double.BYTES, 3 * Double.BYTES);//todo: COORD_COUNT
+                gl.glVertexPointer(3, GL2.GL_DOUBLE, 2 * Vertex.COORD_COUNT * Double.BYTES, 0);
+                gl.glNormalPointer(GL2.GL_DOUBLE, 2 * Vertex.COORD_COUNT * Double.BYTES, Vertex.COORD_COUNT * Double.BYTES);
                 for(int i = 0; i < handIndicesBufferList.size(); i++){
                     handDrawBuffer(gl, i);
                 }
@@ -196,8 +196,8 @@ public class Limb{
                     gl.glPushMatrix();
                     gl.glTranslated(FINGER_OFFCENTER * cos(toRadians(j * 360 / FINGER_COUNT)), FINGER_OFFCENTER * sin(toRadians(j * 360 / FINGER_COUNT)), 0d);
                     gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, fingerGLDataBufferName);
-                    gl.glVertexPointer(3, GL2.GL_DOUBLE, 3 * 2 * Double.BYTES, 0);//todo: COORD_COUNT
-                    gl.glNormalPointer(GL2.GL_DOUBLE, 3 * 2 * Double.BYTES, 3 * Double.BYTES);//todo: COORD_COUNT
+                    gl.glVertexPointer(3, GL2.GL_DOUBLE, 2 * Vertex.COORD_COUNT * Double.BYTES, 0);
+                    gl.glNormalPointer(GL2.GL_DOUBLE, 2 * Vertex.COORD_COUNT * Double.BYTES, Vertex.COORD_COUNT * Double.BYTES);
                     for(int i = 0; i < fingerIndicesBufferList.size(); i++){
                         fingerDrawBuffer(gl, i);
                     }

@@ -47,7 +47,6 @@ public class Body{
         bodyAssembler.addConicalFrustum(SLICE_COUNT, RADIUS_ANTENNA_MIDDLE, RADIUS_ANTENNA_TOP, HEIGHT_ANTENNA_MIDDLE, HEIGHT_ANTENNA_TOP, false, false);
         bodyAssembler.addPartialTorus(SLICE_COUNT, STACK_COUNT, RADIUS_ANTENNA_TOP, RADIUS_ANTENNA_BALL_MIDDLE, HEIGHT_ANTENNA_TOP, HEIGHT_ANTENNA_BALL_MIDDLE, false, false);
         bodyAssembler.addPartialTorus(SLICE_COUNT, STACK_COUNT, RADIUS_ANTENNA_BALL_MIDDLE, RADIUS_ANTENNA_BALL_TOP, HEIGHT_ANTENNA_BALL_MIDDLE, HEIGHT_ANTENNA_BALL_TOP, false, false);
-        //TODO: Fix ball on antenna
 
         bodyAssembler.compileSurfaceCompilation();
         dataBuffer = bodyAssembler.getDataBuffer();
@@ -72,8 +71,8 @@ public class Body{
     public void draw(GL2 gl){
         gl.glPushMatrix();
         gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, glDataBufferName);
-        gl.glVertexPointer(3, GL2.GL_DOUBLE, 3 * 2 * Double.BYTES, 0);//todo: COORD_COUNT
-        gl.glNormalPointer(GL2.GL_DOUBLE, 3 * 2 * Double.BYTES, 3 * Double.BYTES);//todo: COORD_COUNT
+        gl.glVertexPointer(3, GL2.GL_DOUBLE, 2 * Vertex.COORD_COUNT * Double.BYTES, 0);
+        gl.glNormalPointer(GL2.GL_DOUBLE, 2 * Vertex.COORD_COUNT * Double.BYTES, Vertex.COORD_COUNT * Double.BYTES);
         for(int i = 0; i < indicesBufferList.size(); i++){
             drawBuffer(gl, i);
         }
