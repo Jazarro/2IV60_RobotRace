@@ -2,6 +2,7 @@ package robotrace;
 
 import javax.media.opengl.GL2;
 import robotrace.bender.Bender;
+import robotrace.bender.GLRobotBody;
 
 /**
  *
@@ -9,10 +10,10 @@ import robotrace.bender.Bender;
  */
 public class RobotFactory {
 
-    private final Bender bender;
+    private final GLRobotBody robotBody;
 
     public RobotFactory() {
-        bender = new Bender();
+        robotBody = new Bender();
     }
 
     /**
@@ -22,7 +23,7 @@ public class RobotFactory {
      * @param gl An instance of GL2, needed to do the proper initialisation.
      */
     public void initialize(GL2 gl) {
-        bender.initialize(gl);
+        robotBody.initialize(gl);
     }
 
     /**
@@ -33,7 +34,7 @@ public class RobotFactory {
      * @return A newly created instance of Robot.
      */
     public Robot makeRobot(Material material) {
-        return new Robot(material, bender);
+        return new Robot(material, robotBody);
     }
 
     /**
@@ -54,28 +55,10 @@ public class RobotFactory {
      * @see #makeRobot(Material)
      */
     public Robot makeRobotAt(Material material, Vector position, Vector direction) {
-        final Robot robot = new Robot(material, bender);
+        final Robot robot = new Robot(material, robotBody);
         robot.setPosition(position);
         robot.setDirection(direction);
         return robot;
-    }
-
-    /**
-     * Constructs a new instance of Robot using the given material and robot
-     * type.
-     *
-     * @param material  The material this robot consists of, used for lighting
-     *                  calculations.
-     * @param robotType The type of body this robot has. For now, this doesn't
-     *                  actually do anything, the only defined robot type is
-     *                  bender.
-     * @deprecated Will likely change shape or disappear altogether in the
-     * future.
-     * @return A newly created instance of Robot.
-     */
-    @Deprecated
-    public Robot makeRobot(Material material, int robotType) {
-        return new Robot(material, robotType, bender);
     }
 
 }

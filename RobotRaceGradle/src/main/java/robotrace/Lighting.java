@@ -20,17 +20,47 @@ import static utility.GsUtils.getAzimuth;
 import static utility.GsUtils.getInclination;
 
 /**
+ * Takes care of all lighting related activities.
+ *
+ * Right now this class just creates a single, infinitely far away light source.
+ * (The sun)
  *
  * @author Arjan Boschman
  */
 public class Lighting {
 
-    private static final float[] COLOUR_BLACK = new float[]{0, 0, 0, 0};
+    /**
+     * Length 4 float-array representing an all black, fully transparent colour.
+     * All four values are zero.
+     */
+    private static final float[] COLOUR_OFF = new float[]{0, 0, 0, 0};
+    /**
+     * Value that, when passed as argument when setting the position of a light
+     * source, will make the light source infinitely far away.
+     */
+    private static final int POS_INFINITE = 0;
+
     private final float[] lightPos = new float[4];
+    /**
+     * The diffuse component of the light source.
+     */
     private final float[] diffuseLight = {1f, 1f, 1f, 1f};
+    /**
+     * The specular component of the light source.
+     */
     private final float[] specularLight = {1f, 1f, 1f, 1f};
+    /**
+     * The ambient component of the light source.
+     */
     private final float[] ambientLight = {0.1f, 0.1f, 0.1f, 1f};
 
+    /**
+     * Called during openGL initialisation. This enables the necessary settings
+     * and sets up the light source.
+     *
+     * @param gl The GL2 instance responsible for drawing the scene.
+     * @param gs The GlobalState.
+     */
     public void initialize(GL2 gl, GlobalState gs) {
         gl.glEnable(GL_LIGHTING);
         gl.glEnable(GL_LIGHT0);
@@ -41,26 +71,44 @@ public class Lighting {
         gl.glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight, 0);
     }
 
+    /**
+     * According to the assignment, the light from the sun has to be shifted ten
+     * degrees to the left and upwards with regards to the viewing direction.
+     * Since the viewing direction is variable, we'll take this to mean the
+     * initial direction.
+     *
+     * This method calculates the correct position of the sun and immediately
+     * assigns it to the {@link #lightPos} field.
+     *
+     * @param gs The GlobalState, containing information on the initial position
+     *           of the camera.
+     */
     private void calculatePosition(GlobalState gs) {
         //Calculate the light position to be 10 degrees above and to the left of the starting eye point.
         final float azimuth = getAzimuth(gs) - 10;
         final float inclination = getInclination(gs) - 10;
-        //Calculate the x coordinate of the eye point relative to the center point.
-        final double xEyeLocal = Math.cos(azimuth) * Math.cos(inclination) * gs.vDist;
-        //Calculate the y coordinate of the eye point relative to the center point.
-        final double yEyeLocal = Math.sin(azimuth) * Math.cos(inclination) * gs.vDist;
-        //Calculate the z coordinate of the eye point relative to the center point.
-        final double zEyeLocal = Math.sin(inclination) * gs.vDist;
+        //Calculate the x coordinate of the sun point relative to the center point.
+        final double xSunLocal = Math.cos(azimuth) * Math.cos(inclination) * gs.vDist;
+        //Calculate the y coordinate of the sun point relative to the center point.
+        final double ySunLocal = Math.sin(azimuth) * Math.cos(inclination) * gs.vDist;
+        //Calculate the z coordinate of the sun point relative to the center point.
+        final double zSunLocal = Math.sin(inclination) * gs.vDist;
         //Create a new vector with the local eye coördinates, IE relative to the center point.
-        final Vector localSun = new Vector(xEyeLocal, yEyeLocal, zEyeLocal);
-        //Add the relative offet of the center point to the newly calculated coordinates of the eye point.
+        final Vector localSun = new Vector(xSunLocal, ySunLocal, zSunLocal);
+        //Add the relative offet of the center point to the newly calculated coordinates of the sun point.
         final Vector worldSun = localSun.add(gs.cnt);
         this.lightPos[0] = (float) worldSun.x();
         this.lightPos[1] = (float) worldSun.y();
         this.lightPos[2] = (float) worldSun.z();
-        this.lightPos[3] = 0;//Makes it infinite.
+        this.lightPos[3] = POS_INFINITE;
     }
 
+    /**
+     * Called during the setView part of the loop. Reset the position of the
+     * light source here, otherwise it will move with the camera.
+     *
+     * @param gl The GL2 instance responsible for drawing the scene.
+     */
     public void setView(GL2 gl) {
         gl.glLightfv(GL_LIGHT0, GL_POSITION, lightPos, 0);
     }
@@ -69,6 +117,16 @@ public class Lighting {
         //Do nothing, for now.
     }
 
+    /**
+     * Sets the given material values on the given GL2 instance. This will set
+     * the light reflective properties (and thus colour) for any object drawn
+     * henceforth.
+     *
+     * @param gl       The GL2 instance responsible for drawing the scene.
+     * @param material The material to set.
+     * @see #setColor Use this method to set colours without needing a Material.
+     * Note that using glColor* has been turned off and doesn't work.
+     */
     public void setMaterial(GL2 gl, Material material) {
         gl.glMaterialfv(GL_FRONT, GL_AMBIENT, material.ambient, 0);
         gl.glMaterialfv(GL_FRONT, GL_DIFFUSE, material.diffuse, 0);
@@ -76,9 +134,26 @@ public class Lighting {
         gl.glMaterialf(GL_FRONT, GL_SHININESS, material.shininess);
     }
 
+    /**
+     * Sets the current colour on the given GL2 instance. This will set the
+     * light reflective properties (and thus colour) for any object drawn
+     * henceforth.
+     *
+     * The given colour will be used for both ambient and diffuse light.
+     * Specular light will be turned off.
+     *
+     * @param gl    The GL2 instance responsible for drawing the scene.
+     * @param red   The red component of the colour, between [0,1].
+     * @param green The green component of the colour, between [0,1].
+     * @param blue  The blue component of the colour, between [0,1].
+     * @param alpha The alpha component of the colour, between [0,1].
+     * @see #setMaterial Use this alternative method to set the colour if you
+     * want more fine grained control over the values. You will need a Material
+     * constant though.
+     */
     public void setColor(GL2 gl, float red, float green, float blue, float alpha) {
         gl.glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, new float[]{red, green, blue, alpha}, 0);
-        gl.glMaterialfv(GL_FRONT, GL_SPECULAR, COLOUR_BLACK, 0);
+        gl.glMaterialfv(GL_FRONT, GL_SPECULAR, COLOUR_OFF, 0);
         gl.glMaterialf(GL_FRONT, GL_SHININESS, 0);
     }
 

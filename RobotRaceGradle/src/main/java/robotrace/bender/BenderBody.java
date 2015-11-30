@@ -1,11 +1,13 @@
 package robotrace.bender;
 
-import java.nio.*;
-import java.util.*;
-import javax.media.opengl.*;
-import utility.*;
+import java.nio.DoubleBuffer;
+import java.nio.IntBuffer;
+import java.util.List;
+import javax.media.opengl.GL2;
+import utility.Assembler;
+import utility.Vertex;
 
-public class Body{
+public class BenderBody {
 
     private static final double RADIUS_SHINY = 0.175d;
     private static final double RADIUS_TORSO = 0.225d;
