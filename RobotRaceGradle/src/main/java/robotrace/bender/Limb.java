@@ -235,6 +235,7 @@ public class Limb{
         return Math.abs(newPos[2]);
     }
 
+    //todo: fix relative angles?
     private double[] nextPos(double[] currPos, double height, double currAngleBend, double currAngleAxis){
         currPos[0] -= height * Math.sin(Math.toRadians(currAngleBend)) * Math.sin(Math.toRadians(currAngleAxis));
         currPos[1] += height * Math.sin(Math.toRadians(currAngleBend)) * Math.cos(Math.toRadians(currAngleAxis));

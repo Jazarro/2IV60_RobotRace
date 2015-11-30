@@ -40,7 +40,7 @@ final class Surface{
 
     /**
      Set a new IndexedVertex at position index in the list of IndexedVertex's
-     defining this Surface..
+     defining this Surface.
 
      @param vertex The new IndexedVertex.
      @param index  The position in the list of IndexedVertex's defining this

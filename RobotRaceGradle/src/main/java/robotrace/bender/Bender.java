@@ -36,15 +36,11 @@ public class Bender{
         body.initialize(gl);
         limb.initialize(gl);
 
-        setLeftLegAngles(new double[]{45d, 45d, 45d, 45d, 45d, 45d, 45d}, new double[]{45d, -45d, 45d, -45d, 45d, -45d, 45d});
-        setRightLegAngles(new double[]{0d, 0d, 0d, 0d, 0d, 0d, 0d}, new double[]{45d, -45d, 45d, -45d, 45d, -45d, 45d});
-        setLeftArmAngles(new double[]{45d, 45d, 45d, 45d, 45d, 45d, 45d}, new double[]{45d, -45d, 45d, -45d, 45d, -45d, 45d});
-        setRightArmAngles(new double[]{0d, 0d, 0d, 0d, 0d, 0d, 0d}, new double[]{45d, -45d, 45d, -45d, 45d, -45d, 45d});
+        setLeftLegAngles(new double[]{0d, 0d, 0d, 0d, 0d, 0d, 0d}, new double[]{10d, 20d, 30d, 40d, 50d, 60d, 70d});
+        setRightLegAngles(new double[]{0d, 0d, 0d, 0d, 0d, 0d, 0d}, new double[]{-20d, -20d, -20d, -20d, -20d, -20d, -20d});
+        setLeftArmAngles(new double[]{-45d, -45d, -45d, -45d, -45d, -45d, -45d}, new double[]{45d, 90d, 90d, 90d, 90d, 90d, 90d});
+        setRightArmAngles(new double[]{-135d, -135d, -135d, -135d, -135d, -135d, -135d}, new double[]{45d, 90d, 90d, 90d, 90d, 90d, 90d});
 
-        /*setLeftLegAngles(new double[]{0d, 0d, 0d, 0d, 0d, 0d, 0d}, new double[]{0d, 0d, 0d, 0d, 0d, 0d, 0d});
-         setRightLegAngles(new double[]{0d, 0d, 0d, 0d, 0d, 0d, 0d}, new double[]{0d, 0d, 0d, 0d, 0d, 0d, 0d});
-         setLeftArmAngles(new double[]{0d, 0d, 0d, 0d, 0d, 0d, 0d}, new double[]{0d, 0d, 0d, 0d, 0d, 0d, 0d});
-         setRightArmAngles(new double[]{0d, 0d, 0d, 0d, 0d, 0d, 0d}, new double[]{0d, 0d, 0d, 0d, 0d, 0d, 0d});*/
     }
 
     public void draw(GL2 gl){
