@@ -81,10 +81,10 @@ public class RobotRace extends Base {
     }
 
     private void setupObjects() {
-        robots[0] = factory.makeRobotAt(Material.GOLD, new Vector(-3,1,0), Vector.X);
-        robots[1] = factory.makeRobotAt(Material.SILVER, new Vector(-1,1,0), Vector.X);
-        robots[2] = factory.makeRobotAt(Material.WOOD, new Vector(1,1,0), Vector.X);
-        robots[3] = factory.makeRobotAt(Material.PLASTIC_ORANGE, new Vector(3,1,0), Vector.X);
+        robots[0] = factory.makeRobotAt(Material.GOLD, new Vector(-1, -3, 0), Vector.X);
+        robots[1] = factory.makeRobotAt(Material.SILVER, new Vector(-1, -1, 0), Vector.X);
+        robots[2] = factory.makeRobotAt(Material.WOOD, new Vector(-1, 1, 0), Vector.X);
+        robots[3] = factory.makeRobotAt(Material.PLASTIC_ORANGE, new Vector(-1, 3, 0), Vector.X);
 
 // Test track
         raceTracks[0] = new RaceTrack();
