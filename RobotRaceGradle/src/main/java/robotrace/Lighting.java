@@ -70,7 +70,8 @@ public class Lighting {
     }
 
     public void setMaterial(GL2 gl, Material material) {
-        gl.glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, material.diffuse, 0);
+        gl.glMaterialfv(GL_FRONT, GL_AMBIENT, material.ambient, 0);
+        gl.glMaterialfv(GL_FRONT, GL_DIFFUSE, material.diffuse, 0);
         gl.glMaterialfv(GL_FRONT, GL_SPECULAR, material.specular, 0);
         gl.glMaterialf(GL_FRONT, GL_SHININESS, material.shininess);
     }

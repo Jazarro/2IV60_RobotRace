@@ -8,7 +8,7 @@ import robotrace.bender.Bender;
 /**
  * Represents a Robot, to be implemented according to the Assignments.
  */
-class Robot {
+public class Robot {
 
     /**
      * The position of the robot.
@@ -45,13 +45,7 @@ class Robot {
     }
 
     public void setDirection(Vector direction) {
-        /**
-         * TODO: Restore this setter to its proper functionality. Right now the
-         * lane tangents are not implemented yet (because it's part of the
-         * second assignment) and this would be set to the O vector.
-         */
-//        this.direction = direction;
-        this.direction = Vector.X;
+        this.direction = direction;
     }
 
     public Material getMaterial() {
@@ -62,26 +56,37 @@ class Robot {
      * Draws this robot (as a {@code stickfigure} if specified).
      */
     public void draw(GL2 gl, GLU glu, GLUT glut, boolean stickFigure, float tAnim) {
-        switch (robotType) {
-            case 0:
-            default:
-                gl.glPushMatrix();
-                final Vector rotationAxis = calcRotationAxis();
-                gl.glRotated(calcRotationAngle(), rotationAxis.x, rotationAxis.y, rotationAxis.z);
-                bender.draw(gl);
-                gl.glPopMatrix();
-                break;
-        }
+        gl.glPushMatrix();
+        final Vector rotationAxis = calcRotationAxis();
+        gl.glRotated(calcRotationAngle(), rotationAxis.x(), rotationAxis.y(), rotationAxis.z());
+        gl.glTranslated(position.x(), position.y(), position.z());
+        bender.draw(gl);
+        gl.glPopMatrix();
     }
 
+    /**
+     * Calculate the rotation angle for this robot at it's current orientation.
+     *
+     * @return The angle in degrees that the robot body must be rotated around
+     *         its current rotation axis in order to match the current robot
+     *         direction.
+     * @see #calcRotationAxis()
+     */
     private double calcRotationAngle() {
-        double f = Math.toDegrees(Math.acos(direction.dot(Bender.ORIENTATION)));
-        return f;
+        return Math.toDegrees(Math.acos(direction.dot(Bender.ORIENTATION)));
     }
 
+    /**
+     * Calculate the rotational axis for this robot at it's current orientation.
+     * This is the axis around which the robot must be rotated in order to get
+     * from the robot body's default, static orientation to the robot's dynamic
+     * orientation.
+     *
+     * @return A normalized vector representing a rotational axis.
+     * @see #calcRotationAngle()
+     */
     private Vector calcRotationAxis() {
-        Vector c= direction.cross(Bender.ORIENTATION).normalized();
-        return c;
+        return direction.cross(Bender.ORIENTATION).normalized();
     }
 
 }

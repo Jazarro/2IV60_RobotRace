@@ -50,6 +50,7 @@ public class RobotRace extends Base {
 
     private static final int DEFAULT_STACKS = 25;
     private static final int DEFAULT_SLICES = 25;
+    private static final int NUMBER_ROBOTS = 4;
 
     /**
      * Main program execution body, delegates to an instance of the RobotRace
@@ -64,15 +65,9 @@ public class RobotRace extends Base {
 
     private final Camera camera = new Camera();
     private final Terrain terrain = new EasyTerrain();
-    private final Factory factory = new Factory();
+    private final RobotFactory factory = new RobotFactory();
     private final Lighting lighting = new Lighting();
-    /**
-     * Array of the four robots.
-     */
     private final Robot[] robots;
-    /**
-     * Instance of the race track.
-     */
     private final RaceTrack[] raceTracks;
 
     /**
@@ -80,29 +75,18 @@ public class RobotRace extends Base {
      * terrain.
      */
     public RobotRace() {
-        // Create a new array of four robots
-        robots = new Robot[4];
+        this.robots = new Robot[NUMBER_ROBOTS];
+        this.raceTracks = new RaceTrack[5];
+        setupObjects();
+    }
 
-        // Initialize robot 0
-        robots[0] = factory.createRobot(Material.GOLD
-        /* add other parameters that characterize this robot */);
+    private void setupObjects() {
+        robots[0] = factory.makeRobotAt(Material.GOLD, new Vector(-3,1,0), Vector.X);
+        robots[1] = factory.makeRobotAt(Material.SILVER, new Vector(-1,1,0), Vector.X);
+        robots[2] = factory.makeRobotAt(Material.WOOD, new Vector(1,1,0), Vector.X);
+        robots[3] = factory.makeRobotAt(Material.PLASTIC_ORANGE, new Vector(3,1,0), Vector.X);
 
-        // Initialize robot 1
-        robots[1] = factory.createRobot(Material.SILVER
-        /* add other parameters that characterize this robot */);
-
-        // Initialize robot 2
-        robots[2] = factory.createRobot(Material.WOOD
-        /* add other parameters that characterize this robot */);
-
-        // Initialize robot 3
-        robots[3] = factory.createRobot(Material.ORANGE
-        /* add other parameters that characterize this robot */);
-
-        // Initialize the race tracks
-        raceTracks = new RaceTrack[5];
-
-        // Test track
+// Test track
         raceTracks[0] = new RaceTrack();
 
         // O-track
@@ -203,13 +187,11 @@ public class RobotRace extends Base {
             drawAxisFrame();
         }
 
-        // Get the position and direction of the first robot.
-        robots[0].setPosition(raceTracks[gs.trackNr].getLanePoint(0, 0));
-        robots[0].setDirection(raceTracks[gs.trackNr].getLaneTangent(0, 0));
-
-        // Draw the first robot.
-        lighting.setMaterial(gl, robots[0].getMaterial());
-        robots[0].draw(gl, glu, glut, gs.showStick, gs.tAnim);
+        //Draw the robots.
+        for (Robot robot : robots) {
+            lighting.setMaterial(gl, robot.getMaterial());
+            robot.draw(gl, glu, glut, gs.showStick, gs.tAnim);
+        }
 
         // Draw the race track.
         raceTracks[gs.trackNr].draw(gl, glu, glut);
@@ -217,32 +199,6 @@ public class RobotRace extends Base {
         // Draw the terrain.
         terrain.draw(gl, glu, glut, lighting);
 
-//        drawUnitBoxAroundOrigin();
-//        drawTranslatedRotatedScaledBox();
-
-    }
-
-    @Deprecated//TODO: remove once you're done experimenting.
-    private void drawUnitBoxAroundOrigin() {
-        lighting.setMaterial(gl, Material.GOLD);
-        // Unit box around origin.
-        glut.glutSolidCube(1f);
-    }
-
-    @Deprecated//TODO: remove once you're done experimenting.
-    private void drawTranslatedRotatedScaledBox() {
-        // Move in x-direction.
-        gl.glTranslatef(2f, 0f, 0f);
-
-        // Rotate 30 degrees, around z-axis.
-        gl.glRotatef(30f, 0f, 0f, 1f);
-
-        // Scale in z-direction.
-        gl.glScalef(1f, 1f, 2f);
-
-        // Translated, rotated, scaled box.
-        lighting.setMaterial(gl, Material.WOOD);
-        glut.glutSolidCube(1f);
     }
 
     /**
@@ -274,7 +230,7 @@ public class RobotRace extends Base {
         //The length of axis beams' long edge.
         final float axisLength = 1 - coneHeight;
         //Sets the color relative to the axis being drawn. (x=red,y=green,z=blue)
-        lighting.setColor(gl, x,y,z, 1f);
+        lighting.setColor(gl, x, y, z, 1f);
 
         //Store the current matrix.
         gl.glPushMatrix();
