@@ -1,11 +1,12 @@
 package robotrace.bender;
 
-import java.nio.*;
-import java.util.*;
-import javax.media.opengl.*;
-import utility.*;
+import java.nio.DoubleBuffer;
+import java.nio.IntBuffer;
+import java.util.List;
+import javax.media.opengl.GL2;
+import utility.Assembler;
 
-public class Body{
+public class Body {
 
     private static final double RADIUS_SHINY = 0.175d;
     private static final double RADIUS_TORSO = 0.225d;
@@ -33,21 +34,21 @@ public class Body{
     private int glDataBufferName;
     private int[] glIndicesBufferNames;
 
-    DoubleBuffer dataBuffer;
-    List<IntBuffer> indicesBufferList;
-    List<Boolean> surfaceTypeList;
+    private DoubleBuffer dataBuffer;
+    private List<IntBuffer> indicesBufferList;
+    private List<Boolean> surfaceTypeList;
 
-    public void initialize(GL2 gl){
+    public void initialize(GL2 gl) {
         final Assembler bodyAssembler = new Assembler();
         bodyAssembler.addConicalFrustum(SLICE_COUNT, RADIUS_SHINY, RADIUS_TORSO, HEIGHT_SHINY, HEIGHT_TORSO, true, false);
-        //bodyAssembler.addConicalFrustum(SLICE_COUNT, RADIUS_TORSO, RADIUS_NECK, HEIGHT_TORSO, HEIGHT_NECK, false, false);
-        //bodyAssembler.addConicalFrustum(SLICE_COUNT, RADIUS_NECK, RADIUS_HEAD, HEIGHT_NECK, HEIGHT_HEAD, false, false);
-        //bodyAssembler.addPartialTorus(SLICE_COUNT, STACK_COUNT, RADIUS_HEAD, RADIUS_ANTENNA_BOTTOM, HEIGHT_HEAD, HEIGHT_ANTENNA_BOTTOM, false, false);
-        //bodyAssembler.addPartialTorus(SLICE_COUNT, STACK_COUNT, RADIUS_ANTENNA_BOTTOM, RADIUS_ANTENNA_MIDDLE, HEIGHT_ANTENNA_BOTTOM, HEIGHT_ANTENNA_MIDDLE, false, false);
-        //bodyAssembler.addConicalFrustum(SLICE_COUNT, RADIUS_ANTENNA_MIDDLE, RADIUS_ANTENNA_TOP, HEIGHT_ANTENNA_MIDDLE, HEIGHT_ANTENNA_TOP, false, false);
-        //bodyAssembler.addPartialTorus(SLICE_COUNT, STACK_COUNT, RADIUS_ANTENNA_TOP, RADIUS_ANTENNA_BALL_MIDDLE, HEIGHT_ANTENNA_TOP, HEIGHT_ANTENNA_BALL_MIDDLE, false, false);
+        bodyAssembler.addConicalFrustum(SLICE_COUNT, RADIUS_TORSO, RADIUS_NECK, HEIGHT_TORSO, HEIGHT_NECK, false, false);
+        bodyAssembler.addConicalFrustum(SLICE_COUNT, RADIUS_NECK, RADIUS_HEAD, HEIGHT_NECK, HEIGHT_HEAD, false, false);
+        bodyAssembler.addPartialTorus(SLICE_COUNT, STACK_COUNT, RADIUS_HEAD, RADIUS_ANTENNA_BOTTOM, HEIGHT_HEAD, HEIGHT_ANTENNA_BOTTOM, false, false);
+        bodyAssembler.addPartialTorus(SLICE_COUNT, STACK_COUNT, RADIUS_ANTENNA_BOTTOM, RADIUS_ANTENNA_MIDDLE, HEIGHT_ANTENNA_BOTTOM, HEIGHT_ANTENNA_MIDDLE, false, false);
+        bodyAssembler.addConicalFrustum(SLICE_COUNT, RADIUS_ANTENNA_MIDDLE, RADIUS_ANTENNA_TOP, HEIGHT_ANTENNA_MIDDLE, HEIGHT_ANTENNA_TOP, false, false);
+        bodyAssembler.addPartialTorus(SLICE_COUNT, STACK_COUNT, RADIUS_ANTENNA_TOP, RADIUS_ANTENNA_BALL_MIDDLE, HEIGHT_ANTENNA_TOP, HEIGHT_ANTENNA_BALL_MIDDLE, false, false);
+        bodyAssembler.addPartialTorus(SLICE_COUNT, STACK_COUNT, RADIUS_ANTENNA_BALL_MIDDLE, RADIUS_ANTENNA_BALL_TOP, HEIGHT_ANTENNA_BALL_MIDDLE, HEIGHT_ANTENNA_BALL_TOP, false, false);
         //TODO: Fix ball on antenna
-        //bodyAssembler.addPartialTorus(SLICE_COUNT, STACK_COUNT, RADIUS_ANTENNA_BALL_MIDDLE, RADIUS_ANTENNA_BALL_TOP, HEIGHT_ANTENNA_BALL_MIDDLE, HEIGHT_ANTENNA_BALL_TOP, false, false);
 
         bodyAssembler.compileSurfaceCompilation();
         dataBuffer = bodyAssembler.getDataBuffer();
@@ -63,25 +64,26 @@ public class Body{
         gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, glDataBufferName);
         gl.glBufferData(GL2.GL_ARRAY_BUFFER, dataBuffer.capacity() * Double.BYTES, dataBuffer, GL2.GL_STATIC_DRAW);
 
-        for(IntBuffer buffer : indicesBufferList){
+        for (IntBuffer buffer : indicesBufferList) {
             gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, glIndicesBufferNames[indicesBufferList.indexOf(buffer)]);
             gl.glBufferData(GL2.GL_ELEMENT_ARRAY_BUFFER, buffer.capacity() * Integer.BYTES, buffer, GL2.GL_STATIC_DRAW);
         }
     }
 
-    public void draw(GL2 gl){
+    public void draw(GL2 gl) {
         gl.glPushMatrix();
         gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, glDataBufferName);
         gl.glVertexPointer(3, GL2.GL_DOUBLE, 3 * 2 * Double.BYTES, 0);//todo: COORD_COUNT
         gl.glNormalPointer(GL2.GL_DOUBLE, 3 * 2 * Double.BYTES, 3 * Double.BYTES);//todo: COORD_COUNT
-        for(int i = 0; i < indicesBufferList.size(); i++){
+        for (int i = 0; i < indicesBufferList.size(); i++) {
             drawBuffer(gl, i);
         }
         gl.glPopMatrix();
     }
 
-    private void drawBuffer(GL2 gl, int buffInd){
+    private void drawBuffer(GL2 gl, int buffInd) {
         gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, glIndicesBufferNames[buffInd]);
         gl.glDrawElements((surfaceTypeList.get(buffInd) ? (GL2.GL_POLYGON) : (GL2.GL_QUAD_STRIP)), indicesBufferList.get(buffInd).capacity(), GL2.GL_UNSIGNED_INT, 0);
     }
+
 }

@@ -1,10 +1,22 @@
 package utility;
 
-import com.jogamp.common.nio.*;
-import static java.lang.Math.*;
-import java.nio.*;
-import java.util.*;
-import static utility.Vertex.*;
+import com.jogamp.common.nio.Buffers;
+import java.nio.DoubleBuffer;
+import java.nio.IntBuffer;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+
+import static java.lang.Math.PI;
+import static java.lang.Math.atan;
+import static java.lang.Math.cos;
+import static java.lang.Math.sin;
+import static java.lang.Math.toRadians;
+import static utility.Vertex.COORD_COUNT;
+import static utility.Vertex.IND_X;
+import static utility.Vertex.IND_Y;
+import static utility.Vertex.IND_Z;
 
 /**
 
@@ -92,7 +104,7 @@ public final class Assembler{
         final List<IndexedVertex> indexedVertices = new ArrayList<>();
         for(Vertex vertex : vertices){
             vertex.setNormal(calculatePolygonNormal());
-            indexedVertices.add(new IndexedVertex(vertex));
+            indexedVertices.add(IndexedVertex.makeIndexedVertex(vertex));
         }
         return new Surface(indexedVertices, true);
     }
@@ -119,14 +131,14 @@ public final class Assembler{
                 }
                 else{
                     vertex.setNormal(calculateQuadStripNormal(ring1.getVertices().indexOf(vertex), ring0, ring1, ring2));
-                    newVertex = new IndexedVertex(vertex);
+                    newVertex = IndexedVertex.makeIndexedVertex(vertex);
                 }
                 indexedVertices.add(newVertex);
             }
             if(vertices2.hasNext()){
                 final Vertex vertex = vertices2.next();
                 vertex.setNormal(calculateQuadStripNormal(ring2.getVertices().indexOf(vertex), ring1, ring2, ring3));
-                indexedVertices.add(new IndexedVertex(vertex));
+                indexedVertices.add(IndexedVertex.makeIndexedVertex(vertex));
             }
         }
         return new Surface(indexedVertices, false);
@@ -134,7 +146,7 @@ public final class Assembler{
 
     private double[] calculateQuadStripNormal(int index, Ring ring0, Ring ring1, Ring ring2){
         final double[] vertexNormal;
-        if(ring1.isNormalCalculated()){
+        if(ring1.isNormalCalculated() && false){
             vertexNormal = ring1.getVertices().get(index).getNormal();
         }
         else{
@@ -155,7 +167,7 @@ public final class Assembler{
             final Vertex vertex = ring1.getVertices().get(index);
             vertex.setNormal(vertexNormal);
             ring1.setVertex(vertex, index);
-            ring1.setNormalCalculated();
+            ring1.setNormalCalculated(true);
         }
         if((!ring1.isSharp()) && (ring0 != null)){
             for(int i = 0; i < COORD_COUNT; i++){
@@ -231,8 +243,8 @@ public final class Assembler{
             return normalCalculated;
         }
 
-        private void setNormalCalculated(){
-            this.normalCalculated = true;
+        private void setNormalCalculated(boolean value){
+            this.normalCalculated = value;
         }
 
         private double getRadius(){
