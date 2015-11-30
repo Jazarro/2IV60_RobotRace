@@ -59,8 +59,8 @@ public class Bender implements GLRobotBody {
         limb.initialize(gl);
         setLeftLegAngles(new double[]{0d, 0d, 0d, 0d, 0d, 0d, 0d}, new double[]{10d, 20d, 30d, 40d, 50d, 60d, 70d});
         setRightLegAngles(new double[]{0d, 0d, 0d, 0d, 0d, 0d, 0d}, new double[]{-20d, -20d, -20d, -20d, -20d, -20d, -20d});
-        setLeftArmAngles(new double[]{-45d, -45d, -45d, -45d, -45d, -45d, -45d}, new double[]{45d, 90d, 90d, 90d, 90d, 90d, 90d});
-        setRightArmAngles(new double[]{-135d, -135d, -135d, -135d, -135d, -135d, -135d}, new double[]{45d, 90d, 90d, 90d, 90d, 90d, 90d});
+        setLeftArmAngles(new double[]{135d, 135d, 135d, 135d, 135d, 135d, 135d}, new double[]{45d, 90d, 90d, 90d, 90d, 90d, 90d});
+        setRightArmAngles(new double[]{45d, 45d, 45d, 45d, 45d, 45d, 45d}, new double[]{45d, 90d, 90d, 90d, 90d, 90d, 90d});
     }
 
     @Override
