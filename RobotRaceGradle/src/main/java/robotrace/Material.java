@@ -43,7 +43,6 @@ public enum Material {
             new float[]{0.8f, 0.4f, 0.0f, 1.0f},
             new float[]{0.50196078f, 0.50196078f, 0.50196078f, 1.0f},
             32f),
-    
     /**
      * Cyan plastic material properties.
      */

@@ -11,32 +11,32 @@ import javax.media.opengl.GL2;
 import javax.media.opengl.glu.GLU;
 
 /**
- Implementation of the terrain.
+ * Implementation of the terrain.
  */
-class Terrain{
+class Terrain {
 
     /**
-     Can be used to set up a display list.
+     * Can be used to set up a display list.
      */
-    public Terrain(){
+    public Terrain() {
         // code goes here ...
     }
 
-    public void initialize(){
+    public void initialize() {
 
     }
 
     /**
-     Draws the terrain.
+     * Draws the terrain.
      */
-    public void draw(GL2 gl, GLU glu, GLUT glut, Lighting lighting){
+    public void draw(GL2 gl, GLU glu, GLUT glut, Lighting lighting) {
         // code goes here ...
     }
 
     /**
-     Computes the elevation of the terrain at (x, y).
+     * Computes the elevation of the terrain at (x, y).
      */
-    public float heightAt(float x, float y){
+    public float heightAt(float x, float y) {
         return 0; // <- code goes here
     }
 }

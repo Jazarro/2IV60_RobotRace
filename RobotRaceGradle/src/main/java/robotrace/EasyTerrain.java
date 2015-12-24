@@ -76,6 +76,7 @@ public class EasyTerrain extends Terrain {
      * Calculate a random x or y coordinate that would fit on the ground.
      *
      * @param rand An instance of Random.
+     *
      * @return The random coordinate.
      */
     private double getCoord(Random rand) {

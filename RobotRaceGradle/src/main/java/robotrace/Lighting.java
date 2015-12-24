@@ -6,9 +6,8 @@
  */
 package robotrace;
 
-import javax.media.opengl.GL2;
-
 import static javax.media.opengl.GL.GL_FRONT;
+import javax.media.opengl.GL2;
 import static javax.media.opengl.fixedfunc.GLLightingFunc.GL_AMBIENT;
 import static javax.media.opengl.fixedfunc.GLLightingFunc.GL_AMBIENT_AND_DIFFUSE;
 import static javax.media.opengl.fixedfunc.GLLightingFunc.GL_DIFFUSE;
@@ -125,6 +124,7 @@ public class Lighting {
      *
      * @param gl       The GL2 instance responsible for drawing the scene.
      * @param material The material to set.
+     *
      * @see #setColor Use this method to set colours without needing a Material.
      * Note that using glColor* has been turned off and doesn't work.
      */
@@ -148,6 +148,7 @@ public class Lighting {
      * @param green The green component of the colour, between [0,1].
      * @param blue  The blue component of the colour, between [0,1].
      * @param alpha The alpha component of the colour, between [0,1].
+     *
      * @see #setMaterial Use this alternative method to set the colour if you
      * want more fine grained control over the values. You will need a Material
      * constant though.

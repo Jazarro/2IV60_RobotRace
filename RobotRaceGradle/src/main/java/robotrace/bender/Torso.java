@@ -19,7 +19,7 @@ import robotrace.bender.bodyassembly.Vertex;
  * @author Arjan Boschman
  * @author Robke Geenen
  */
-public class Body {
+public class Torso {
 
     /**
      * Radius of the body at the hips.

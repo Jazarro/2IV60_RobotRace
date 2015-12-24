@@ -87,6 +87,7 @@ public class Robot {
      * @return The angle in degrees that the robot body must be rotated around
      *         its current rotation axis in order to match the current robot
      *         direction.
+     *
      * @see #calcRotationAxis()
      */
     private double calcRotationAngle() {
@@ -100,6 +101,7 @@ public class Robot {
      * orientation.
      *
      * @return A normalized vector representing a rotational axis.
+     *
      * @see #calcRotationAngle()
      */
     private Vector calcRotationAxis() {

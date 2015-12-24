@@ -6,16 +6,15 @@
  */
 package robotrace.bender;
 
+import static java.lang.Math.cos;
+import static java.lang.Math.sin;
+import static java.lang.Math.toRadians;
 import java.nio.DoubleBuffer;
 import java.nio.IntBuffer;
 import java.util.List;
 import javax.media.opengl.GL2;
 import robotrace.bender.bodyassembly.Assembler;
 import robotrace.bender.bodyassembly.Vertex;
-
-import static java.lang.Math.cos;
-import static java.lang.Math.sin;
-import static java.lang.Math.toRadians;
 
 /**
  * Convenience class used by {@link Bender} to draw the arms, legs, hands and
@@ -272,6 +271,7 @@ public class Limb {
      *                   cylinder at the shoulder, each consecutive element is
      *                   for the next cylinder, all the way down to the wrist.
      * @param limbType   Only works for leg types.
+     *
      * @return The distance of the torso to the ground, assuming that at least
      *         one leg touches the ground.
      */

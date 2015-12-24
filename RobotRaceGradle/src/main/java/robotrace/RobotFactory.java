@@ -37,6 +37,7 @@ public class RobotFactory {
      *
      * @param material The material this robot consists of, used for lighting
      *                 calculations.
+     *
      * @return A newly created instance of Robot.
      */
     public Robot makeRobot(Material material) {
@@ -57,7 +58,9 @@ public class RobotFactory {
      *                  world.
      * @param direction The initial direction of this robot, IE which way it's
      *                  facing. This is relative to the global axis system.
+     *
      * @return A newly created instance of Robot.
+     *
      * @see #makeRobot(Material)
      */
     public Robot makeRobotAt(Material material, Vector position, Vector direction) {

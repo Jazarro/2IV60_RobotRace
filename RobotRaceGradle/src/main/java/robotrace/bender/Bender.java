@@ -42,7 +42,7 @@ public class Bender implements GLRobotBody {
      */
     private static final double SHOULDER_OFFCENTER = 0.2d;
 
-    private final Body body;
+    private final Torso body;
     private final Limb limb;
 
     private final double[] leftLegAnglesAxis = new double[Limb.RING_COUNT + 1];
@@ -55,7 +55,7 @@ public class Bender implements GLRobotBody {
     private final double[] rightArmAnglesBend = new double[Limb.RING_COUNT + 1];
 
     public Bender() {
-        body = new Body();
+        body = new Torso();
         limb = new Limb();
     }
 
@@ -105,14 +105,14 @@ public class Bender implements GLRobotBody {
             //Draws the right leg and foot.
             gl.glPushMatrix();
             gl.glTranslated(LEG_OFFCENTER, 0d, 0d);
-            limb.draw(gl, rightLegAnglesAxis, rightLegAnglesBend,Limb.LimbType.RIGHT_LEG);
+            limb.draw(gl, rightLegAnglesAxis, rightLegAnglesBend, Limb.LimbType.RIGHT_LEG);
             gl.glPopMatrix();
 
             //Draws the left arm and hand.
             gl.glPushMatrix();
             gl.glTranslated(-SHOULDER_OFFCENTER, 0d, SHOULDER_HEIGHT);
             gl.glRotated(90d, 0d, 1d, 0d);
-            limb.draw(gl, leftArmAnglesAxis, leftArmAnglesBend,Limb.LimbType.RIGHT_ARM);
+            limb.draw(gl, leftArmAnglesAxis, leftArmAnglesBend, Limb.LimbType.RIGHT_ARM);
             gl.glPopMatrix();
 
             //Draws the right arm and hand.
@@ -128,9 +128,9 @@ public class Bender implements GLRobotBody {
     }
 
     /**
-     * 
+     *
      * @param anglesAxis
-     * @param anglesBend 
+     * @param anglesBend
      */
     public void setLeftLegAngles(double[] anglesAxis, double[] anglesBend) {
         System.arraycopy(anglesAxis, 0, this.leftLegAnglesAxis, 0, Limb.RING_COUNT + 1);
