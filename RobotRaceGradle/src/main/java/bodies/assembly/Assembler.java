@@ -4,7 +4,7 @@
  * Assignment: RobotRace
  * Students: Arjan Boschman & Robke Geenen
  */
-package robotrace.bender.bodyassembly;
+package bodies.assembly;
 
 import com.jogamp.common.nio.Buffers;
 import static java.lang.Math.PI;
@@ -18,17 +18,17 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import static robotrace.bender.bodyassembly.Vertex.COORD_COUNT;
-import static robotrace.bender.bodyassembly.Vertex.IND_X;
-import static robotrace.bender.bodyassembly.Vertex.IND_Y;
-import static robotrace.bender.bodyassembly.Vertex.IND_Z;
+import static bodies.assembly.Vertex.COORD_COUNT;
+import static bodies.assembly.Vertex.IND_X;
+import static bodies.assembly.Vertex.IND_Y;
+import static bodies.assembly.Vertex.IND_Z;
 
 /**
  *
  * @author Robke Geenen
  * @author Arjan Boschman
  */
-public final class Assembler {
+public class Assembler {
 
     /**
      * The collection of Rings that make up the assembly.

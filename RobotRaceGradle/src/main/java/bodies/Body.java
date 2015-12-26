@@ -4,7 +4,7 @@
  * Assignment: RobotRace
  * Students: Arjan Boschman & Robke Geenen
  */
-package newpackage;
+package bodies;
 
 import com.jogamp.opengl.util.gl2.GLUT;
 import javax.media.opengl.GL2;

@@ -13,8 +13,8 @@ import java.nio.DoubleBuffer;
 import java.nio.IntBuffer;
 import java.util.List;
 import javax.media.opengl.GL2;
-import robotrace.bender.bodyassembly.Assembler;
-import robotrace.bender.bodyassembly.Vertex;
+import bodies.assembly.Assembler;
+import bodies.assembly.Vertex;
 
 /**
  * Convenience class used by {@link Bender} to draw the arms, legs, hands and

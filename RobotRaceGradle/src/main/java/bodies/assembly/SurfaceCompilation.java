@@ -4,7 +4,7 @@
  * Assignment: RobotRace
  * Students: Arjan Boschman & Robke Geenen
  */
-package robotrace.bender.bodyassembly;
+package bodies.assembly;
 
 import java.util.ArrayList;
 import java.util.List;
