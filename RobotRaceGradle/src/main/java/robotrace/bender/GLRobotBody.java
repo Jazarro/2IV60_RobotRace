@@ -43,7 +43,7 @@ public interface GLRobotBody {
      * @param glut An instance of GLUT that can be optionally used to assist in
      *             drawing.
      */
-    void draw(GL2 gl, GLUT glut);
+    void draw(GL2 gl, GLUT glut, boolean stickFigure);
 
     //TODO: Add run, wave etc methods.
 }
