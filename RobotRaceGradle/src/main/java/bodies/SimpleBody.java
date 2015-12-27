@@ -45,7 +45,7 @@ public class SimpleBody implements Body {
     @SuppressWarnings("PublicInnerClass")
     public static class StackBuilder {
 
-        private final BodyManager bodyManager;
+        private final BodyManager.Initialiser bmInitialiser;
         private final Assembler assembler;
         private int sliceCount = 3;
 
@@ -53,20 +53,20 @@ public class SimpleBody implements Body {
          * Construct a new SimpleBody.StackBuilder. This builder can be used to
          * create one stacked body.
          *
-         * @param bodyManager The BodyManager where the actual data will be
+         * @param bmInitialiser The BodyManager where the actual data will be
          *                    stored. The BodyManager deals with OpenGL
          *                    directly, the bodies created by these builders do
          *                    not.
          */
-        public StackBuilder(BodyManager bodyManager) {
-            this.bodyManager = bodyManager;
+        public StackBuilder(BodyManager.Initialiser bmInitialiser) {
+            this.bmInitialiser = bmInitialiser;
             this.assembler = new Assembler();
         }
 
         /**
          * Create a SimpleBody from the previously given definition.
-         * 
-         * @return A new SimpleBody. 
+         *
+         * @return A new SimpleBody.
          */
         public SimpleBody build() {
             /**
@@ -87,7 +87,7 @@ public class SimpleBody implements Body {
              * is true if the shape is a polygon, false if it's a QuadStrip.
              */
             final List<Boolean> surfaceTypeList = assembler.getSurfaceTypeList();
-            final int[] indexBufferNames = bodyManager.addData(dataBuffer, indicesBufferList);
+            final int[] indexBufferNames = bmInitialiser.addData(dataBuffer, indicesBufferList);
             final SimpleBody simpleBody = new SimpleBody();
             for (int i = 0; i < indexBufferNames.length; i++) {
                 final int shapeMode = surfaceTypeList.get(i) ? GL2.GL_POLYGON : GL2.GL_QUAD_STRIP;
@@ -114,6 +114,51 @@ public class SimpleBody implements Body {
         }
 
         /**
+         * Add a conical frustum (cone with top cut off) to the assembly.
+         *
+         * Do this by adding a partial torus, because a conical frustum is a
+         * partial torus with stackCount equal to one.
+         *
+         * @param radiusLow   The radius of the lower ring of the frustum.
+         * @param radiusHigh  The radius of the higher ring of the frustum.
+         * @param heightLow   The height of the lower ring of the frustum.
+         * @param heightHigh  The height of the higher ring of the frustum.
+         * @param closeBottom If the lower end should be closed off.
+         * @param closeTop    If the upper end should be closed off.
+         *
+         * @return This StackBuilder.
+         */
+        public StackBuilder addConicalFrustum(double radiusLow, double radiusHigh,
+                double heightLow, double heightHigh, boolean closeBottom, boolean closeTop) {
+            assembler.addConicalFrustum(sliceCount, radiusLow, radiusHigh, heightLow, heightHigh, closeBottom, closeTop);
+            return this;
+        }
+
+        /**
+         * Add a partial torus (torus with only one quarter of it's
+         * cross-section) to the assembly.
+         *
+         * The lower ring and its properties will be ignored and the upper ring
+         * from the last command will be used if compatible.
+         *
+         * @param stackCount  The number of stacks (z axis) that the torus is
+         *                    divided in, more slices equals a smoother surface.
+         * @param radiusLow   The radius of the lower ring of the torus.
+         * @param radiusHigh  The radius of the higher ring of the torus.
+         * @param heightLow   The height of the lower ring of the torus.
+         * @param heightHigh  The height of the higher ring of the torus.
+         * @param closeBottom If the lower end should be closed off.
+         * @param closeTop    If the upper end should be closed off.
+         *
+         * @return This StackBuilder.
+         */
+        public StackBuilder addPartialTorus(int stackCount, double radiusLow,
+                double radiusHigh, double heightLow, double heightHigh, boolean closeBottom, boolean closeTop) {
+            assembler.addPartialTorus(sliceCount, stackCount, radiusLow, radiusHigh, heightLow, heightHigh, closeBottom, closeTop);
+            return this;
+        }
+
+        /**
          * Add a polygon to close off the stacked body.
          *
          * @param height       The height relative to the stacked body.
@@ -122,7 +167,7 @@ public class SimpleBody implements Body {
          * @return This StackBuilder.
          */
         public StackBuilder addPolygon(double height, boolean isFacingDown) {
-            return this;//TODO:...
+            throw new UnsupportedOperationException();
         }
 
         /**
@@ -140,7 +185,7 @@ public class SimpleBody implements Body {
          */
         public StackBuilder addConicalFrustum(double radiusLow, double radiusHigh,
                 double heightLow, double heightHigh) {
-            return addPartialTorus(1, radiusLow, radiusHigh, heightLow, heightHigh);
+            throw new UnsupportedOperationException();
         }
 
         /**
@@ -161,7 +206,7 @@ public class SimpleBody implements Body {
          */
         public StackBuilder addPartialTorus(int stackCount, double radiusLow,
                 double radiusHigh, double heightLow, double heightHigh) {
-            return this; //TODO:...
+            throw new UnsupportedOperationException();
         }
 
     }

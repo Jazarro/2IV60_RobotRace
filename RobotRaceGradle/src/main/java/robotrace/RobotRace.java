@@ -7,7 +7,6 @@
 package robotrace;
 
 import javax.media.opengl.GL;
-
 import static javax.media.opengl.GL.GL_COLOR_BUFFER_BIT;
 import static javax.media.opengl.GL.GL_DEPTH_BUFFER_BIT;
 import static javax.media.opengl.GL.GL_DEPTH_TEST;
@@ -92,7 +91,7 @@ public class RobotRace extends Base {
         robots[2] = factory.makeRobotAt(Material.WOOD, new Vector(-1, 1, 0), Vector.X);
         robots[3] = factory.makeRobotAt(Material.PLASTIC_ORANGE, new Vector(-1, 3, 0), Vector.X);
 
-// Test track
+        // Test track
         raceTracks[0] = new RaceTrack();
 
         // O-track
