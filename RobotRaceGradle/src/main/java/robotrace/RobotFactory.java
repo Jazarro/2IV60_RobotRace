@@ -6,6 +6,7 @@
  */
 package robotrace;
 
+import bodies.BodyManager;
 import javax.media.opengl.GL2;
 import robotrace.bender.Bender;
 import robotrace.bender.GLRobotBody;
@@ -27,9 +28,11 @@ public class RobotFactory {
      * given GL2 instance for drawing the bodies.
      *
      * @param gl An instance of GL2, needed to do the proper initialisation.
+     * @param bmInitialiser The BodyManager.Initialiser that is used to gather
+     *                      all the data before communicating it to OpenGL.
      */
-    public void initialize(GL2 gl) {
-        robotBody.initialize(gl);
+    public void initialize(GL2 gl, BodyManager.Initialiser bmInitialiser) {
+        robotBody.initialize(gl, bmInitialiser);
     }
 
     /**

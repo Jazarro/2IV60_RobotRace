@@ -6,6 +6,7 @@
  */
 package robotrace;
 
+import bodies.BodyManager;
 import javax.media.opengl.GL;
 import static javax.media.opengl.GL.GL_COLOR_BUFFER_BIT;
 import static javax.media.opengl.GL.GL_DEPTH_BUFFER_BIT;
@@ -68,6 +69,7 @@ public class RobotRace extends Base {
         robotRace.run();
     }
 
+    private final BodyManager bodyManager = new BodyManager();
     private final Camera camera = new Camera();
     private final Terrain terrain = new EasyTerrain();
     private final RobotFactory factory = new RobotFactory();
@@ -116,6 +118,7 @@ public class RobotRace extends Base {
      */
     @Override
     public void initialize() {
+        final BodyManager.Initialiser bmInitialiser = bodyManager.makeInitialiser(gl);
         lighting.initialize(gl, gs);
 
         // Enable blending.//todo check if it's better with this on.
@@ -134,7 +137,7 @@ public class RobotRace extends Base {
         gl.glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
         gl.glBindTexture(GL_TEXTURE_2D, 0);
 
-        factory.initialize(gl);
+        factory.initialize(gl, bmInitialiser);
         terrain.initialize();
 
         // Try to load four textures, add more if you like.
@@ -142,6 +145,7 @@ public class RobotRace extends Base {
         brick = loadTexture("brick.jpg");
         head = loadTexture("head.jpg");
         torso = loadTexture("torso.jpg");
+//        bmInitialiser.finish();//todo: uncomment!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     }
 
     /**
@@ -179,6 +183,7 @@ public class RobotRace extends Base {
      */
     @Override
     public void drawScene() {
+        bodyManager.startDraw(gl);
         lighting.drawScene(gl);
 
         // Background color.
@@ -203,7 +208,8 @@ public class RobotRace extends Base {
 
         // Draw the terrain.
         terrain.draw(gl, glu, glut, lighting);
-
+        
+        bodyManager.endDraw(gl);
     }
 
     /**

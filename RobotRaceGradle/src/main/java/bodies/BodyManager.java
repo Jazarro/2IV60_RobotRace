@@ -87,7 +87,8 @@ public class BodyManager {
         /**
          * TODO:...
          *
-         * After calling this method, the initialiser cannot be used anymore.
+         * It is very important that this method is called. After calling this
+         * method, the initialiser cannot be used anymore.
          */
         public void finish() {
             //Obtain buffer name.
@@ -113,6 +114,7 @@ public class BodyManager {
             final int oldLength = appendToDataBuffer(data);
             //Increment each index by the previous length of the databuffer.
             incrementEachElement(indexBuffers, oldLength);
+            finish();
             //Retrieve index buffer names and push them to OpenGL.
             final int[] bufferNames = pushIndexArraysToGL(indexBuffers);
             //Return index buffer names.
@@ -129,7 +131,28 @@ public class BodyManager {
             final int oldLength = dataBuffer.capacity();
             final DoubleBuffer newData = DoubleBuffer.allocate(oldLength + addition.capacity());
             newData.put(dataBuffer);
+            newData.position(oldLength);
             newData.put(addition);
+//            addition.position(0);
+//            System.out.println("Capacity: " + addition.capacity());
+//            for (int i = 0; i < addition.capacity() / 6; i++) {
+//                System.out.println(
+//                        addition.get(i + 0) + " \t"
+//                        + addition.get(i + 1) + " \t"
+//                        + addition.get(i + 2) + " \t"
+//                        + addition.get(i + 3) + " \t"
+//                        + addition.get(i + 4) + " \t"
+//                        + addition.get(i + 5)
+//                );
+//                System.out.println(
+//                        newData.get(i + 0) + " \t"
+//                        + newData.get(i + 1) + " \t"
+//                        + newData.get(i + 2) + " \t"
+//                        + newData.get(i + 3) + " \t"
+//                        + newData.get(i + 4) + " \t"
+//                        + newData.get(i + 5)
+//                );
+//            }
             dataBuffer = newData;
             return oldLength;
         }
@@ -138,12 +161,15 @@ public class BodyManager {
          * Increment all the elements of all the buffers by the given amount.
          *
          * @param intBuffers  The buffers.
-         * @param incrementBy The amount to increments all the elements by.ß
+         * @param incrementBy The amount to increments all the elements by.
          */
         private void incrementEachElement(List<IntBuffer> intBuffers, int incrementBy) {
             intBuffers.stream().forEach((intBuffer) -> {
                 for (int i = 0; i < intBuffer.capacity(); i++) {
+//                    System.out.println("Increment by: " + incrementBy);
+//                    System.out.println("IntBuffer element before: " + intBuffer.get(i));
                     intBuffer.put(i, intBuffer.get(i) + incrementBy);
+//                    System.out.println("IntBuffer element after: " + intBuffer.get(i));
                 }
             });
         }

@@ -6,6 +6,7 @@
  */
 package robotrace.bender;
 
+import bodies.BodyManager;
 import com.jogamp.opengl.util.gl2.GLUT;
 import javax.media.opengl.GL2;
 import robotrace.Vector;
@@ -46,7 +47,7 @@ public class Bender implements GLRobotBody{
      */
     private static final double STICK_THICK = 0.03d;
 
-    private final Torso body;
+    private final Torso torso;
     private final Limb limb;
 
     private final double[] leftLegAnglesAxis = new double[Limb.RING_COUNT + 1];
@@ -59,14 +60,14 @@ public class Bender implements GLRobotBody{
     private final double[] rightArmAnglesBend = new double[Limb.RING_COUNT + 1];
 
     public Bender(){
-        body = new Torso();
+        torso = new Torso();
         limb = new Limb();
     }
 
     @Override
-    public void initialize(GL2 gl){
-        body.initialize(gl);
-        limb.initialize(gl);
+    public void initialize(GL2 gl, BodyManager.Initialiser bmInitialiser){
+        torso.initialize(gl, bmInitialiser);
+//        limb.initialize(gl);
         setLeftLegAngles(new double[]{0d, 0d, 0d, 0d, 0d, 0d, 0d}, new double[]{10d, 20d, 30d, 40d, 50d, 60d, 70d});
         setRightLegAngles(new double[]{0d, 0d, 0d, 0d, 0d, 0d, 0d}, new double[]{-20d, -20d, -20d, -20d, -20d, -20d, -20d});
         setLeftArmAngles(new double[]{135d, 135d, 135d, 135d, 135d, 135d, 135d}, new double[]{45d, 90d, 90d, 90d, 90d, 90d, 90d});
@@ -75,8 +76,6 @@ public class Bender implements GLRobotBody{
 
     @Override
     public void draw(GL2 gl, GLUT glut, boolean stickFigure){
-        gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
-        gl.glEnableClientState(GL2.GL_NORMAL_ARRAY);
         gl.glPushMatrix();
         {
             /**
@@ -90,7 +89,7 @@ public class Bender implements GLRobotBody{
 
             //Draws the torso and head:
             gl.glPushMatrix();
-            body.draw(gl, glut, stickFigure);
+            torso.draw(gl, glut, stickFigure);
             gl.glPopMatrix();
 
             //Draws the eyes:
@@ -101,35 +100,33 @@ public class Bender implements GLRobotBody{
             glut.glutSolidSphere(0.025d, 50, 50);
             gl.glPopMatrix();
 
-            //Draws the left leg and foot.
-            gl.glPushMatrix();
-            gl.glTranslated((stickFigure) ? (-STICK_THICK / 2) : (-LEG_OFFCENTER), 0d, 0d);
-            limb.draw(gl, glut, stickFigure, leftLegAnglesAxis, leftLegAnglesBend, Limb.LimbType.LEFT_LEG);
-            gl.glPopMatrix();
-
-            //Draws the right leg and foot.
-            gl.glPushMatrix();
-            gl.glTranslated((stickFigure) ? (STICK_THICK / 2) : (LEG_OFFCENTER), 0d, 0d);
-            limb.draw(gl, glut, stickFigure, rightLegAnglesAxis, rightLegAnglesBend, Limb.LimbType.RIGHT_LEG);
-            gl.glPopMatrix();
-
-            //Draws the left arm and hand.
-            gl.glPushMatrix();
-            gl.glTranslated((stickFigure) ? (-STICK_THICK / 2) : (-SHOULDER_OFFCENTER), 0d, SHOULDER_HEIGHT);
-            gl.glRotated(90d, 0d, 1d, 0d);
-            limb.draw(gl, glut, stickFigure, leftArmAnglesAxis, leftArmAnglesBend, Limb.LimbType.RIGHT_ARM);
-            gl.glPopMatrix();
-
-            //Draws the right arm and hand.
-            gl.glPushMatrix();
-            gl.glTranslated((stickFigure) ? (STICK_THICK / 2) : (SHOULDER_OFFCENTER), 0d, SHOULDER_HEIGHT);
-            gl.glRotated(-90d, 0d, 1d, 0d);
-            limb.draw(gl, glut, stickFigure, rightArmAnglesAxis, rightArmAnglesBend, Limb.LimbType.LEFT_ARM);
-            gl.glPopMatrix();
+//            //Draws the left leg and foot.
+//            gl.glPushMatrix();
+//            gl.glTranslated((stickFigure) ? (-STICK_THICK / 2) : (-LEG_OFFCENTER), 0d, 0d);
+//            limb.draw(gl, glut, stickFigure, leftLegAnglesAxis, leftLegAnglesBend, Limb.LimbType.LEFT_LEG);
+//            gl.glPopMatrix();
+//
+//            //Draws the right leg and foot.
+//            gl.glPushMatrix();
+//            gl.glTranslated((stickFigure) ? (STICK_THICK / 2) : (LEG_OFFCENTER), 0d, 0d);
+//            limb.draw(gl, glut, stickFigure, rightLegAnglesAxis, rightLegAnglesBend, Limb.LimbType.RIGHT_LEG);
+//            gl.glPopMatrix();
+//
+//            //Draws the left arm and hand.
+//            gl.glPushMatrix();
+//            gl.glTranslated((stickFigure) ? (-STICK_THICK / 2) : (-SHOULDER_OFFCENTER), 0d, SHOULDER_HEIGHT);
+//            gl.glRotated(90d, 0d, 1d, 0d);
+//            limb.draw(gl, glut, stickFigure, leftArmAnglesAxis, leftArmAnglesBend, Limb.LimbType.RIGHT_ARM);
+//            gl.glPopMatrix();
+//
+//            //Draws the right arm and hand.
+//            gl.glPushMatrix();
+//            gl.glTranslated((stickFigure) ? (STICK_THICK / 2) : (SHOULDER_OFFCENTER), 0d, SHOULDER_HEIGHT);
+//            gl.glRotated(-90d, 0d, 1d, 0d);
+//            limb.draw(gl, glut, stickFigure, rightArmAnglesAxis, rightArmAnglesBend, Limb.LimbType.LEFT_ARM);
+//            gl.glPopMatrix();
         }
         gl.glPopMatrix();
-        gl.glDisableClientState(GL2.GL_NORMAL_ARRAY);
-        gl.glDisableClientState(GL2.GL_VERTEX_ARRAY);
     }
 
     /**
