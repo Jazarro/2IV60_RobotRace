@@ -8,7 +8,10 @@ package bodies;
 
 import bodies.assembly.Assembler;
 import com.jogamp.opengl.util.gl2.GLUT;
+import java.nio.DoubleBuffer;
+import java.nio.IntBuffer;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import javax.media.opengl.GL2;
 
@@ -21,6 +24,10 @@ import javax.media.opengl.GL2;
 public class SimpleBody implements Body {
 
     private final Set<Shape> shapes = new HashSet<>();
+
+    private void addShape(Shape shape) {
+        shapes.add(shape);
+    }
 
     @Override
     public void draw(GL2 gl, GLUT glut) {
@@ -41,7 +48,6 @@ public class SimpleBody implements Body {
         private final BodyManager bodyManager;
         private final Assembler assembler;
         private int sliceCount = 3;
-        private boolean useRelativeHeights = false;
 
         /**
          * Construct a new SimpleBody.StackBuilder. This builder can be used to
@@ -58,13 +64,36 @@ public class SimpleBody implements Body {
         }
 
         /**
-         * Create the SimpleBody previously defined by calling the other public
-         * methods of this builder.
-         *
-         * @return
+         * Create a SimpleBody from the previously given definition.
+         * 
+         * @return A new SimpleBody. 
          */
         public SimpleBody build() {
-            return null;//TODO:...
+            /**
+             * Tell Assembler to compile all the surfaces and then retrieve the
+             * necessary values.
+             */
+            assembler.compileSurfaceCompilation();
+            //Buffer containing all Vertextdata off all previously added shapes. 
+            //The data in in the format: vertexX, vertexY, vertexZ, normalX, normalY, normalZ.
+            final DoubleBuffer dataBuffer = assembler.getDataBuffer();
+            /**
+             * List of index buffers. Each index buffer belongs to a shape and
+             * consists of pointers to vertices in the data buffer.
+             */
+            final List<IntBuffer> indicesBufferList = assembler.getIndicesBuffers();
+            /**
+             * List of boolean flags. Runs parallel to the indicesBufferList and
+             * is true if the shape is a polygon, false if it's a QuadStrip.
+             */
+            final List<Boolean> surfaceTypeList = assembler.getSurfaceTypeList();
+            final int[] indexBufferNames = bodyManager.addData(dataBuffer, indicesBufferList);
+            final SimpleBody simpleBody = new SimpleBody();
+            for (int i = 0; i < indexBufferNames.length; i++) {
+                final int shapeMode = surfaceTypeList.get(i) ? GL2.GL_POLYGON : GL2.GL_QUAD_STRIP;
+                simpleBody.addShape(new Shape(indexBufferNames[i], indicesBufferList.get(i).capacity(), shapeMode));
+            }
+            return simpleBody;
         }
 
         /**
@@ -81,23 +110,6 @@ public class SimpleBody implements Body {
          */
         public StackBuilder setSliceCount(int sliceCount) {
             this.sliceCount = sliceCount;
-            return this;
-        }
-
-        /**
-         * Whether to interpret the given heights as relative or not. If set to
-         * true, heights will be relative to the previously added segment.
-         * Otherwise they'll be relative to the stacked body as a whole. The
-         * default is false.
-         *
-         * @param useRelativeHeights True to use relative heights, false to
-         *                           interpret them as absolute.
-         *
-         * @return This StackBuilder.
-         */
-        @Deprecated//Not sure if this is necessary.
-        public StackBuilder useRelativeHeights(boolean useRelativeHeights) {
-            this.useRelativeHeights = useRelativeHeights;
             return this;
         }
 

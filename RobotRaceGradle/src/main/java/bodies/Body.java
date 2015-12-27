@@ -11,9 +11,7 @@ import javax.media.opengl.GL2;
 
 /**
  * A rigid body, consisting of a collection of one or more shapes. Because the
- * body is rigid, its shapes cannot be transformed relative to each other. Note
- * also that the shapes are rigid themselves. The vertices that the shapes
- * consist of cannot be transformed relative to each other.
+ * body is rigid, its shapes cannot be transformed relative to each other.
  *
  * Important is that only one copy of each body needs to exist. Bodies have no
  * position, scale or orientation in the world, they can be reused to draw the

@@ -6,6 +6,10 @@
  */
 package bodies.assembly;
 
+import static bodies.assembly.Vertex.COORD_COUNT;
+import static bodies.assembly.Vertex.IND_X;
+import static bodies.assembly.Vertex.IND_Y;
+import static bodies.assembly.Vertex.IND_Z;
 import com.jogamp.common.nio.Buffers;
 import static java.lang.Math.PI;
 import static java.lang.Math.atan;
@@ -18,10 +22,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import static bodies.assembly.Vertex.COORD_COUNT;
-import static bodies.assembly.Vertex.IND_X;
-import static bodies.assembly.Vertex.IND_Y;
-import static bodies.assembly.Vertex.IND_Z;
 
 /**
  *
@@ -77,7 +77,8 @@ public class Assembler {
      * @param closeLow   If the lower ring should be a closed surface.
      * @param closeHigh  If the higher ring should be a closed surface.
      */
-    public void addPartialTorus(int sliceCount, int stackCount, double radiusLow, double radiusHigh, double heightLow, double heightHigh, boolean closeLow, boolean closeHigh) {
+    public void addPartialTorus(int sliceCount, int stackCount, double radiusLow, 
+            double radiusHigh, double heightLow, double heightHigh, boolean closeLow, boolean closeHigh) {
         //Make a new ring if the previous one can not be reused.
         if (((rings.isEmpty()) || (sliceCount != rings.get(rings.size() - 1).getSliceCount())) /*&& rings.get(rings.size() - 1).getRadius() == radiusLow
            && rings.get(rings.size() - 1).getHeight() == heightLow*/) {

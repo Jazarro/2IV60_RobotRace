@@ -33,7 +33,7 @@ public class BodyManager {
      * @param indexBuffers
      * @return Index buffer names.
      */
-    public int[] njkew(DoubleBuffer data, List<IntBuffer> indexBuffers) {
+    public int[] addData(DoubleBuffer data, List<IntBuffer> indexBuffers) {
         //TODO: 
         //Append databuffer to the one already stored in here.
         //Increment each index by the previous length of the databuffer.
