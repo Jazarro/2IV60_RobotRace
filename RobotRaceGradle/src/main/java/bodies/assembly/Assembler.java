@@ -140,12 +140,12 @@ public class Assembler {
         //Iterate over all vertices in the SurfaceCompilation.
         for (IndexedVertex vertex : surfaceCompilation.getVertices()) {
             //And store all vertices' data in an ArrayList.
-            dataList.add(vertex.getVertex().getPosition()[IND_X]);
-            dataList.add(vertex.getVertex().getPosition()[IND_Y]);
-            dataList.add(vertex.getVertex().getPosition()[IND_Z]);
-            dataList.add(vertex.getVertex().getNormal()[IND_X]);
-            dataList.add(vertex.getVertex().getNormal()[IND_Y]);
-            dataList.add(vertex.getVertex().getNormal()[IND_Z]);
+            dataList.add(vertex.getVertex().getPositionA()[IND_X]);
+            dataList.add(vertex.getVertex().getPositionA()[IND_Y]);
+            dataList.add(vertex.getVertex().getPositionA()[IND_Z]);
+            dataList.add(vertex.getVertex().getNormalA()[IND_X]);
+            dataList.add(vertex.getVertex().getNormalA()[IND_Y]);
+            dataList.add(vertex.getVertex().getNormalA()[IND_Z]);
         }
         final double[] dataArray = new double[dataList.size()];
         //Convert the ArrayList into an array.
@@ -207,7 +207,7 @@ public class Assembler {
         //Iterate over all vertices in the Ring.
         for (Vertex vertex : vertices) {
             //Calculate the normal of the polygon vertex.
-            vertex.setNormal(calculatePolygonNormal());
+            vertex.setNormalA(calculatePolygonNormal());
             indexedVertices.add(IndexedVertex.makeIndexedVertex(vertex));
         }
         //Create a new surface from all calculated vertices.
@@ -256,7 +256,7 @@ public class Assembler {
                     newVertex = sharedVertices.next();
                 } //Else calculate the normal of the unknown vertex and use the vertex with it's normal.
                 else {
-                    vertex.setNormal(calculateQuadStripNormal(ring1.getVertices().indexOf(vertex), ring0, ring1, ring2));
+                    vertex.setNormalA(calculateQuadStripNormal(ring1.getVertices().indexOf(vertex), ring0, ring1, ring2));
                     newVertex = IndexedVertex.makeIndexedVertex(vertex);
                 }
                 //And store the vertex.
@@ -267,7 +267,7 @@ public class Assembler {
                 final Vertex vertex = vertices2.next();
                 //The second ring is not calculated (yet), and can therefore not (yet) be reused.
                 //So calculate the normal.
-                vertex.setNormal(calculateQuadStripNormal(ring2.getVertices().indexOf(vertex), ring1, ring2, ring3));
+                vertex.setNormalA(calculateQuadStripNormal(ring2.getVertices().indexOf(vertex), ring1, ring2, ring3));
                 //And store it.
                 indexedVertices.add(IndexedVertex.makeIndexedVertex(vertex));
             }
@@ -290,7 +290,7 @@ public class Assembler {
         final double[] vertexNormal;
         //If the normal is already calculated, it does not need to be calculated again.
         if (ring1.isVertexNormalCalculated(index)) {
-            vertexNormal = ring1.getVertices().get(index).getNormal();
+            vertexNormal = ring1.getVertices().get(index).getNormalA();
         } else //If this is the only ring (it has no neighboring rings) then no surface is defined, and also no normal.
         {
             if ((ring2 == null) && (ring0 == null)) {
@@ -301,12 +301,12 @@ public class Assembler {
             } else //If this is the last ring, then the normal is equal for both the first and second ring of the surface.
             {
                 if (ring2 == null) {
-                    vertexNormal = ring0.getVertices().get(index).getNormal();
+                    vertexNormal = ring0.getVertices().get(index).getNormalA();
                 } //Else the normal will be calculated.
                 else {
                     vertexNormal = calculateNormal(index, ring1.getRadius() - ring2.getRadius(), ring1.getHeight() - ring2.getHeight(), ring1.getVertices().size());
                     final Vertex vertex = ring1.getVertices().get(index);
-                    vertex.setNormal(vertexNormal);
+                    vertex.setNormalA(vertexNormal);
                     //And updated in the ring.
                     ring1.setVertex(vertex, index);
                     ring1.setVertexNormalCalculated(index);
@@ -317,7 +317,7 @@ public class Assembler {
             //If the ring represents a smooth edge, the normal will be averaged with the normal below it.
             for (int i = 0; i < COORD_COUNT; i++) {
                 //By averaging the array element-wise.
-                vertexNormal[i] += ring0.getVertices().get(index).getNormal()[i];
+                vertexNormal[i] += ring0.getVertices().get(index).getNormalA()[i];
                 vertexNormal[i] *= 0.5d;
             }
         }

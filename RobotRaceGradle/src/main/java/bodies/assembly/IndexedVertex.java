@@ -60,7 +60,7 @@ final class IndexedVertex {
      * @return The new IndexedVertex.
      */
     public static IndexedVertex makeIndexedVertex(Vertex vertex, boolean shared, int index) {
-        final Vertex clone = new Vertex(vertex.getPosition(), vertex.getNormal());
+        final Vertex clone = new Vertex(vertex.getPositionA(), vertex.getNormalA());
         return new IndexedVertex(clone, shared, index);
     }
 
