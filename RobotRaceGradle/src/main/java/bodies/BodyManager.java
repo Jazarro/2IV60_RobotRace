@@ -50,7 +50,7 @@ public class BodyManager {
          * Tell OpenGL what formats and what stride length to expect when
          * extracting vertex coordinate information from the data buffer.
          */
-        gl.glVertexPointer(3, GL2.GL_DOUBLE, 2 * Vertex.COORD_COUNT * Double.BYTES, 0);
+        gl.glVertexPointer(Vertex.COORD_COUNT, GL2.GL_DOUBLE, 2 * Vertex.COORD_COUNT * Double.BYTES, 0);
         /**
          * Tell OpenGL what formats, stride length and offset to expect when
          * extracting normal information from the data buffer.

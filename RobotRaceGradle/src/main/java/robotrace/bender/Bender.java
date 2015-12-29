@@ -84,8 +84,8 @@ public class Bender implements GLRobotBody{
              them.
              Note that the legs are currently drawn below zero
              */
-            final double legHeight = Math.max(limb.height(leftLegAnglesAxis, leftLegAnglesBend, Limb.LimbType.LEFT_LEG), limb.height(rightLegAnglesAxis, rightLegAnglesBend, Limb.LimbType.RIGHT_LEG));
-            gl.glTranslated(0d, 0d, legHeight);
+//            final double legHeight = Math.max(limb.height(leftLegAnglesAxis, leftLegAnglesBend, Limb.LimbType.LEFT_LEG), limb.height(rightLegAnglesAxis, rightLegAnglesBend, Limb.LimbType.RIGHT_LEG));
+//            gl.glTranslated(0d, 0d, legHeight);
 
             //Draws the torso and head:
             gl.glPushMatrix();
