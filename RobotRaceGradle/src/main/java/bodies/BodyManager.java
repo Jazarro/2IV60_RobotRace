@@ -46,16 +46,18 @@ public class BodyManager {
         gl.glEnableClientState(GL2.GL_NORMAL_ARRAY);
         //Use the name under which the data buffer was stored to bind it.
         gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, dataBufferName);
+        final int stride = 2 * Vertex.COORD_COUNT * Double.BYTES;
         /**
          * Tell OpenGL what formats and what stride length to expect when
          * extracting vertex coordinate information from the data buffer.
          */
-        gl.glVertexPointer(Vertex.COORD_COUNT, GL2.GL_DOUBLE, 2 * Vertex.COORD_COUNT * Double.BYTES, 0);
+        gl.glVertexPointer(Vertex.COORD_COUNT, GL2.GL_DOUBLE, stride, 0);
         /**
          * Tell OpenGL what formats, stride length and offset to expect when
          * extracting normal information from the data buffer.
          */
-        gl.glNormalPointer(GL2.GL_DOUBLE, 2 * Vertex.COORD_COUNT * Double.BYTES, Vertex.COORD_COUNT * Double.BYTES);
+        final int normalPointerOffset = Vertex.COORD_COUNT * Double.BYTES;
+        gl.glNormalPointer(GL2.GL_DOUBLE, stride, normalPointerOffset);
     }
 
     /**
@@ -111,7 +113,8 @@ public class BodyManager {
          */
         public int[] addData(DoubleBuffer data, List<IntBuffer> indexBuffers) {
             //Append databuffer to the one already stored in here.
-            final int oldLength = appendToDataBuffer(data);
+            final int coordLength = 2 * Vertex.COORD_COUNT;
+            final int oldLength = appendToDataBuffer(data) / coordLength;
             //Increment each index by the previous length of the databuffer.
             incrementEachElement(indexBuffers, oldLength);
             //Retrieve index buffer names and push them to OpenGL.
