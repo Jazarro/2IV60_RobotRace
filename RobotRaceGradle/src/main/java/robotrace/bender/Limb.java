@@ -6,9 +6,10 @@
  */
 package robotrace.bender;
 
+import bodies.Body;
 import bodies.assembly.Assembler;
 import bodies.assembly.Vertex;
-import com.jogamp.opengl.util.gl2.*;
+import com.jogamp.opengl.util.gl2.GLUT;
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 import static java.lang.Math.toRadians;

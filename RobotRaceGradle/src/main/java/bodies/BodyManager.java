@@ -148,6 +148,7 @@ public class BodyManager {
                 for (int i = 0; i < intBuffer.capacity(); i++) {
                     intBuffer.put(i, intBuffer.get(i) + incrementBy);
                 }
+                intBuffer.position(0);
             });
         }
 
