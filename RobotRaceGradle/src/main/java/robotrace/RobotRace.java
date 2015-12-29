@@ -183,7 +183,7 @@ public class RobotRace extends Base {
      */
     @Override
     public void drawScene() {
-//        bodyManager.startDraw(gl);
+        bodyManager.startDraw(gl);
         lighting.drawScene(gl);
 
         // Background color.
@@ -197,22 +197,19 @@ public class RobotRace extends Base {
             drawAxisFrame();
         }
 
-        bodyManager.startDraw(gl);
-
         //Draw the robots.
         for (Robot robot : robots) {
             lighting.setMaterial(gl, robot.getMaterial());
             robot.draw(gl, glu, glut, gs.showStick, gs.tAnim);
         }
-        bodyManager.endDraw(gl);
-
+        
         // Draw the race track.
         raceTracks[gs.trackNr].draw(gl, glu, glut);
 
         // Draw the terrain.
         terrain.draw(gl, glu, glut, lighting);
 
-//        bodyManager.endDraw(gl);
+        bodyManager.endDraw(gl);
     }
 
     /**
