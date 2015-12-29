@@ -93,12 +93,12 @@ public class Bender implements GLRobotBody{
             gl.glPopMatrix();
 
             //Draws the eyes:
-            gl.glPushMatrix();
-            gl.glTranslated(0.05d, -0.125d, 0.8d);
-            glut.glutSolidSphere(0.025d, 50, 50);
-            gl.glTranslated(-0.1d, 0d, 0d);
-            glut.glutSolidSphere(0.025d, 50, 50);
-            gl.glPopMatrix();
+//            gl.glPushMatrix();
+//            gl.glTranslated(0.05d, -0.125d, 0.8d);
+//            glut.glutSolidSphere(0.025d, 50, 50);
+//            gl.glTranslated(-0.1d, 0d, 0d);
+//            glut.glutSolidSphere(0.025d, 50, 50);
+//            gl.glPopMatrix();
 
 //            //Draws the left leg and foot.
 //            gl.glPushMatrix();

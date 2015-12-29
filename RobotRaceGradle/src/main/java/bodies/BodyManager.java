@@ -114,7 +114,6 @@ public class BodyManager {
             final int oldLength = appendToDataBuffer(data);
             //Increment each index by the previous length of the databuffer.
             incrementEachElement(indexBuffers, oldLength);
-            finish();
             //Retrieve index buffer names and push them to OpenGL.
             final int[] bufferNames = pushIndexArraysToGL(indexBuffers);
             //Return index buffer names.
