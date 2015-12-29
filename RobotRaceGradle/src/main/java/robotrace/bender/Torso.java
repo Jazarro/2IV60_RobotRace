@@ -6,12 +6,12 @@
  */
 package robotrace.bender;
 
+import bodies.assembly.Assembler;
+import bodies.assembly.Vertex;
 import java.nio.DoubleBuffer;
 import java.nio.IntBuffer;
 import java.util.List;
 import javax.media.opengl.GL2;
-import bodies.assembly.Assembler;
-import bodies.assembly.Vertex;
 
 /**
  * Convenience class used by {@link Bender} to draw the torso and head.
@@ -147,21 +147,29 @@ public class Torso {
          * Let OpenGL generate some buffer names. Our data buffer and index
          * buffers will each be stored under such a name.
          */
-        final int[] tempBufferNames = new int[indicesBufferList.size() + 1];
-        gl.glGenBuffers(tempBufferNames.length, tempBufferNames, 0);
         this.glIndicesBufferNames = new int[indicesBufferList.size()];
-        System.arraycopy(tempBufferNames, 0, glIndicesBufferNames, 0, glIndicesBufferNames.length);
-        this.glDataBufferName = tempBufferNames[tempBufferNames.length - 1];
-
-        //Push the data buffer to OpenGL.
-        gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, glDataBufferName);
-        gl.glBufferData(GL2.GL_ARRAY_BUFFER, dataBuffer.capacity() * Double.BYTES, dataBuffer, GL2.GL_STATIC_DRAW);
+        gl.glGenBuffers(glIndicesBufferNames.length, glIndicesBufferNames, 0);
 
         //Push each of the index buffers to OpenGL.
         for (IntBuffer buffer : indicesBufferList) {
             gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, glIndicesBufferNames[indicesBufferList.indexOf(buffer)]);
             gl.glBufferData(GL2.GL_ELEMENT_ARRAY_BUFFER, buffer.capacity() * Integer.BYTES, buffer, GL2.GL_STATIC_DRAW);
         }
+        
+//        try {
+//            Thread.sleep(1000);
+//        } catch (InterruptedException ex) {
+//            Logger.getLogger(Torso.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+        
+        final int[] singleDataBufferName = new int[1];
+        gl.glGenBuffers(1, singleDataBufferName,0);
+        this.glDataBufferName = singleDataBufferName[0];
+        
+        //Push the data buffer to OpenGL.
+        gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, glDataBufferName);
+        gl.glBufferData(GL2.GL_ARRAY_BUFFER, dataBuffer.capacity() * Double.BYTES, dataBuffer, GL2.GL_STATIC_DRAW);
+
     }
 
     /**
