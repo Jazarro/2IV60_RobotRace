@@ -25,7 +25,7 @@ public class SimpleBody implements Body {
 
     private final Set<Shape> shapes = new HashSet<>();
 
-    private void addShape(Shape shape) {
+    public void addShape(Shape shape) {
         shapes.add(shape);
     }
 

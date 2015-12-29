@@ -102,27 +102,27 @@ public class Bender implements GLRobotBody {
             //Draws the left leg and foot.
             gl.glPushMatrix();
             gl.glTranslated((stickFigure) ? (-STICK_THICK / 2) : (-LEG_OFFCENTER), 0d, 0d);
-            limb.draw(gl, glut, stickFigure, leftLegAnglesAxis, leftLegAnglesBend, Limb.LimbType.LEFT_LEG);
+            //limb.draw(gl, glut, stickFigure, leftLegAnglesAxis, leftLegAnglesBend, Limb.LimbType.LEFT_LEG);
             gl.glPopMatrix();
 
             //Draws the right leg and foot.
             gl.glPushMatrix();
             gl.glTranslated((stickFigure) ? (STICK_THICK / 2) : (LEG_OFFCENTER), 0d, 0d);
-            limb.draw(gl, glut, stickFigure, rightLegAnglesAxis, rightLegAnglesBend, Limb.LimbType.RIGHT_LEG);
+            //limb.draw(gl, glut, stickFigure, rightLegAnglesAxis, rightLegAnglesBend, Limb.LimbType.RIGHT_LEG);
             gl.glPopMatrix();
 
             //Draws the left arm and hand.
             gl.glPushMatrix();
             gl.glTranslated((stickFigure) ? (-STICK_THICK / 2) : (-SHOULDER_OFFCENTER), 0d, SHOULDER_HEIGHT);
             gl.glRotated(90d, 0d, 1d, 0d);
-            limb.draw(gl, glut, stickFigure, leftArmAnglesAxis, leftArmAnglesBend, Limb.LimbType.RIGHT_ARM);
+            //limb.draw(gl, glut, stickFigure, leftArmAnglesAxis, leftArmAnglesBend, Limb.LimbType.RIGHT_ARM);
             gl.glPopMatrix();
 
             //Draws the right arm and hand.
             gl.glPushMatrix();
             gl.glTranslated((stickFigure) ? (STICK_THICK / 2) : (SHOULDER_OFFCENTER), 0d, SHOULDER_HEIGHT);
             gl.glRotated(-90d, 0d, 1d, 0d);
-            limb.draw(gl, glut, stickFigure, rightArmAnglesAxis, rightArmAnglesBend, Limb.LimbType.LEFT_ARM);
+            //limb.draw(gl, glut, stickFigure, rightArmAnglesAxis, rightArmAnglesBend, Limb.LimbType.LEFT_ARM);
             gl.glPopMatrix();
         }
         gl.glPopMatrix();

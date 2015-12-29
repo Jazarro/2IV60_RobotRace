@@ -123,6 +123,10 @@ class RaceTrack{
 
     private void calcTestTrack(){
         List<Vertex> vertices = new ArrayList<>();
+        final List<Integer> top = new ArrayList<>();
+        final List<Integer> bottom = new ArrayList<>();
+        final List<Integer> inner = new ArrayList<>();
+        final List<Integer> outer = new ArrayList<>();
         for(double t = 0; t < 1; t += STEP_T){
             vertices.add(new Vertex(getPoint(t)));
         }
@@ -150,20 +154,32 @@ class RaceTrack{
             final Vector normal2 = new Vector(-delta2.y, delta2.x, delta2.z).normalized();
             final Vector outerNormal = normal1.add(normal2).normalized();
             final Vector innerNormal = outerNormal.scale(-1d);
-            //Top Outer
+            
+            outer.add(vertices.size());
             vertices.add(new Vertex(vertex.getPositionV().add(outerNormal.scale(halfTrackWidth)), outerNormal));
-            //Top Inner
+            top.add(vertices.size());
+            vertices.add(new Vertex(vertex.getPositionV().add(outerNormal.scale(halfTrackWidth)), topNormal));
+            
+            inner.add(vertices.size());
             vertices.add(new Vertex(vertex.getPositionV().add(innerNormal.scale(halfTrackWidth)), innerNormal));
+            top.add(vertices.size());
+            vertices.add(new Vertex(vertex.getPositionV().add(innerNormal.scale(halfTrackWidth)), topNormal));
+            
             vertex.setPositionC(vertex.getPositionV().x(), vertex.getPositionV().y(), vertex.getPositionV().z() - 1d);
-            //Bottom Outer
+            
+            outer.add(vertices.size());
             vertices.add(new Vertex(vertex.getPositionV().add(outerNormal.scale(halfTrackWidth)), outerNormal));
-            //Bottom Inner
+            
+            bottom.add(vertices.size());
+            vertices.add(new Vertex(vertex.getPositionV().add(outerNormal.scale(halfTrackWidth)), bottomNormal));
+            
+            inner.add(vertices.size());
             vertices.add(new Vertex(vertex.getPositionV().add(innerNormal.scale(halfTrackWidth)), innerNormal));
+            
+            bottom.add(vertices.size());
+            vertices.add(new Vertex(vertex.getPositionV().add(innerNormal.scale(halfTrackWidth)), bottomNormal));
         }
-        final List<Integer> top = new ArrayList<>();
-        final List<Integer> bottom = new ArrayList<>();
-        final List<Integer> inner = new ArrayList<>();
-        final List<Integer> outer = new ArrayList<>();
+
         for(int i = 0; i < vertices.size() / 4; i++){
             top.add((i * 4) + 0);
             top.add((i * 4) + 1);
@@ -174,6 +190,11 @@ class RaceTrack{
             outer.add((i * 4) + 0);
             outer.add((i * 4) + 2);
         }
+        final int topArray[] = new int[top.size()];
+        final int topArray[] = new int[top.size()];
+        final int topArray[] = new int[top.size()];
+        final int topArray[] = new int[top.size()];
         //TODO: Convert top, bottom, inner, outer, vertices to IntBuffer, DoubleBuffer
+        
     }
 }
