@@ -6,8 +6,6 @@
  */
 package robotrace;
 
-import robot.RobotFactory;
-import robot.Robot;
 import bodies.BodyManager;
 import javax.media.opengl.GL;
 import static javax.media.opengl.GL.GL_COLOR_BUFFER_BIT;
@@ -22,6 +20,8 @@ import static javax.media.opengl.GL2GL3.GL_FILL;
 import static javax.media.opengl.fixedfunc.GLLightingFunc.GL_NORMALIZE;
 import static javax.media.opengl.fixedfunc.GLMatrixFunc.GL_MODELVIEW;
 import static javax.media.opengl.fixedfunc.GLMatrixFunc.GL_PROJECTION;
+import robot.Robot;
+import robot.RobotFactory;
 
 /**
  * Handles all of the RobotRace graphics functionality, which should be extended
