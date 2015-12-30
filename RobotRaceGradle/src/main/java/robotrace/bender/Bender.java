@@ -67,7 +67,7 @@ public class Bender implements GLRobotBody {
     @Override
     public void initialize(GL2 gl, BodyManager.Initialiser bmInitialiser) {
         torso.initialize(gl, bmInitialiser);
-        limb.initialize(gl);
+        limb.initialize(gl, bmInitialiser);
         setLeftLegAngles(new double[]{0d, 0d, 0d, 0d, 0d, 0d, 0d}, new double[]{10d, 20d, 30d, 40d, 50d, 60d, 70d});
         setRightLegAngles(new double[]{0d, 0d, 0d, 0d, 0d, 0d, 0d}, new double[]{-20d, -20d, -20d, -20d, -20d, -20d, -20d});
         setLeftArmAngles(new double[]{135d, 135d, 135d, 135d, 135d, 135d, 135d}, new double[]{45d, 90d, 90d, 90d, 90d, 90d, 90d});
@@ -75,7 +75,7 @@ public class Bender implements GLRobotBody {
     }
 
     @Override
-    public void draw(GL2 gl, GLUT glut, boolean stickFigure) {//NB: Left and right mixed up in these comments, fool.
+    public void draw(GL2 gl, GLUT glut, boolean stickFigure) {
         gl.glPushMatrix();
         {
             /**
