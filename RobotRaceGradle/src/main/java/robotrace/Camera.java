@@ -6,6 +6,7 @@
  */
 package robotrace;
 
+import robot.Robot;
 import javax.media.opengl.glu.GLU;
 
 import static utility.GsUtils.getAzimuth;

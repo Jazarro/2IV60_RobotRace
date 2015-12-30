@@ -5,7 +5,6 @@ import java.nio.DoubleBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 public class Track {
 
@@ -45,10 +44,10 @@ public class Track {
         final int inner[] = new int[verticesPerSide];
         final int outer[] = new int[verticesPerSide];
         for (int i = 0; i < verticesPerSide - duplicatedVertices; i++) {
-            top[i] = slices.get(i).getTop().getVertex1().;
-            bottom[i] = bottom.get(i);
-            inner[i] = inner.get(i);
-            outer[i] = outer.get(i);
+//            top[i] = slices.get(i).getTop().getVertex1().;
+//            bottom[i] = bottom.get(i);
+//            inner[i] = inner.get(i);
+//            outer[i] = outer.get(i);
         }
         //TODO: convert slices into surfaces
         //TODO: Convert top, bottom, inner, outer, vertices to IntBuffer, DoubleBuffer

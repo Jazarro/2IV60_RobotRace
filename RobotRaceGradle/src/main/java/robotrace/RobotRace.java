@@ -6,6 +6,8 @@
  */
 package robotrace;
 
+import robot.RobotFactory;
+import robot.Robot;
 import bodies.BodyManager;
 import javax.media.opengl.GL;
 import static javax.media.opengl.GL.GL_COLOR_BUFFER_BIT;

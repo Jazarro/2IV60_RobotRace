@@ -4,12 +4,13 @@
  * Assignment: RobotRace
  * Students: Arjan Boschman & Robke Geenen
  */
-package robotrace;
+package robot;
 
 import bodies.BodyManager;
 import javax.media.opengl.GL2;
-import robotrace.bender.Bender;
-import robotrace.bender.GLRobotBody;
+import robot.bender.Bender;
+import robotrace.Material;
+import robotrace.Vector;
 
 /**
  *

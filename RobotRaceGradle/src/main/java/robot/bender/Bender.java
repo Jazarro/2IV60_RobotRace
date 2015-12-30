@@ -4,11 +4,13 @@
  * Assignment: RobotRace
  * Students: Arjan Boschman & Robke Geenen
  */
-package robotrace.bender;
+package robot.bender;
 
 import bodies.BodyManager;
 import com.jogamp.opengl.util.gl2.GLUT;
 import javax.media.opengl.GL2;
+import robot.GLRobotBody;
+import robot.Stance;
 import robotrace.Vector;
 
 /**
@@ -102,27 +104,27 @@ public class Bender implements GLRobotBody {
             //Draws the left leg and foot.
             gl.glPushMatrix();
             gl.glTranslated((stickFigure) ? (-STICK_THICK / 2) : (-LEG_OFFCENTER), 0d, 0d);
-            //limb.draw(gl, glut, stickFigure, leftLegAnglesAxis, leftLegAnglesBend, Limb.LimbType.LEFT_LEG);
+            limb.draw(gl, glut, stickFigure, leftLegAnglesAxis, leftLegAnglesBend, Limb.LimbType.LEFT_LEG);
             gl.glPopMatrix();
 
             //Draws the right leg and foot.
             gl.glPushMatrix();
             gl.glTranslated((stickFigure) ? (STICK_THICK / 2) : (LEG_OFFCENTER), 0d, 0d);
-            //limb.draw(gl, glut, stickFigure, rightLegAnglesAxis, rightLegAnglesBend, Limb.LimbType.RIGHT_LEG);
+            limb.draw(gl, glut, stickFigure, rightLegAnglesAxis, rightLegAnglesBend, Limb.LimbType.RIGHT_LEG);
             gl.glPopMatrix();
 
             //Draws the left arm and hand.
             gl.glPushMatrix();
             gl.glTranslated((stickFigure) ? (-STICK_THICK / 2) : (-SHOULDER_OFFCENTER), 0d, SHOULDER_HEIGHT);
             gl.glRotated(90d, 0d, 1d, 0d);
-            //limb.draw(gl, glut, stickFigure, leftArmAnglesAxis, leftArmAnglesBend, Limb.LimbType.RIGHT_ARM);
+            limb.draw(gl, glut, stickFigure, leftArmAnglesAxis, leftArmAnglesBend, Limb.LimbType.RIGHT_ARM);
             gl.glPopMatrix();
 
             //Draws the right arm and hand.
             gl.glPushMatrix();
             gl.glTranslated((stickFigure) ? (STICK_THICK / 2) : (SHOULDER_OFFCENTER), 0d, SHOULDER_HEIGHT);
             gl.glRotated(-90d, 0d, 1d, 0d);
-            //limb.draw(gl, glut, stickFigure, rightArmAnglesAxis, rightArmAnglesBend, Limb.LimbType.LEFT_ARM);
+            limb.draw(gl, glut, stickFigure, rightArmAnglesAxis, rightArmAnglesBend, Limb.LimbType.LEFT_ARM);
             gl.glPopMatrix();
         }
         gl.glPopMatrix();
@@ -151,6 +153,21 @@ public class Bender implements GLRobotBody {
     public void setRightArmAngles(double[] anglesAxis, double[] anglesBend) {
         System.arraycopy(anglesAxis, 0, this.rightArmAnglesAxis, 0, Limb.RING_COUNT + 1);
         System.arraycopy(anglesBend, 0, this.rightArmAnglesBend, 0, Limb.RING_COUNT + 1);
+    }
+
+    @Override
+    public void setDefaultAnimation(Stance stance) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void runAnimationOnce(Stance stance) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void runAnimation(Stance stance, int repeats) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

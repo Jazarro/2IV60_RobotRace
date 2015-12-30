@@ -4,7 +4,7 @@
  * Assignment: RobotRace
  * Students: Arjan Boschman & Robke Geenen
  */
-package robotrace.bender;
+package robot;
 
 import bodies.BodyManager;
 import com.jogamp.opengl.util.gl2.GLUT;
@@ -52,5 +52,42 @@ public interface GLRobotBody {
      */
     void draw(GL2 gl, GLUT glut, boolean stickFigure);
 
-    //TODO: Add run, wave etc methods.
+    /**
+     * Sets the default stance or animation. This animation will be repeated
+     * indefinitely. When {@link #runAnimation} or {@link #runAnimationOnce} get
+     * called, after those animations finish running the robot body will return
+     * to displaying the default stance.
+     *
+     * The default stance is always the IDLE stance, until this method gets
+     * called.
+     *
+     * Note that robot bodies are free to provide their own implementations of
+     * the animations, and are in fact not obliged to support any stances other
+     * than the IDLE stance.
+     *
+     * @param stance The animation type to display by default. If this robot
+     *               body doesn't support the given stance, it will default to
+     *               the IDLE stance.
+     */
+    void setDefaultAnimation(Stance stance);
+
+    /**
+     * Interrupt the currently playing animation and run the given animation
+     * type once. After the animation is done, return to the default stance.
+     *
+     * @param stance Specifies the animation to run once.
+     */
+    void runAnimationOnce(Stance stance);
+
+    /**
+     * Interrupt the currently playing animation and run the given animation
+     * type a given number of times. After the animation is done, return to the default stance.
+     *
+     * @param stance  Specifies the animation to run.
+     * @param repeats How often the animation should repeat. A value equal to or
+     *                lower than zero is interpreted as indefinitely and will
+     *                trigger a call to {@link #setDefaultAnimation}.
+     */
+    void runAnimation(Stance stance, int repeats);
+
 }

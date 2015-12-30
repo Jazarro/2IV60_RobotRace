@@ -4,7 +4,7 @@
  * Assignment: RobotRace
  * Students: Arjan Boschman & Robke Geenen
  */
-package robotrace.bender;
+package robot.bender;
 
 import bodies.Body;
 import bodies.BodyManager;
@@ -75,22 +75,22 @@ public class Limb {
      */
     public void initialize(GL2 gl, BodyManager.Initialiser bmInitialiser) {
         ringBody = new SimpleBody.StackBuilder(bmInitialiser)
-                .setSliceCount(50)
+                .setSliceCount(SLICE_COUNT)
                 .addConicalFrustum(RADIUS_RING, RADIUS_RING, 0d, -HEIGHT_RING, true, true)
                 .build();
 
         footBody = new SimpleBody.StackBuilder(bmInitialiser)
-                .setSliceCount(50)
+                .setSliceCount(SLICE_COUNT)
                 .addPartialTorus(STACK_COUNT, RADIUS_FOOT, 0d, 0d, HEIGHT_FOOT, true, false)
                 .build();
 
         handBody = new SimpleBody.StackBuilder(bmInitialiser)
-                .setSliceCount(50)
+                .setSliceCount(SLICE_COUNT)
                 .addConicalFrustum(RADIUS_RING, RADIUS_HAND, 0d, -HEIGHT_HAND, true, true)
                 .build();
 
         fingerBody = new SimpleBody.StackBuilder(bmInitialiser)
-                .setSliceCount(50)
+                .setSliceCount(SLICE_COUNT)
                 .addConicalFrustum(RADIUS_FINGER, RADIUS_FINGER, RADIUS_FINGER, -HEIGHT_FINGER + RADIUS_FINGER, false, false)
                 .addPartialTorus(STACK_COUNT, RADIUS_FINGER, 0d, -HEIGHT_FINGER + RADIUS_FINGER, -HEIGHT_FINGER, false, false)
                 .build();
@@ -232,7 +232,8 @@ public class Limb {
      * Convenience class used to announce what limb this is. Will probably be
      * replaced by a more elegant solution later.
      */
-    public enum LimbType {
+    @SuppressWarnings("PublicInnerClass")
+    public static enum LimbType {
 
         RIGHT_ARM(true, true),
         LEFT_ARM(true, false),

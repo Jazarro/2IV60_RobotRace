@@ -15,6 +15,7 @@ import robotrace.GlobalState;
  * @see GlobalState
  * @author Arjan Boschman
  */
+@SuppressWarnings("FinalClass")
 public final class GsUtils {
 
     /**

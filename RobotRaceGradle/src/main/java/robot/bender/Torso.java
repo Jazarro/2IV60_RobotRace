@@ -4,13 +4,13 @@
  * Assignment: RobotRace
  * Students: Arjan Boschman & Robke Geenen
  */
-package robotrace.bender;
+package robot.bender;
 
 import bodies.Body;
 import bodies.BodyManager;
 import bodies.SimpleBody;
-import com.jogamp.opengl.util.gl2.*;
-import javax.media.opengl.*;
+import com.jogamp.opengl.util.gl2.GLUT;
+import javax.media.opengl.GL2;
 
 /**
  * Convenience class used by {@link Bender} to draw the torso and head.

@@ -4,16 +4,18 @@
  * Assignment: RobotRace
  * Students: Arjan Boschman & Robke Geenen
  */
-package robotrace;
+package robot;
 
 import com.jogamp.opengl.util.gl2.GLUT;
 import javax.media.opengl.GL2;
 import javax.media.opengl.glu.GLU;
-import robotrace.bender.Bender;
-import robotrace.bender.GLRobotBody;
+import robot.bender.Bender;
+import robotrace.Material;
+import robotrace.Vector;
 
 /**
  * Represents a Robot, to be implemented according to the Assignments.
+ * @author Arjan Boschman
  */
 public class Robot {
 
