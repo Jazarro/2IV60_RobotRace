@@ -36,8 +36,9 @@ public interface RobotBody {
      * @param stickFigure Whether the GLRobotBody is in stick mode or not. When
      *                    in stick mode, the bodies are supposed to be drawn as
      *                    stick figures.
+     * @param tAnim       Time since the start of the animation in seconds.
      */
-    void draw(GL2 gl, GLUT glut, boolean stickFigure);
+    void draw(GL2 gl, GLUT glut, boolean stickFigure, float tAnim);
 
     /**
      * Sets the default stance or animation. This animation will be repeated

@@ -78,7 +78,7 @@ public class Robot {
             gl.glTranslated(position.x(), position.y(), position.z());
             final Vector rotationAxis = calcRotationAxis();
             gl.glRotated(calcRotationAngle(), rotationAxis.x(), rotationAxis.y(), rotationAxis.z());
-            robotBody.draw(gl, glut, stickFigure);
+            robotBody.draw(gl, glut, stickFigure,tAnim);
         }
         gl.glPopMatrix();
     }

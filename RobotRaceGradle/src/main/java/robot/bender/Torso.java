@@ -108,6 +108,7 @@ public class Torso implements SingletonDrawable {
 
     private Body torsoBody;
 
+    @Override
     public void initialize(GL2 gl, BufferManager.Initialiser bmInitialiser) {
         torsoBody = new SimpleBody.StackBuilder(bmInitialiser)
                 .setSliceCount(SLICE_COUNT)

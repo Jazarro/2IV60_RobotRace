@@ -8,6 +8,7 @@ package robot.bender;
 
 import com.jogamp.opengl.util.gl2.GLUT;
 import javax.media.opengl.GL2;
+import robot.Animation;
 import static robot.bender.Limb.RING_COUNT;
 
 /**
@@ -15,12 +16,13 @@ import static robot.bender.Limb.RING_COUNT;
  * @author Arjan Boschman
  */
 public class Leg {
-    
+
     @Deprecated//Just for testing.
     private static final double HEIGHT_OUTER_SEGMENT = 0.5d / 6d;
 
     private final Limb limb;
-    
+    private final float animationPeriodOffset;
+
     private final double[] leftLegAnglesAxis = new double[Limb.RING_COUNT + 1];
     private final double[] leftLegAnglesBend = new double[Limb.RING_COUNT + 1];
     private final double[] rightLegAnglesAxis = new double[Limb.RING_COUNT + 1];
@@ -30,11 +32,18 @@ public class Leg {
     private final double[] rightArmAnglesAxis = new double[Limb.RING_COUNT + 1];
     private final double[] rightArmAnglesBend = new double[Limb.RING_COUNT + 1];
 
-    public Leg(Limb limb) {
+    public Leg(Limb limb, float animationPeriodOffset) {
         this.limb = limb;
+        this.animationPeriodOffset = animationPeriodOffset;
     }
 
-    public void draw(GL2 gl, GLUT glut, boolean stickFigure) {
+    public void draw(GL2 gl, GLUT glut, boolean stickFigure, Animation animation) {
+        final float fraction = animation.getLinearInterpolation(animationPeriodOffset);
+        
+    }
+
+    @Deprecated
+    private void something(GL2 gl, GLUT glut, boolean stickFigure, float tAnim) {
         double currAngleAxis;
         double currAngleBend;
         double newPos[] = {0d, 0d, 0d};
@@ -49,7 +58,7 @@ public class Leg {
             gl.glPopMatrix();
         }
     }
-    
+
     @Deprecated//Just for testing.
     private double[] nextPos(double[] currPos, double height, double currAngleBend, double currAngleAxis) {
         currPos[0] -= height * Math.sin(Math.toRadians(currAngleBend)) * Math.sin(Math.toRadians(currAngleAxis));
@@ -57,7 +66,7 @@ public class Leg {
         currPos[2] -= height * Math.cos(Math.toRadians(currAngleBend));
         return currPos;
     }
-    
+
     @Deprecated
     public void setRightLegAngles(double[] anglesAxis, double[] anglesBend) {
         System.arraycopy(anglesAxis, 0, this.rightLegAnglesAxis, 0, Limb.RING_COUNT + 1);

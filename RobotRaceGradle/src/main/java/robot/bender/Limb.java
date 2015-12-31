@@ -29,14 +29,14 @@ public class Limb implements SingletonDrawable {
     /**
      * The number of cylinders to use for each limb.
      */
-    public static final int RING_COUNT = 6;
+    public static final int RING_COUNT = 7;
     /**
      * The number of fingers to use on each hand.
      */
     private static final int FINGER_COUNT = 3;
     private static final double FINGER_OFFCENTER = 0.03d;
 
-    private static final double HEIGHT_OUTER_SEGMENT = 0.5d / 6d;
+    private static final double HEIGHT_OUTER_SEGMENT = 0.5d / RING_COUNT;
     private static final double HEIGHT_INNER_SEGMENT = HEIGHT_OUTER_SEGMENT * 1.2;
 
     private static final double HEIGHT_FOOT = 0.1d;
@@ -64,16 +64,7 @@ public class Limb implements SingletonDrawable {
     private Body handBody;
     private Body fingerBody;
 
-    /**
-     * NB: Due to lack of time there is significant code duplication here. This
-     * will be cleaned up by the next submission. The pattern followed is
-     * basically the same as in the {@link Body} class. Please refer to that
-     * class for explanation.
-     *
-     * @param gl            The instance of GL2 responsible for drawing the
-     *                      body.
-     * @param bmInitialiser
-     */
+    @Override
     public void initialize(GL2 gl, BufferManager.Initialiser bmInitialiser) {
         outerSegmentBody = new SimpleBody.StackBuilder(bmInitialiser)
                 .setSliceCount(SLICE_COUNT)
@@ -180,6 +171,8 @@ public class Limb implements SingletonDrawable {
                 newPos = nextPos(newPos, HEIGHT_OUTER_SEGMENT, currAngleBend, currAngleAxis);
                 gl.glRotated(180, 0, 1, 0);//This old system works on assumtion that segments are upside down.
                 outerSegmentBody.draw(gl, glut);
+                final double heightDifference = HEIGHT_OUTER_SEGMENT - HEIGHT_INNER_SEGMENT;
+                gl.glTranslated(0d, 0d, heightDifference / 2);
                 innerSegmentBody.draw(gl, glut);
                 gl.glPopMatrix();
             }

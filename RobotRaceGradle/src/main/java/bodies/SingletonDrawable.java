@@ -13,8 +13,13 @@ import javax.media.opengl.GL2;
  * with {@link Body} elements.
  *
  * Since only one instance of each Body needs to exist, SingletonDrawables
- * should also exist only once. They must be stateless, ergo they maintain no
- * record of previous interactions.
+ * should also exist only once per purpose. They're not true singletons in the
+ * strictest sense, since two instances can exist simultaneously; as long as
+ * they both have a different purpose and don't maintain different instances of
+ * the same Body.
+ *
+ * SingletonDrawables must be stateless, ergo they maintain no record of
+ * previous interactions (during the draw phase).
  *
  * @author Arjan Boschman
  * @see Body
