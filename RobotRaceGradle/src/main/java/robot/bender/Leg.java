@@ -9,13 +9,17 @@ package robot.bender;
 import com.jogamp.opengl.util.gl2.GLUT;
 import javax.media.opengl.GL2;
 import robot.Animation;
-import static robot.bender.Limb.RING_COUNT;
 
 /**
  *
  * @author Arjan Boschman
  */
 public class Leg {
+
+    private static final float HIP_PERIOD_OFFSET = 1 / 12F;
+    public static final int NR_HIP_JOINTS = 2;
+    public static final int NR_KNEE_JOINTS = 3;
+    public static final int NR_ANKLE_JOINTS = 1;
 
     @Deprecated//Just for testing.
     private static final double HEIGHT_OUTER_SEGMENT = 0.5d / 6d;
@@ -38,39 +42,44 @@ public class Leg {
     }
 
     public void draw(GL2 gl, GLUT glut, boolean stickFigure, Animation animation) {
-        final float fraction = animation.getLinearInterpolation(animationPeriodOffset);
-        
+        gl.glPushMatrix();
+        drawHips(gl, glut, stickFigure, animation);
+        drawKnees(gl, glut, stickFigure, animation);
+        drawAnkles(gl, glut, stickFigure, animation);
+        limb.drawFoot(gl, glut, stickFigure);
+        gl.glPopMatrix();
     }
 
-    @Deprecated
-    private void something(GL2 gl, GLUT glut, boolean stickFigure, float tAnim) {
-        double currAngleAxis;
-        double currAngleBend;
-        double newPos[] = {0d, 0d, 0d};
-        for (int i = 0; i < RING_COUNT; i++) {
-            gl.glPushMatrix();
-            currAngleAxis = (Limb.LimbType.LEFT_LEG.isRight()) ? (-leftLegAnglesAxis[i]) : (leftLegAnglesAxis[i]);
-            currAngleBend = leftLegAnglesBend[i];
-            gl.glTranslated(newPos[0], newPos[1], newPos[2]);
-            gl.glRotated(currAngleBend, Math.cos(Math.toRadians(currAngleAxis)), Math.sin(Math.toRadians(currAngleAxis)), 0d);
-            newPos = nextPos(newPos, HEIGHT_OUTER_SEGMENT, currAngleBend, currAngleAxis);
+    private void drawHips(GL2 gl, GLUT glut, boolean stickFigure, Animation animation) {
+        final float hipFraction = animation.getLinearInterpolation(animationPeriodOffset + HIP_PERIOD_OFFSET);
+        final float hipJointAngle = 26 - 48 - 48 * (float) Math.sin(hipFraction * 2 * Math.PI);
+        for (int i = 0; i < NR_HIP_JOINTS; i++) {
+            final float partialHipJointAngle = hipJointAngle / NR_HIP_JOINTS;
+            gl.glRotated(partialHipJointAngle, 1, 0, 0);
             limb.drawSegment(gl, glut, stickFigure);
-            gl.glPopMatrix();
+            gl.glTranslated(0, 0, Limb.HEIGHT_OUTER_SEGMENT);
         }
     }
 
-    @Deprecated//Just for testing.
-    private double[] nextPos(double[] currPos, double height, double currAngleBend, double currAngleAxis) {
-        currPos[0] -= height * Math.sin(Math.toRadians(currAngleBend)) * Math.sin(Math.toRadians(currAngleAxis));
-        currPos[1] += height * Math.sin(Math.toRadians(currAngleBend)) * Math.cos(Math.toRadians(currAngleAxis));
-        currPos[2] -= height * Math.cos(Math.toRadians(currAngleBend));
-        return currPos;
+    private void drawKnees(GL2 gl, GLUT glut, boolean stickFigure, Animation animation) {
+        final float kneeFraction = animation.getLinearInterpolation(animationPeriodOffset);
+        final float kneeJointAngle = 25 + 36.6F + 12.2F * (float) (Math.cos(kneeFraction * 2 * Math.PI) * 4 + Math.cos(kneeFraction * 2 * Math.PI) * 2);
+        for (int i = 0; i < NR_KNEE_JOINTS; i++) {
+            final float partialKneeJointAngle = kneeJointAngle / NR_KNEE_JOINTS;
+            gl.glRotated(partialKneeJointAngle, 1, 0, 0);
+            limb.drawSegment(gl, glut, stickFigure);
+            gl.glTranslated(0, 0, Limb.HEIGHT_OUTER_SEGMENT);
+        }
     }
 
-    @Deprecated
-    public void setRightLegAngles(double[] anglesAxis, double[] anglesBend) {
-        System.arraycopy(anglesAxis, 0, this.rightLegAnglesAxis, 0, Limb.RING_COUNT + 1);
-        System.arraycopy(anglesBend, 0, this.rightLegAnglesBend, 0, Limb.RING_COUNT + 1);
+    private void drawAnkles(GL2 gl, GLUT glut, boolean stickFigure, Animation animation) {
+        final float ankleJointAngle = 0F;
+        for (int i = 0; i < NR_ANKLE_JOINTS; i++) {
+            final float partialAnkleJointAngle = ankleJointAngle / NR_ANKLE_JOINTS;
+            gl.glRotated(partialAnkleJointAngle, 1, 0, 0);
+            limb.drawSegment(gl, glut, stickFigure);
+            gl.glTranslated(0, 0, Limb.HEIGHT_OUTER_SEGMENT);
+        }
     }
 
 }

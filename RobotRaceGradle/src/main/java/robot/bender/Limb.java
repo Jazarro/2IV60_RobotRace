@@ -29,14 +29,14 @@ public class Limb implements SingletonDrawable {
     /**
      * The number of cylinders to use for each limb.
      */
-    public static final int RING_COUNT = 7;
+    public static final int RING_COUNT = 6;
     /**
      * The number of fingers to use on each hand.
      */
     private static final int FINGER_COUNT = 3;
     private static final double FINGER_OFFCENTER = 0.03d;
 
-    private static final double HEIGHT_OUTER_SEGMENT = 0.5d / RING_COUNT;
+    public static final double HEIGHT_OUTER_SEGMENT = 0.5d / RING_COUNT;
     private static final double HEIGHT_INNER_SEGMENT = HEIGHT_OUTER_SEGMENT * 1.2;
 
     private static final double HEIGHT_FOOT = 0.1d;
@@ -109,7 +109,13 @@ public class Limb implements SingletonDrawable {
     }
 
     public void drawFoot(GL2 gl, GLUT glut, boolean stickFigure) {
-
+        gl.glPushMatrix();
+        {
+            gl.glTranslated(0, 0, HEIGHT_FOOT);
+            gl.glRotated(180, 1, 0, 0);
+            footBody.draw(gl, glut);
+        }
+        gl.glPopMatrix();
     }
 
     /**

@@ -100,11 +100,11 @@ public class Animation {
      *
      * @param offset The period offset to take into account. Useful for getting
      *               an interpolation fraction for applications that are out of
-     *               sync by some constant amount.
+     *               sync by some constant amount. The offset must be a number between 0 and 1.
      * @return The interpolation value between 0 and 1.
      */
     public float getLinearInterpolation(float offset) {
-        return (totalTimeElapsed + offset) % periodLength / periodLength;
+        return (totalTimeElapsed + offset * periodLength) % periodLength / periodLength;
     }
 
 }
