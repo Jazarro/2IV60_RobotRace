@@ -135,15 +135,29 @@ public class Torso implements SingletonDrawable {
      */
     public void draw(GL2 gl, GLUT glut, boolean stickFigure) {
         if (stickFigure) {
-            double bdyHeight = HEIGHT_ANTENNA_BOTTOM - HEIGHT_PELVIS;
-            gl.glPushMatrix();
-            gl.glScaled(RobotBody.STICK_THICKNESS, RobotBody.STICK_THICKNESS, bdyHeight);
-            gl.glTranslated(0d, 0d, bdyHeight / 2);
-            glut.glutSolidCube(1f);
-            gl.glPopMatrix();
+            final double bodyHeight = HEIGHT_ANTENNA_BOTTOM - HEIGHT_PELVIS;
+            drawStickFigureBody(gl, glut,bodyHeight);
+            drawStickFigurePelvis(gl, glut,bodyHeight);
         } else {
             torsoBody.draw(gl, glut);
         }
+    }
+
+    private void drawStickFigureBody(GL2 gl, GLUT glut, double bodyHeight) {
+        gl.glPushMatrix();
+        gl.glScaled(RobotBody.STICK_THICKNESS, RobotBody.STICK_THICKNESS, bodyHeight);
+        gl.glTranslated(0d, 0d, bodyHeight / 2);
+        glut.glutSolidCube(1f);
+        gl.glPopMatrix();
+    }
+
+    private void drawStickFigurePelvis(GL2 gl, GLUT glut, double bodyHeight) {
+        final double pelvisWidth = RADIUS_HIPS * 2;
+        gl.glPushMatrix();
+        gl.glScaled(pelvisWidth, RobotBody.STICK_THICKNESS, RobotBody.STICK_THICKNESS);
+        gl.glTranslated(0d, 0d, bodyHeight / 2);
+        glut.glutSolidCube(1f);
+        gl.glPopMatrix();
     }
 
 }

@@ -85,14 +85,14 @@ public class Bender implements RobotBody {
 
             //Draws the right leg and foot.
             gl.glPushMatrix();
-            gl.glTranslated((stickFigure) ? (-STICK_THICKNESS / 2) : (-LEG_OFFCENTER), 0d, 0d);
+            gl.glTranslated(-LEG_OFFCENTER, 0d, 0d);
             gl.glRotated(180, 1, 0, 0);
             rightLeg.draw(gl, glut, stickFigure, animation);
             gl.glPopMatrix();
 
             //Draws the left leg and foot.
             gl.glPushMatrix();
-            gl.glTranslated((stickFigure) ? (STICK_THICKNESS / 2) : (LEG_OFFCENTER), 0d, 0d);
+            gl.glTranslated(LEG_OFFCENTER, 0d, 0d);
             gl.glRotated(180, 1, 0, 0);
             leftLeg.draw(gl, glut, stickFigure, animation);
             gl.glPopMatrix();

@@ -37,7 +37,7 @@ public class Limb implements SingletonDrawable {
     private static final double FINGER_OFFCENTER = 0.03d;
 
     public static final double HEIGHT_OUTER_SEGMENT = 0.5d / RING_COUNT;
-    private static final double HEIGHT_INNER_SEGMENT = HEIGHT_OUTER_SEGMENT * 1.2;
+    private static final double HEIGHT_INNER_SEGMENT = HEIGHT_OUTER_SEGMENT * 1.35;
 
     private static final double HEIGHT_FOOT = 0.1d;
     private static final double HEIGHT_HAND = 0.07d;
@@ -90,18 +90,18 @@ public class Limb implements SingletonDrawable {
     }
 
     public void drawSegment(GL2 gl, GLUT glut, boolean stickFigure) {
+        gl.glPushMatrix();
         if (stickFigure) {
-            //TODO:...
+            gl.glTranslated(0d, 0d, HEIGHT_OUTER_SEGMENT / 2);
+            gl.glScaled(RobotBody.STICK_THICKNESS, RobotBody.STICK_THICKNESS, HEIGHT_OUTER_SEGMENT);
+            glut.glutSolidCube(1f);
         } else {
             outerSegmentBody.draw(gl, glut);
-            gl.glPushMatrix();
-            {
-                final double heightDifference = HEIGHT_OUTER_SEGMENT - HEIGHT_INNER_SEGMENT;
-                gl.glTranslated(0d, 0d, heightDifference / 2);
-                innerSegmentBody.draw(gl, glut);
-            }
-            gl.glPopMatrix();
+            final double heightDifference = HEIGHT_OUTER_SEGMENT - HEIGHT_INNER_SEGMENT;
+            gl.glTranslated(0d, 0d, heightDifference / 2);
+            innerSegmentBody.draw(gl, glut);
         }
+        gl.glPopMatrix();
     }
 
     public void drawHand(GL2 gl, GLUT glut, boolean stickFigure) {

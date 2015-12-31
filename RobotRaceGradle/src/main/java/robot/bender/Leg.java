@@ -21,20 +21,8 @@ public class Leg {
     public static final int NR_KNEE_JOINTS = 3;
     public static final int NR_ANKLE_JOINTS = 1;
 
-    @Deprecated//Just for testing.
-    private static final double HEIGHT_OUTER_SEGMENT = 0.5d / 6d;
-
     private final Limb limb;
     private final float animationPeriodOffset;
-
-    private final double[] leftLegAnglesAxis = new double[Limb.RING_COUNT + 1];
-    private final double[] leftLegAnglesBend = new double[Limb.RING_COUNT + 1];
-    private final double[] rightLegAnglesAxis = new double[Limb.RING_COUNT + 1];
-    private final double[] rightLegAnglesBend = new double[Limb.RING_COUNT + 1];
-    private final double[] leftArmAnglesAxis = new double[Limb.RING_COUNT + 1];
-    private final double[] leftArmAnglesBend = new double[Limb.RING_COUNT + 1];
-    private final double[] rightArmAnglesAxis = new double[Limb.RING_COUNT + 1];
-    private final double[] rightArmAnglesBend = new double[Limb.RING_COUNT + 1];
 
     public Leg(Limb limb, float animationPeriodOffset) {
         this.limb = limb;
@@ -63,7 +51,8 @@ public class Leg {
 
     private void drawKnees(GL2 gl, GLUT glut, boolean stickFigure, Animation animation) {
         final float kneeFraction = animation.getLinearInterpolation(animationPeriodOffset);
-        final float kneeJointAngle = 25 + 36.6F + 12.2F * (float) (Math.cos(kneeFraction * 2 * Math.PI) * 4 + Math.cos(kneeFraction * 2 * Math.PI) * 2);
+        final float fractionInRadians = (float) (kneeFraction * 2 * Math.PI);
+        final float kneeJointAngle = 25 + 36.6F + 12.2F * (float) ((Math.cos(fractionInRadians) * 4 + Math.cos(fractionInRadians*1) * 2));
         for (int i = 0; i < NR_KNEE_JOINTS; i++) {
             final float partialKneeJointAngle = kneeJointAngle / NR_KNEE_JOINTS;
             gl.glRotated(partialKneeJointAngle, 1, 0, 0);
