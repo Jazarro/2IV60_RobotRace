@@ -7,10 +7,12 @@
 package robot.bender;
 
 import bodies.Body;
-import bodies.BodyManager;
+import bodies.BufferManager;
 import bodies.SimpleBody;
+import bodies.SingletonDrawable;
 import com.jogamp.opengl.util.gl2.GLUT;
 import javax.media.opengl.GL2;
+import robot.RobotBody;
 
 /**
  * Convenience class used by {@link Bender} to draw the torso and head.
@@ -18,12 +20,12 @@ import javax.media.opengl.GL2;
  * @author Arjan Boschman
  * @author Robke Geenen
  */
-public class Torso {
+public class Torso implements SingletonDrawable {
 
     /**
      * Radius of the body at the hips.
      */
-    private static final double RADIUS_SHINY = 0.175d;
+    private static final double RADIUS_HIPS = 0.175d;
     /**
      * Radius of the body at the chest.
      */
@@ -60,7 +62,7 @@ public class Torso {
     /**
      * Height of the body at the hips.
      */
-    private static final double HEIGHT_SHINY = 0d;
+    private static final double HEIGHT_PELVIS = 0d;
     /**
      * Height of the body at the chest.
      */
@@ -95,24 +97,21 @@ public class Torso {
     private static final double HEIGHT_ANTENNA_BALL_TOP = HEIGHT_ANTENNA_BALL_MIDDLE + RADIUS_ANTENNA_BALL_MIDDLE; //1.2d;
 
     /**
-     * The number of edges to give the rings of the various shapes.
+     * The default number of edges to give the rings of the various shapes.
      */
     private static final int SLICE_COUNT = 50;
     /**
-     * The number of rings to use when calculating a partial torus curve.
+     * The default number of rings to use when calculating a partial torus
+     * curve.
      */
     private static final int STACK_COUNT = 20;
-    /*
-     The width of the stick figure sticks.
-     */
-    private static final double STICK_THICK = 0.03d;
 
     private Body torsoBody;
 
-    public void initialize(GL2 gl, BodyManager.Initialiser bmInitialiser) {
+    public void initialize(GL2 gl, BufferManager.Initialiser bmInitialiser) {
         torsoBody = new SimpleBody.StackBuilder(bmInitialiser)
                 .setSliceCount(SLICE_COUNT)
-                .addConicalFrustum(RADIUS_SHINY, RADIUS_TORSO, HEIGHT_SHINY, HEIGHT_TORSO, true, false)
+                .addConicalFrustum(RADIUS_HIPS, RADIUS_TORSO, HEIGHT_PELVIS, HEIGHT_TORSO, true, false)
                 .addConicalFrustum(RADIUS_TORSO, RADIUS_NECK, HEIGHT_TORSO, HEIGHT_NECK, false, false)
                 .addConicalFrustum(RADIUS_NECK, RADIUS_HEAD, HEIGHT_NECK, HEIGHT_HEAD, false, false)
                 .addPartialTorus(STACK_COUNT, RADIUS_HEAD, RADIUS_ANTENNA_BOTTOM, HEIGHT_HEAD, HEIGHT_ANTENNA_BOTTOM, false, false)
@@ -135,9 +134,9 @@ public class Torso {
      */
     public void draw(GL2 gl, GLUT glut, boolean stickFigure) {
         if (stickFigure) {
-            double bdyHeight = HEIGHT_ANTENNA_BOTTOM - HEIGHT_SHINY;
+            double bdyHeight = HEIGHT_ANTENNA_BOTTOM - HEIGHT_PELVIS;
             gl.glPushMatrix();
-            gl.glScaled(STICK_THICK, STICK_THICK, bdyHeight);
+            gl.glScaled(RobotBody.STICK_THICKNESS, RobotBody.STICK_THICKNESS, bdyHeight);
             gl.glTranslated(0d, 0d, bdyHeight / 2);
             glut.glutSolidCube(1f);
             gl.glPopMatrix();

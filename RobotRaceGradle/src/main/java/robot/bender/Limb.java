@@ -7,13 +7,15 @@
 package robot.bender;
 
 import bodies.Body;
-import bodies.BodyManager;
+import bodies.BufferManager;
 import bodies.SimpleBody;
+import bodies.SingletonDrawable;
 import com.jogamp.opengl.util.gl2.GLUT;
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 import static java.lang.Math.toRadians;
 import javax.media.opengl.GL2;
+import robot.RobotBody;
 
 /**
  * Convenience class used by {@link Bender} to draw the arms, legs, hands and
@@ -22,7 +24,7 @@ import javax.media.opengl.GL2;
  * @author Arjan Boschman
  * @author Robke Geenen
  */
-public class Limb {
+public class Limb implements SingletonDrawable {
 
     /**
      * The number of cylinders to use for each limb.
@@ -34,20 +36,18 @@ public class Limb {
     private static final int FINGER_COUNT = 3;
     private static final double FINGER_OFFCENTER = 0.03d;
 
-    private static final double HEIGHT_RING = 0.5d / 6d;
+    private static final double HEIGHT_OUTER_SEGMENT = 0.5d / 6d;
+    private static final double HEIGHT_INNER_SEGMENT = HEIGHT_OUTER_SEGMENT * 1.2;
+
     private static final double HEIGHT_FOOT = 0.1d;
     private static final double HEIGHT_HAND = 0.07d;
     private static final double HEIGHT_FINGER = 0.0625d;
 
-    private static final double RADIUS_RING = 0.04d;
-    private static final double RADIUS_FOOT = Math.sqrt(Math.pow(HEIGHT_FOOT, 2d) + Math.pow(RADIUS_RING, 2d));
+    private static final double RADIUS_OUTER_SEGMENT = 0.04d;
+    private static final double RADIUS_INNER_SEGMENT = RADIUS_OUTER_SEGMENT * 0.8;
+    private static final double RADIUS_FOOT = Math.sqrt(Math.pow(HEIGHT_FOOT, 2d) + Math.pow(RADIUS_OUTER_SEGMENT, 2d));
     private static final double RADIUS_HAND = 0.06d;
     private static final double RADIUS_FINGER = HEIGHT_FINGER - 0.05d;
-
-    /*
-     The width of the stick figure sticks.
-     */
-    private static final double STICK_THICK = 0.03d;
 
     /**
      * The number of edges to give the rings of the various shapes.
@@ -58,7 +58,8 @@ public class Limb {
      */
     private static final int STACK_COUNT = 20;
 
-    private Body ringBody;
+    private Body outerSegmentBody;
+    private Body innerSegmentBody;
     private Body footBody;
     private Body handBody;
     private Body fingerBody;
@@ -73,27 +74,51 @@ public class Limb {
      *                      body.
      * @param bmInitialiser
      */
-    public void initialize(GL2 gl, BodyManager.Initialiser bmInitialiser) {
-        ringBody = new SimpleBody.StackBuilder(bmInitialiser)
+    public void initialize(GL2 gl, BufferManager.Initialiser bmInitialiser) {
+        outerSegmentBody = new SimpleBody.StackBuilder(bmInitialiser)
                 .setSliceCount(SLICE_COUNT)
-                .addConicalFrustum(RADIUS_RING, RADIUS_RING, 0d, -HEIGHT_RING, true, true)
+                .addConicalFrustum(RADIUS_OUTER_SEGMENT, RADIUS_OUTER_SEGMENT, 0d, HEIGHT_OUTER_SEGMENT, true, true)
                 .build();
-
+        innerSegmentBody = new SimpleBody.StackBuilder(bmInitialiser)
+                .setSliceCount(SLICE_COUNT)
+                .addConicalFrustum(RADIUS_INNER_SEGMENT, RADIUS_INNER_SEGMENT, 0d, HEIGHT_INNER_SEGMENT, false, false)
+                .build();
         footBody = new SimpleBody.StackBuilder(bmInitialiser)
                 .setSliceCount(SLICE_COUNT)
                 .addPartialTorus(STACK_COUNT, RADIUS_FOOT, 0d, 0d, HEIGHT_FOOT, true, false)
                 .build();
-
         handBody = new SimpleBody.StackBuilder(bmInitialiser)
                 .setSliceCount(SLICE_COUNT)
-                .addConicalFrustum(RADIUS_RING, RADIUS_HAND, 0d, -HEIGHT_HAND, true, true)
+                .addConicalFrustum(RADIUS_OUTER_SEGMENT, RADIUS_HAND, 0d, HEIGHT_HAND, true, true)
                 .build();
-
         fingerBody = new SimpleBody.StackBuilder(bmInitialiser)
                 .setSliceCount(SLICE_COUNT)
-                .addConicalFrustum(RADIUS_FINGER, RADIUS_FINGER, RADIUS_FINGER, -HEIGHT_FINGER + RADIUS_FINGER, false, false)
-                .addPartialTorus(STACK_COUNT, RADIUS_FINGER, 0d, -HEIGHT_FINGER + RADIUS_FINGER, -HEIGHT_FINGER, false, false)
+                .addConicalFrustum(RADIUS_FINGER, RADIUS_FINGER, 0d, HEIGHT_FINGER, false, false)
+                .addPartialTorus(STACK_COUNT, RADIUS_FINGER, 0d, HEIGHT_FINGER, HEIGHT_FINGER + RADIUS_FINGER, false, false)
                 .build();
+    }
+
+    public void drawSegment(GL2 gl, GLUT glut, boolean stickFigure) {
+        if (stickFigure) {
+            //TODO:...
+        } else {
+            outerSegmentBody.draw(gl, glut);
+            gl.glPushMatrix();
+            {
+                final double heightDifference = HEIGHT_OUTER_SEGMENT - HEIGHT_INNER_SEGMENT;
+                gl.glTranslated(0d, 0d, heightDifference / 2);
+                innerSegmentBody.draw(gl, glut);
+            }
+            gl.glPopMatrix();
+        }
+    }
+
+    public void drawHand(GL2 gl, GLUT glut, boolean stickFigure) {
+
+    }
+
+    public void drawFoot(GL2 gl, GLUT glut, boolean stickFigure) {
+
     }
 
     /**
@@ -119,10 +144,11 @@ public class Limb {
      *                    for the next cylinder, all the way down to the wrist.
      * @param limbType
      */
+    @Deprecated
     public void draw(GL2 gl, GLUT glut, boolean stickFigure, double[] anglesAxis, double[] anglesBend, LimbType limbType) {
         if (stickFigure) {
             double lmbHeight = height(anglesAxis, anglesBend, limbType);
-            lmbHeight = HEIGHT_RING * RING_COUNT;
+            lmbHeight = HEIGHT_OUTER_SEGMENT * RING_COUNT;
             double currAngleAxis = 0d;
             double currAngleBend = 0d;
             for (int i = 0; i < anglesAxis.length; i++) {
@@ -136,7 +162,7 @@ public class Limb {
             gl.glPushMatrix();
             {
                 gl.glRotated(currAngleBend, Math.cos(Math.toRadians(currAngleAxis)), Math.sin(Math.toRadians(currAngleAxis)), 0d);
-                gl.glScaled(STICK_THICK, STICK_THICK, lmbHeight);
+                gl.glScaled(RobotBody.STICK_THICKNESS, RobotBody.STICK_THICKNESS, lmbHeight);
                 gl.glTranslated(0d, 0d, -lmbHeight / 2);
                 glut.glutSolidCube(1f);
             }
@@ -151,8 +177,10 @@ public class Limb {
                 currAngleBend = anglesBend[i];
                 gl.glTranslated(newPos[0], newPos[1], newPos[2]);
                 gl.glRotated(currAngleBend, Math.cos(Math.toRadians(currAngleAxis)), Math.sin(Math.toRadians(currAngleAxis)), 0d);
-                newPos = nextPos(newPos, HEIGHT_RING, currAngleBend, currAngleAxis);
-                ringBody.draw(gl, glut);
+                newPos = nextPos(newPos, HEIGHT_OUTER_SEGMENT, currAngleBend, currAngleAxis);
+                gl.glRotated(180, 0, 1, 0);//This old system works on assumtion that segments are upside down.
+                outerSegmentBody.draw(gl, glut);
+                innerSegmentBody.draw(gl, glut);
                 gl.glPopMatrix();
             }
             gl.glPushMatrix();
@@ -166,9 +194,10 @@ public class Limb {
             } else {
                 gl.glTranslated(newPos[0], newPos[1], newPos[2]);
                 gl.glRotated(currAngleBend, Math.cos(Math.toRadians(currAngleAxis)), Math.sin(Math.toRadians(currAngleAxis)), 0d);
+                gl.glRotated(180, 0, 1, 0);//This old system works on assumtion that hand is upside down.
                 handBody.draw(gl, glut);
 
-                gl.glTranslated(0d, 0d, -HEIGHT_HAND);
+                gl.glTranslated(0d, 0d, HEIGHT_HAND);
                 for (int j = 0; j < FINGER_COUNT; j++) {
                     //todo: add FINGER_PHASE
                     //todo: add fingerAngle
@@ -205,7 +234,7 @@ public class Limb {
         for (int i = 0; i < RING_COUNT; i++) {
             currAngleAxis = (limbType.isRight()) ? (-anglesAxis[i]) : (anglesAxis[i]);
             currAngleBend = anglesBend[i];
-            newPos = nextPos(newPos, HEIGHT_RING, currAngleBend, currAngleAxis);
+            newPos = nextPos(newPos, HEIGHT_OUTER_SEGMENT, currAngleBend, currAngleAxis);
         }
         currAngleAxis = (limbType.isRight()) ? (-anglesAxis[RING_COUNT]) : (anglesAxis[RING_COUNT]);
         currAngleBend = anglesBend[RING_COUNT];
@@ -232,6 +261,7 @@ public class Limb {
      * Convenience class used to announce what limb this is. Will probably be
      * replaced by a more elegant solution later.
      */
+    @Deprecated
     @SuppressWarnings("PublicInnerClass")
     public static enum LimbType {
 

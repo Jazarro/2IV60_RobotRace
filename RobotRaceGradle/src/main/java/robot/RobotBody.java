@@ -6,35 +6,22 @@
  */
 package robot;
 
-import bodies.BodyManager;
 import com.jogamp.opengl.util.gl2.GLUT;
 import javax.media.opengl.GL2;
 
 /**
- * Interface that abstracts a certain openGL 3D robot body. Two different robots
- * with different bodies could be used by the same Robot class through this
- * interface.
- *
- * Only one instance of any given GLRobotBody implementation needs to exist.
- * Multiple robots can use the same instance, that way the memory used by the
- * vertices isn't allocated multiple times for the same body. As such, one can
- * think of a GLRobotBody more as a blueprint than an actual body. It therefore
- * also doesn't have a position or orientation in the world.
+ * Interface that abstracts a certain openGL 3D robot body.
  *
  * @author Arjan Boschman
+ * @see Robot Can be used by the Robot class to draw its body and set its
+ * animations.
  */
-public interface GLRobotBody {
+public interface RobotBody {
 
     /**
-     * Loads or calculates all data needed to draw the body and prepares the
-     * given instance of GL2 for the task.
-     *
-     * @param gl            The instance of GL2 responsible for drawing the
-     *                      body.
-     * @param bmInitialiser The BodyManager.Initialiser that is used to gather
-     *                      all the data before communicating it to OpenGL.
+     * The width of the stick figure sticks.
      */
-    void initialize(GL2 gl, BodyManager.Initialiser bmInitialiser);
+    public static final double STICK_THICKNESS = 0.03d;
 
     /**
      * To be called in the draw loop. Uses the given instances of GL2 and GLUT
@@ -54,9 +41,9 @@ public interface GLRobotBody {
 
     /**
      * Sets the default stance or animation. This animation will be repeated
-     * indefinitely. When {@link #runAnimation} or {@link #runAnimationOnce} get
-     * called, after those animations finish running the robot body will return
-     * to displaying the default stance.
+     * indefinitely. When {@link #playAnimation} or {@link #playAnimationOnce}
+     * get called, after those animations finish running the robot body will
+     * return to displaying the default stance.
      *
      * The default stance is always the IDLE stance, until this method gets
      * called.
@@ -77,17 +64,18 @@ public interface GLRobotBody {
      *
      * @param stance Specifies the animation to run once.
      */
-    void runAnimationOnce(Stance stance);
+    void playAnimationOnce(Stance stance);
 
     /**
      * Interrupt the currently playing animation and run the given animation
-     * type a given number of times. After the animation is done, return to the default stance.
+     * type a given number of times. After the animation is done, return to the
+     * default stance.
      *
      * @param stance  Specifies the animation to run.
      * @param repeats How often the animation should repeat. A value equal to or
      *                lower than zero is interpreted as indefinitely and will
      *                trigger a call to {@link #setDefaultAnimation}.
      */
-    void runAnimation(Stance stance, int repeats);
+    void playAnimation(Stance stance, int repeats);
 
 }

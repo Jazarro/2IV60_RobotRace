@@ -34,7 +34,7 @@ public class Robot {
     /**
      * The object in charge of drawing the robot's actual physical body.
      */
-    private final GLRobotBody robotBody;
+    private final RobotBody robotBody;
 
     /**
      * Constructs a new instance of robot.
@@ -42,7 +42,7 @@ public class Robot {
      * @param material  The material that the robot is to be made of.
      * @param robotBody The aesthetics of the body used by this robot.
      */
-    public Robot(Material material, GLRobotBody robotBody) {
+    public Robot(Material material, RobotBody robotBody) {
         this.material = material;
         this.robotBody = robotBody;
     }
@@ -93,7 +93,7 @@ public class Robot {
      * @see #calcRotationAxis()
      */
     private double calcRotationAngle() {
-        return Math.toDegrees(Math.acos(direction.dot(Bender.ORIENTATION)));
+        return Math.toDegrees(Math.acos(direction.dot(Bender.LOCAL_ORIENTATION)));
     }
 
     /**
@@ -107,7 +107,7 @@ public class Robot {
      * @see #calcRotationAngle()
      */
     private Vector calcRotationAxis() {
-        return direction.cross(Bender.ORIENTATION).normalized();
+        return direction.cross(Bender.LOCAL_ORIENTATION).normalized();
     }
 
 }

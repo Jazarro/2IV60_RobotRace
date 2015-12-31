@@ -45,7 +45,7 @@ public class SimpleBody implements Body {
     @SuppressWarnings("PublicInnerClass")
     public static class StackBuilder {
 
-        private final BodyManager.Initialiser bmInitialiser;
+        private final BufferManager.Initialiser bmInitialiser;
         private final Assembler assembler;
         private int sliceCount = 3;
 
@@ -58,7 +58,7 @@ public class SimpleBody implements Body {
          *                    directly, the bodies created by these builders do
          *                    not.
          */
-        public StackBuilder(BodyManager.Initialiser bmInitialiser) {
+        public StackBuilder(BufferManager.Initialiser bmInitialiser) {
             this.bmInitialiser = bmInitialiser;
             this.assembler = new Assembler();
         }

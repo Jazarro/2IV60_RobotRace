@@ -6,7 +6,7 @@
  */
 package robotrace;
 
-import bodies.BodyManager;
+import bodies.BufferManager;
 import javax.media.opengl.GL;
 import static javax.media.opengl.GL.GL_COLOR_BUFFER_BIT;
 import static javax.media.opengl.GL.GL_DEPTH_BUFFER_BIT;
@@ -58,7 +58,7 @@ public class RobotRace extends Base {
 
     private static final int DEFAULT_STACKS = 25;
     private static final int DEFAULT_SLICES = 25;
-    private static final int NUMBER_ROBOTS = 4;
+    private static final int NUMBER_ROBOTS = 1;
 
     /**
      * Main program execution body, delegates to an instance of the RobotRace
@@ -71,7 +71,7 @@ public class RobotRace extends Base {
         robotRace.run();
     }
 
-    private final BodyManager bodyManager = new BodyManager();
+    private final BufferManager bodyManager = new BufferManager();
     private final Camera camera = new Camera();
     private final Terrain terrain = new EasyTerrain();
     private final RobotFactory factory = new RobotFactory();
@@ -90,10 +90,11 @@ public class RobotRace extends Base {
     }
 
     private void setupObjects() {
-        robots[0] = factory.makeRobotAt(Material.GOLD, new Vector(-1, -3, 0), Vector.X);
-        robots[1] = factory.makeRobotAt(Material.SILVER, new Vector(-1, -1, 0), Vector.X);
-        robots[2] = factory.makeRobotAt(Material.WOOD, new Vector(-1, 1, 0), Vector.X);
-        robots[3] = factory.makeRobotAt(Material.PLASTIC_ORANGE, new Vector(-1, 3, 0), Vector.X);
+        robots[0] = factory.makeBenderAt(Material.GOLD, new Vector(0, 0, 0), Vector.X);//Just for testing.
+//        robots[0] = factory.makeRobotAt(Material.GOLD, new Vector(-1, -3, 0), Vector.X);
+//        robots[1] = factory.makeRobotAt(Material.SILVER, new Vector(-1, -1, 0), Vector.X);
+//        robots[2] = factory.makeRobotAt(Material.WOOD, new Vector(-1, 1, 0), Vector.X);
+//        robots[3] = factory.makeRobotAt(Material.PLASTIC_ORANGE, new Vector(-1, 3, 0), Vector.X);
 
         // Test track
         raceTracks[0] = new RaceTrack();
@@ -120,7 +121,7 @@ public class RobotRace extends Base {
      */
     @Override
     public void initialize() {
-        final BodyManager.Initialiser bmInitialiser = bodyManager.makeInitialiser(gl);
+        final BufferManager.Initialiser bmInitialiser = bodyManager.makeInitialiser(gl);
         lighting.initialize(gl, gs);
 
         // Enable blending.//todo check if it's better with this on.

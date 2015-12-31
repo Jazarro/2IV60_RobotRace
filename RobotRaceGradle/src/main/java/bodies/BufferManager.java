@@ -18,7 +18,7 @@ import javax.media.opengl.GL2;
  *
  * @author Arjan Boschman
  */
-public class BodyManager {
+public class BufferManager {
 
     /**
      * The type format used for the index buffers. This integer refers to a
@@ -134,9 +134,9 @@ public class BodyManager {
             //Obtain buffer name.
             final int[] singleBufferName = new int[1];
             gl.glGenBuffers(1, singleBufferName, 0);
-            BodyManager.this.dataBufferName = singleBufferName[0];
+            BufferManager.this.dataBufferName = singleBufferName[0];
             //Push the data buffer to OpenGL.
-            gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, BodyManager.this.dataBufferName);
+            gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, BufferManager.this.dataBufferName);
             gl.glBufferData(GL2.GL_ARRAY_BUFFER, dataBuffer.capacity() * Double.BYTES, dataBuffer, GL2.GL_STATIC_DRAW);
             //Erase buffer data so nothing will stay in memory or silently fail if people abuse this class.
             dataBuffer = null;
