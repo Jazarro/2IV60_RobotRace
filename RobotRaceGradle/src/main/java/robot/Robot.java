@@ -27,6 +27,8 @@ public class Robot {
      * The direction in which the robot is facing.
      */
     private Vector direction = Vector.Y;
+    
+    private double speed = 1d;
     /**
      * The material from which this robot is built.
      */
@@ -53,6 +55,14 @@ public class Robot {
 
     public void setDirection(Vector direction) {
         this.direction = direction;
+    }
+    
+    public void setSpeed(double speed){
+        this.speed = speed;
+    }
+    
+    public double getSpeed(){
+        return this.speed;
     }
 
     public Material getMaterial() {

@@ -6,7 +6,7 @@
  */
 package bodies;
 
-import bodies.assembly.StackedAssembler;
+import bodies.assembly.StackAssembler;
 import com.jogamp.opengl.util.gl2.GLUT;
 import java.nio.DoubleBuffer;
 import java.nio.IntBuffer;
@@ -46,7 +46,7 @@ public class SimpleBody implements Body {
     public static class StackBuilder {
 
         private final BufferManager.Initialiser bmInitialiser;
-        private final StackedAssembler assembler;
+        private final StackAssembler assembler;
         private int sliceCount = 3;
 
         /**
@@ -60,7 +60,7 @@ public class SimpleBody implements Body {
          */
         public StackBuilder(BufferManager.Initialiser bmInitialiser) {
             this.bmInitialiser = bmInitialiser;
-            this.assembler = new StackedAssembler();
+            this.assembler = new StackAssembler();
         }
 
         /**

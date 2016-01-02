@@ -28,7 +28,7 @@ import java.util.List;
  * @author Robke Geenen
  * @author Arjan Boschman
  */
-public class StackedAssembler {
+public class StackAssembler {
 
     /**
      * The collection of Rings that make up the assembly.
