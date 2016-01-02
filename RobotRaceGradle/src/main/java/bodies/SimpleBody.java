@@ -6,12 +6,8 @@
  */
 package bodies;
 
-import bodies.assembly.Assembler;
 import com.jogamp.opengl.util.gl2.GLUT;
-import java.nio.DoubleBuffer;
-import java.nio.IntBuffer;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import javax.media.opengl.GL2;
 
