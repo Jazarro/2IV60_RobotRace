@@ -221,14 +221,15 @@ public class RobotRace extends Base {
             lighting.setMaterial(gl, robot.getMaterial());
             robot.setPosition(getLanePoint(robotT, raceTracks[gs.trackNr], i));
             robot.setDirection(getLaneTangent(robotT, raceTracks[gs.trackNr], i));
-            robot.draw(gl, glu, glut, gs.showStick, (float) robotT);
+            robot.draw(gl, glu, glut, gs.showStick, gs.tAnim);//TODO: sort out speed => anim period conversion.
         }
 
         // Draw the race track.
         raceTracks[gs.trackNr].draw(gl, glu, glut);
 
         // Draw the terrain.
-//        terrain.draw(gl, glu, glut, lighting);
+        terrain.draw(gl, glu, glut, lighting);
+
         bodyManager.endDraw(gl);
     }
 
