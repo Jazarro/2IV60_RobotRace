@@ -33,12 +33,10 @@ public class RaceTrackDefinition {
         final Vector previous = getTrackPoint(t - (1d / RaceTrack.SLICE_COUNT), raceTrack);
         final Vector original = getTrackPoint(t, raceTrack);
         final Vector next = getTrackPoint(t + (1d / RaceTrack.SLICE_COUNT), raceTrack);
-        final Vector lower = new Vector(original.x(), original.y(), original.z() - RaceTrack.TRACK_HEIGHT);
-        final Vector outerNormal = getTrackNormalLen(t, raceTrack);
         final Vector delta1 = next.subtract(original);
         final Vector delta2 = original.subtract(previous);
         final Vector deltaTotal = delta1.add(delta2);
-        return deltaTotal;
+        return new Vector(deltaTotal.x(), deltaTotal.y(), 0);
     }
 
     public static Vector getTrackTangent(double t, RaceTrack raceTrack) {
