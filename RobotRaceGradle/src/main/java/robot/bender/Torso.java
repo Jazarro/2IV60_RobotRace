@@ -8,7 +8,6 @@ package robot.bender;
 
 import bodies.Body;
 import bodies.BufferManager;
-import bodies.SimpleBody;
 import bodies.SingletonDrawable;
 import bodies.StackBuilder;
 import com.jogamp.opengl.util.gl2.GLUT;
@@ -149,6 +148,7 @@ public class Torso implements SingletonDrawable {
      *                    rather than a solid body.
      */
     public void draw(GL2 gl, GLUT glut, boolean stickFigure) {
+        gl.glRotated(-5, 1, 0, 0);
         if (stickFigure) {
             final double bodyHeight = HEIGHT_ANTENNA_BOTTOM - HEIGHT_PELVIS;
             drawStickFigureBody(gl, glut, bodyHeight);
@@ -157,6 +157,55 @@ public class Torso implements SingletonDrawable {
         } else {
             torsoBody.draw(gl, glut);
         }
+        drawEyes(gl, glut);
+    }
+
+    /**
+     * Adds a transformation to the given GL2 instance. It is assumed that the
+     * current coordinate system is based at the torso anchor point. This method
+     * will transform to the mounting point of the right leg.
+     *
+     * @param gl The instance of GL2 responsible for drawing the body. 
+     */
+    public void setRightLegMountPoint(GL2 gl) {
+        gl.glTranslated(LEG_OFFCENTER, 0d, 0d);
+        gl.glRotated(180, 1, 0, 0);
+    }
+
+    /**
+     * Adds a transformation to the given GL2 instance. It is assumed that the
+     * current coordinate system is based at the torso anchor point. This method
+     * will transform to the mounting point of the left leg.
+     *
+     * @param gl The instance of GL2 responsible for drawing the body. 
+     */
+    public void setLeftLegMountPoint(GL2 gl) {
+        gl.glTranslated(-LEG_OFFCENTER, 0d, 0d);
+        gl.glRotated(180, 1, 0, 0);
+    }
+
+    /**
+     * Adds a transformation to the given GL2 instance. It is assumed that the
+     * current coordinate system is based at the torso anchor point. This method
+     * will transform to the mounting point of the right arm.
+     *
+     * @param gl The instance of GL2 responsible for drawing the body. 
+     */
+    public void setRightArmMountPoint(GL2 gl) {
+        gl.glTranslated(SHOULDER_OFFCENTER, 0d, SHOULDER_HEIGHT);
+        gl.glRotated(90d, 0d, 1d, 0d);
+    }
+
+    /**
+     * Adds a transformation to the given GL2 instance. It is assumed that the
+     * current coordinate system is based at the torso anchor point. This method
+     * will transform to the mounting point of the left arm.
+     *
+     * @param gl The instance of GL2 responsible for drawing the body. 
+     */
+    public void setLeftArmMountPoint(GL2 gl) {
+        gl.glTranslated(-SHOULDER_OFFCENTER, 0d, SHOULDER_HEIGHT);
+        gl.glRotated(-90d, 0d, 1d, 0d);
     }
 
     private void drawStickFigureBody(GL2 gl, GLUT glut, double bodyHeight) {
@@ -181,6 +230,15 @@ public class Torso implements SingletonDrawable {
         gl.glTranslated(0d, 0d, SHOULDER_HEIGHT);
         gl.glScaled(shoulderWidth, RobotBody.STICK_THICKNESS, RobotBody.STICK_THICKNESS);
         glut.glutSolidCube(1f);
+        gl.glPopMatrix();
+    }
+
+    private void drawEyes(GL2 gl, GLUT glut) {
+        gl.glPushMatrix();
+        gl.glTranslated(0.05d, 0.125d, 0.8d);
+        glut.glutSolidSphere(0.025d, 50, 50);
+        gl.glTranslated(-0.1d, 0d, 0d);
+        glut.glutSolidSphere(0.025d, 50, 50);
         gl.glPopMatrix();
     }
 

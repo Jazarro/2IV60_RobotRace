@@ -26,7 +26,7 @@ public class EasyTerrain extends Terrain {
      * z-coordinate of the ground. Note that this is the center of the block,
      * the actual ground level one could step on is half a meter higher.
      */
-    private static final double GROUND_LEVEL = -5;
+    private static final double GROUND_LEVEL = -0.5;
     /**
      * The edge length of the ground.
      */

@@ -8,7 +8,6 @@ package robot.bender;
 
 import bodies.Body;
 import bodies.BufferManager;
-import bodies.SimpleBody;
 import bodies.SingletonDrawable;
 import bodies.StackBuilder;
 import com.jogamp.opengl.util.gl2.GLUT;
@@ -40,7 +39,7 @@ public class Limb implements SingletonDrawable {
     public static final double HEIGHT_OUTER_SEGMENT = 0.5d / RING_COUNT;
     private static final double HEIGHT_INNER_SEGMENT = HEIGHT_OUTER_SEGMENT * 1.35;
 
-    private static final double HEIGHT_FOOT = 0.1d;
+    public static final double HEIGHT_FOOT = 0.1d;
     private static final double HEIGHT_HAND = 0.07d;
     private static final double HEIGHT_FINGER = 0.0625d;
 
