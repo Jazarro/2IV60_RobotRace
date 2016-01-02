@@ -30,30 +30,20 @@ public class Bender implements RobotBody {
      */
     public static final Vector LOCAL_ORIENTATION = new Vector(0, 1, 0);
 
-    /**
-     * The absolute distance on the x-axis between the central vertical axis and
-     * the position of the legs.
-     */
-    private static final double LEG_OFFCENTER = 0.1d;
-    /**
-     * The height of the shoulder relative to the height of the torso.
-     */
-    private static final double SHOULDER_HEIGHT = 0.375d;
-    /**
-     * The absolute distance on the x-axis between the central vertical axis and
-     * the position of the shoulders.
-     */
-    private static final double SHOULDER_OFFCENTER = 0.2d;
-
     private final Leg rightLeg;
     private final Leg leftLeg;
+    private final Arm rightArm;
+    private final Arm leftArm;
     private final Torso torso;
+    private final Animation animation = new Animation(5F);
+
     private Stance defaultStance = Stance.IDLE;
-    private Animation animation = new Animation(5F);
 
     public Bender(Torso torso, Limb limb) {
         this.rightLeg = new Leg(limb, 0F);
         this.leftLeg = new Leg(limb, 0.5F);
+        this.rightArm = new Arm(limb, 0.5F, Vector.Y, Vector.Z.scale(-1));
+        this.leftArm = new Arm(limb, 0F, Vector.Y.scale(-1), Vector.Z);
         this.torso = torso;
     }
 
@@ -77,7 +67,7 @@ public class Bender implements RobotBody {
 
             //Draws the eyes:
             gl.glPushMatrix();
-            gl.glTranslated(0.05d, -0.125d, 0.8d);
+            gl.glTranslated(0.05d, 0.125d, 0.8d);
             glut.glutSolidSphere(0.025d, 50, 50);
             gl.glTranslated(-0.1d, 0d, 0d);
             glut.glutSolidSphere(0.025d, 50, 50);
@@ -85,31 +75,31 @@ public class Bender implements RobotBody {
 
             //Draws the right leg and foot.
             gl.glPushMatrix();
-            gl.glTranslated(-LEG_OFFCENTER, 0d, 0d);
+            gl.glTranslated(Torso.LEG_OFFCENTER, 0d, 0d);
             gl.glRotated(180, 1, 0, 0);
             rightLeg.draw(gl, glut, stickFigure, animation);
             gl.glPopMatrix();
 
             //Draws the left leg and foot.
             gl.glPushMatrix();
-            gl.glTranslated(LEG_OFFCENTER, 0d, 0d);
+            gl.glTranslated(-Torso.LEG_OFFCENTER, 0d, 0d);
             gl.glRotated(180, 1, 0, 0);
             leftLeg.draw(gl, glut, stickFigure, animation);
             gl.glPopMatrix();
 
-//            //Draws the right arm and hand.
-//            gl.glPushMatrix();
-//            gl.glTranslated((stickFigure) ? (-STICK_THICKNESS / 2) : (-SHOULDER_OFFCENTER), 0d, SHOULDER_HEIGHT);
-//            gl.glRotated(90d, 0d, 1d, 0d);
-//            limb.draw(gl, glut, stickFigure, rightArmAnglesAxis, rightArmAnglesBend, Limb.LimbType.RIGHT_ARM);
-//            gl.glPopMatrix();
-//
-//            //Draws the left arm and hand.
-//            gl.glPushMatrix();
-//            gl.glTranslated((stickFigure) ? (STICK_THICKNESS / 2) : (SHOULDER_OFFCENTER), 0d, SHOULDER_HEIGHT);
-//            gl.glRotated(-90d, 0d, 1d, 0d);
-//            limb.draw(gl, glut, stickFigure, leftArmAnglesAxis, leftArmAnglesBend, Limb.LimbType.LEFT_ARM);
-//            gl.glPopMatrix();
+            //Draws the right arm and hand.
+            gl.glPushMatrix();
+            gl.glTranslated(Torso.SHOULDER_OFFCENTER, 0d, Torso.SHOULDER_HEIGHT);
+            gl.glRotated(90d, 0d, 1d, 0d);
+            rightArm.draw(gl, glut, stickFigure, animation);
+            gl.glPopMatrix();
+
+            //Draws the left arm and hand.
+            gl.glPushMatrix();
+            gl.glTranslated(-Torso.SHOULDER_OFFCENTER, 0d, Torso.SHOULDER_HEIGHT);
+            gl.glRotated(-90d, 0d, 1d, 0d);
+            leftArm.draw(gl, glut, stickFigure, animation);
+            gl.glPopMatrix();
         }
         gl.glPopMatrix();
     }

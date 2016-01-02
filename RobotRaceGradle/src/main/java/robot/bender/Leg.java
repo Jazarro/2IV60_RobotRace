@@ -43,7 +43,7 @@ public class Leg {
         final float hipJointAngle = 26 - 48 - 48 * (float) Math.sin(hipFraction * 2 * Math.PI);
         for (int i = 0; i < NR_HIP_JOINTS; i++) {
             final float partialHipJointAngle = hipJointAngle / NR_HIP_JOINTS;
-            gl.glRotated(partialHipJointAngle, 1, 0, 0);
+            gl.glRotated(partialHipJointAngle, -1, 0, 0);
             limb.drawSegment(gl, glut, stickFigure);
             gl.glTranslated(0, 0, Limb.HEIGHT_OUTER_SEGMENT);
         }
@@ -55,7 +55,7 @@ public class Leg {
         final float kneeJointAngle = 25 + 36.6F + 12.2F * (float) ((Math.cos(fractionInRadians) * 4 + Math.cos(fractionInRadians*1) * 2));
         for (int i = 0; i < NR_KNEE_JOINTS; i++) {
             final float partialKneeJointAngle = kneeJointAngle / NR_KNEE_JOINTS;
-            gl.glRotated(partialKneeJointAngle, 1, 0, 0);
+            gl.glRotated(partialKneeJointAngle, -1, 0, 0);
             limb.drawSegment(gl, glut, stickFigure);
             gl.glTranslated(0, 0, Limb.HEIGHT_OUTER_SEGMENT);
         }
@@ -65,7 +65,7 @@ public class Leg {
         final float ankleJointAngle = 0F;
         for (int i = 0; i < NR_ANKLE_JOINTS; i++) {
             final float partialAnkleJointAngle = ankleJointAngle / NR_ANKLE_JOINTS;
-            gl.glRotated(partialAnkleJointAngle, 1, 0, 0);
+            gl.glRotated(partialAnkleJointAngle, -1, 0, 0);
             limb.drawSegment(gl, glut, stickFigure);
             gl.glTranslated(0, 0, Limb.HEIGHT_OUTER_SEGMENT);
         }
