@@ -21,6 +21,13 @@ public class SimpleBody implements Body {
 
     private final Set<Shape> shapes = new HashSet<>();
 
+    /**
+     * Adds a shape to this SimpleBody. During the SimpleBody's draw phase,
+     * shapes belonging to a SimpleBody will all be drawn in no particular
+     * order. Shapes may belong to several SimpleBodies.
+     *
+     * @param shape The shape to be added.
+     */
     public void addShape(Shape shape) {
         shapes.add(shape);
     }
@@ -29,6 +36,5 @@ public class SimpleBody implements Body {
     public void draw(GL2 gl, GLUT glut) {
         shapes.stream().forEach((shape) -> shape.draw(gl, glut));
     }
-
 
 }
