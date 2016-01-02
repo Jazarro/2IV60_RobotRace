@@ -8,6 +8,7 @@ package racetrack;
 
 import bodies.BufferManager;
 import javax.media.opengl.GL2;
+import static racetrack.RaceTrackDefinition.RTD_TEST;
 
 public class RaceTrackFactory {
 
@@ -18,10 +19,11 @@ public class RaceTrackFactory {
     }
 
     public void initialize(GL2 gl, BufferManager.Initialiser bmInitialiser) {
+        testRaceTrack.setTrackType(RTD_TEST);
         testRaceTrack.initialize(gl, bmInitialiser);
     }
 
-    public RaceTrack makeTestRaceTrack() {
+    public RaceTrack makeTestRaceTrack(int trackType) {
         return testRaceTrack;
     }
 
