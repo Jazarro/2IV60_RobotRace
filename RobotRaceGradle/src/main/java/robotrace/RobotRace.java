@@ -6,6 +6,7 @@
  */
 package robotrace;
 
+import racetrack.RaceTrack;
 import bodies.BufferManager;
 import javax.media.opengl.GL;
 import static javax.media.opengl.GL.GL_COLOR_BUFFER_BIT;
@@ -20,6 +21,7 @@ import static javax.media.opengl.GL2GL3.GL_FILL;
 import static javax.media.opengl.fixedfunc.GLLightingFunc.GL_NORMALIZE;
 import static javax.media.opengl.fixedfunc.GLMatrixFunc.GL_MODELVIEW;
 import static javax.media.opengl.fixedfunc.GLMatrixFunc.GL_PROJECTION;
+import racetrack.RaceTrackFactory;
 import robot.Robot;
 import robot.RobotFactory;
 
@@ -74,7 +76,8 @@ public class RobotRace extends Base {
     private final BufferManager bodyManager = new BufferManager();
     private final Camera camera = new Camera();
     private final Terrain terrain = new EasyTerrain();
-    private final RobotFactory factory = new RobotFactory();
+    private final RobotFactory robotFactory = new RobotFactory();
+    private final RaceTrackFactory raceTrackFactory = new RaceTrackFactory();
     private final Lighting lighting = new Lighting();
     private final Robot[] robots;
     private final RaceTrack[] raceTracks;
@@ -90,17 +93,18 @@ public class RobotRace extends Base {
     }
 
     private void setupObjects() {
-        robots[0] = factory.makeBenderAt(Material.GOLD, new Vector(0, 0, 0), Vector.X);//Just for testing.
-        robots[1] = factory.makeBenderAt(Material.SILVER, new Vector(-10, 5, 0), Vector.X);
-        robots[2] = factory.makeBenderAt(Material.WOOD, new Vector(-11, 5, 0), Vector.X);
-        robots[3] = factory.makeBenderAt(Material.PLASTIC_ORANGE, new Vector(-12, 5, 0), Vector.X);
+        robots[0] = robotFactory.makeBenderAt(Material.GOLD, new Vector(0, 0, 0), Vector.X);//Just for testing.
+        robots[1] = robotFactory.makeBenderAt(Material.SILVER, new Vector(-10, 5, 0), Vector.X);
+        robots[2] = robotFactory.makeBenderAt(Material.WOOD, new Vector(-11, 5, 0), Vector.X);
+        robots[3] = robotFactory.makeBenderAt(Material.PLASTIC_ORANGE, new Vector(-12, 5, 0), Vector.X);
 //        robots[0] = factory.makeBenderAt(Material.GOLD, new Vector(-1, -3, 0), Vector.X);
 //        robots[1] = factory.makeBenderAt(Material.SILVER, new Vector(-1, -1, 0), Vector.X);
 //        robots[2] = factory.makeBenderAt(Material.WOOD, new Vector(-1, 1, 0), Vector.X);
 //        robots[3] = factory.makeBenderAt(Material.PLASTIC_ORANGE, new Vector(-1, 3, 0), Vector.X);
 
         // Test track
-        raceTracks[0] = new RaceTrack();
+        //raceTracks[0] = new RaceTrack();
+        raceTracks[0] = raceTrackFactory.makeTestRaceTrack();
 
         // O-track
         raceTracks[1] = new RaceTrack(new Vector[]{ /* add control points like:
@@ -143,7 +147,9 @@ public class RobotRace extends Base {
         gl.glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
         gl.glBindTexture(GL_TEXTURE_2D, 0);
 
-        factory.initialize(gl, bmInitialiser);
+        robotFactory.initialize(gl, bmInitialiser);
+        raceTrackFactory.initialize(gl, bmInitialiser);
+        
         terrain.initialize();
 
         // Try to load four textures, add more if you like.

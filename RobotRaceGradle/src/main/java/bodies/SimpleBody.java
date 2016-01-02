@@ -6,7 +6,7 @@
  */
 package bodies;
 
-import bodies.assembly.Assembler;
+import bodies.assembly.StackedAssembler;
 import com.jogamp.opengl.util.gl2.GLUT;
 import java.nio.DoubleBuffer;
 import java.nio.IntBuffer;
@@ -46,7 +46,7 @@ public class SimpleBody implements Body {
     public static class StackBuilder {
 
         private final BufferManager.Initialiser bmInitialiser;
-        private final Assembler assembler;
+        private final StackedAssembler assembler;
         private int sliceCount = 3;
 
         /**
@@ -54,13 +54,13 @@ public class SimpleBody implements Body {
          * create one stacked body.
          *
          * @param bmInitialiser The BodyManager where the actual data will be
-         *                    stored. The BodyManager deals with OpenGL
-         *                    directly, the bodies created by these builders do
-         *                    not.
+         *                      stored. The BodyManager deals with OpenGL
+         *                      directly, the bodies created by these builders
+         *                      do not.
          */
         public StackBuilder(BufferManager.Initialiser bmInitialiser) {
             this.bmInitialiser = bmInitialiser;
-            this.assembler = new Assembler();
+            this.assembler = new StackedAssembler();
         }
 
         /**
