@@ -5,7 +5,7 @@
  */
 package bodies;
 
-import bodies.assembly.Assembler;
+import bodies.assembly.StackedAssembler;
 import java.nio.DoubleBuffer;
 import java.nio.IntBuffer;
 import java.util.List;
@@ -23,7 +23,7 @@ import javax.media.opengl.GL2;
 public class StackBuilder {
 
     private final BufferManager.Initialiser bmInitialiser;
-    private final Assembler assembler;
+    private final StackedAssembler assembler;
     private int sliceCount = 3;
 
     /**
@@ -37,7 +37,7 @@ public class StackBuilder {
      */
     public StackBuilder(BufferManager.Initialiser bmInitialiser) {
         this.bmInitialiser = bmInitialiser;
-        this.assembler = new Assembler();
+        this.assembler = new StackedAssembler();
     }
 
     /**
