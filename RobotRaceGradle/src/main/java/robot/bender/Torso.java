@@ -8,8 +8,8 @@ package robot.bender;
 
 import bodies.Body;
 import bodies.BufferManager;
-import bodies.SimpleBody;
 import bodies.SingletonDrawable;
+import bodies.StackBuilder;
 import com.jogamp.opengl.util.gl2.GLUT;
 import javax.media.opengl.GL2;
 import robot.RobotBody;
@@ -105,12 +105,26 @@ public class Torso implements SingletonDrawable {
      * curve.
      */
     private static final int STACK_COUNT = 20;
+    /**
+     * The absolute distance on the x-axis between the central vertical axis and
+     * the position of the legs.
+     */
+    public static final double LEG_OFFCENTER = 0.1;
+    /**
+     * The height of the shoulder relative to the height of the torso.
+     */
+    public static final double SHOULDER_HEIGHT = 0.375;
+    /**
+     * The absolute distance on the x-axis between the central vertical axis and
+     * the position of the shoulders.
+     */
+    public static final double SHOULDER_OFFCENTER = 0.2;
 
     private Body torsoBody;
 
     @Override
     public void initialize(GL2 gl, BufferManager.Initialiser bmInitialiser) {
-        torsoBody = new SimpleBody.StackBuilder(bmInitialiser)
+        torsoBody = new StackBuilder(bmInitialiser)
                 .setSliceCount(SLICE_COUNT)
                 .addConicalFrustum(RADIUS_HIPS, RADIUS_TORSO, HEIGHT_PELVIS, HEIGHT_TORSO, true, false)
                 .addConicalFrustum(RADIUS_TORSO, RADIUS_NECK, HEIGHT_TORSO, HEIGHT_NECK, false, false)
@@ -134,13 +148,64 @@ public class Torso implements SingletonDrawable {
      *                    rather than a solid body.
      */
     public void draw(GL2 gl, GLUT glut, boolean stickFigure) {
+        gl.glRotated(-5, 1, 0, 0);
         if (stickFigure) {
             final double bodyHeight = HEIGHT_ANTENNA_BOTTOM - HEIGHT_PELVIS;
-            drawStickFigureBody(gl, glut,bodyHeight);
-            drawStickFigurePelvis(gl, glut,bodyHeight);
+            drawStickFigureBody(gl, glut, bodyHeight);
+            drawStickFigurePelvis(gl, glut, bodyHeight);
+            drawStickFigureShoulders(gl, glut);
         } else {
             torsoBody.draw(gl, glut);
         }
+        drawEyes(gl, glut);
+    }
+
+    /**
+     * Adds a transformation to the given GL2 instance. It is assumed that the
+     * current coordinate system is based at the torso anchor point. This method
+     * will transform to the mounting point of the right leg.
+     *
+     * @param gl The instance of GL2 responsible for drawing the body. 
+     */
+    public void setRightLegMountPoint(GL2 gl) {
+        gl.glTranslated(LEG_OFFCENTER, 0d, 0d);
+        gl.glRotated(180, 1, 0, 0);
+    }
+
+    /**
+     * Adds a transformation to the given GL2 instance. It is assumed that the
+     * current coordinate system is based at the torso anchor point. This method
+     * will transform to the mounting point of the left leg.
+     *
+     * @param gl The instance of GL2 responsible for drawing the body. 
+     */
+    public void setLeftLegMountPoint(GL2 gl) {
+        gl.glTranslated(-LEG_OFFCENTER, 0d, 0d);
+        gl.glRotated(180, 1, 0, 0);
+    }
+
+    /**
+     * Adds a transformation to the given GL2 instance. It is assumed that the
+     * current coordinate system is based at the torso anchor point. This method
+     * will transform to the mounting point of the right arm.
+     *
+     * @param gl The instance of GL2 responsible for drawing the body. 
+     */
+    public void setRightArmMountPoint(GL2 gl) {
+        gl.glTranslated(SHOULDER_OFFCENTER, 0d, SHOULDER_HEIGHT);
+        gl.glRotated(90d, 0d, 1d, 0d);
+    }
+
+    /**
+     * Adds a transformation to the given GL2 instance. It is assumed that the
+     * current coordinate system is based at the torso anchor point. This method
+     * will transform to the mounting point of the left arm.
+     *
+     * @param gl The instance of GL2 responsible for drawing the body. 
+     */
+    public void setLeftArmMountPoint(GL2 gl) {
+        gl.glTranslated(-SHOULDER_OFFCENTER, 0d, SHOULDER_HEIGHT);
+        gl.glRotated(-90d, 0d, 1d, 0d);
     }
 
     private void drawStickFigureBody(GL2 gl, GLUT glut, double bodyHeight) {
@@ -152,11 +217,28 @@ public class Torso implements SingletonDrawable {
     }
 
     private void drawStickFigurePelvis(GL2 gl, GLUT glut, double bodyHeight) {
-        final double pelvisWidth = RADIUS_HIPS * 2;
+        final double pelvisWidth = LEG_OFFCENTER * 2;
         gl.glPushMatrix();
         gl.glScaled(pelvisWidth, RobotBody.STICK_THICKNESS, RobotBody.STICK_THICKNESS);
-        gl.glTranslated(0d, 0d, bodyHeight / 2);
         glut.glutSolidCube(1f);
+        gl.glPopMatrix();
+    }
+
+    private void drawStickFigureShoulders(GL2 gl, GLUT glut) {
+        final double shoulderWidth = SHOULDER_OFFCENTER * 2;
+        gl.glPushMatrix();
+        gl.glTranslated(0d, 0d, SHOULDER_HEIGHT);
+        gl.glScaled(shoulderWidth, RobotBody.STICK_THICKNESS, RobotBody.STICK_THICKNESS);
+        glut.glutSolidCube(1f);
+        gl.glPopMatrix();
+    }
+
+    private void drawEyes(GL2 gl, GLUT glut) {
+        gl.glPushMatrix();
+        gl.glTranslated(0.05d, 0.125d, 0.8d);
+        glut.glutSolidSphere(0.025d, 50, 50);
+        gl.glTranslated(-0.1d, 0d, 0d);
+        glut.glutSolidSphere(0.025d, 50, 50);
         gl.glPopMatrix();
     }
 

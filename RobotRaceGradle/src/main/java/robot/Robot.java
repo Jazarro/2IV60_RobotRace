@@ -15,6 +15,7 @@ import robotrace.Vector;
 
 /**
  * Represents a Robot, to be implemented according to the Assignments.
+ *
  * @author Arjan Boschman
  */
 public class Robot {
@@ -88,7 +89,7 @@ public class Robot {
             gl.glTranslated(position.x(), position.y(), position.z());
             final Vector rotationAxis = calcRotationAxis();
             gl.glRotated(calcRotationAngle(), rotationAxis.x(), rotationAxis.y(), rotationAxis.z());
-            robotBody.draw(gl, glut, stickFigure,tAnim);
+            robotBody.draw(gl, glut, stickFigure, tAnim);
         }
         gl.glPopMatrix();
     }
@@ -117,7 +118,8 @@ public class Robot {
      * @see #calcRotationAngle()
      */
     private Vector calcRotationAxis() {
-        return direction.cross(Bender.LOCAL_ORIENTATION).normalized();
+        return Bender.LOCAL_ORIENTATION.cross(direction).normalized();
+//        return direction.cross(Bender.LOCAL_ORIENTATION).normalized();
     }
 
 }
