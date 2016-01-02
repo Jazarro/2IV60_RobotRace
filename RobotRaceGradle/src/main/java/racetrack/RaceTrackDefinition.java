@@ -5,11 +5,14 @@ import robotrace.Vector;
 public class RaceTrackDefinition {
 
     public static final int RTD_TEST = 0;
+    public static final int RTD_TEST_ELEVATED = 1;
 
     public static Vector getTrackPoint(double t, RaceTrack raceTrack) {
         switch (raceTrack.getTrackType()) {
             case RTD_TEST:
-                return new Vector(10 * Math.cos(2d * Math.PI * t), 14 * Math.sin(2d * Math.PI * t), -10 * Math.cos(2d * Math.PI * t));
+                return new Vector(10d * Math.cos(2d * Math.PI * t), 14d * Math.sin(2d * Math.PI * t), 1d);
+            case RTD_TEST_ELEVATED:
+                return new Vector(10d * Math.cos(2d * Math.PI * t), 14d * Math.sin(2d * Math.PI * t), 11d - (10d * Math.cos(2d * Math.PI * t)));
             default:
                 return Vector.O;
         }

@@ -8,23 +8,28 @@ package racetrack;
 
 import bodies.BufferManager;
 import javax.media.opengl.GL2;
-import static racetrack.RaceTrackDefinition.RTD_TEST;
 
 public class RaceTrackFactory {
 
-    private final racetrack.RaceTrack testRaceTrack;
+    private final RaceTrack testRaceTrack = new RaceTrack();
+    private final RaceTrack testElevatedRaceTrack = new RaceTrack();
 
     public RaceTrackFactory() {
-        this.testRaceTrack = new RaceTrack();
     }
 
     public void initialize(GL2 gl, BufferManager.Initialiser bmInitialiser) {
-        testRaceTrack.setTrackType(RTD_TEST);
+        testRaceTrack.setTrackType(RaceTrackDefinition.RTD_TEST);
         testRaceTrack.initialize(gl, bmInitialiser);
+        testElevatedRaceTrack.setTrackType(RaceTrackDefinition.RTD_TEST_ELEVATED);
+        testElevatedRaceTrack.initialize(gl, bmInitialiser);
     }
 
-    public RaceTrack makeTestRaceTrack(int trackType) {
+    public RaceTrack makeTestRaceTrack() {
         return testRaceTrack;
+    }
+
+    public RaceTrack makeTestElevatedRaceTrack() {
+        return testElevatedRaceTrack;
     }
 
 }
