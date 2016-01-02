@@ -28,7 +28,7 @@ import java.util.List;
  * @author Robke Geenen
  * @author Arjan Boschman
  */
-public class Assembler {
+public class StackedAssembler {
 
     /**
      * The collection of Rings that make up the assembly.
@@ -38,7 +38,7 @@ public class Assembler {
      * The SurfaceCompilation in which the assembly is compiled by
      * compileSurfaceCompilation.
      */
-    private SurfaceCompilation surfaceCompilation;
+    private final SurfaceCompilation surfaceCompilation = new SurfaceCompilation();
 
     /**
      * Add a conical frustum (cone with top cut off) to the assembly.
@@ -77,7 +77,7 @@ public class Assembler {
      * @param closeLow   If the lower ring should be a closed surface.
      * @param closeHigh  If the higher ring should be a closed surface.
      */
-    public void addPartialTorus(int sliceCount, int stackCount, double radiusLow, 
+    public void addPartialTorus(int sliceCount, int stackCount, double radiusLow,
             double radiusHigh, double heightLow, double heightHigh, boolean closeLow, boolean closeHigh) {
         //Make a new ring if the previous one can not be reused.
         if (((rings.isEmpty()) || (sliceCount != rings.get(rings.size() - 1).getSliceCount())) /*&& rings.get(rings.size() - 1).getRadius() == radiusLow
@@ -111,23 +111,20 @@ public class Assembler {
      * Compile all current objects in the assembly into an SurfaceCompilation.
      */
     public void compileSurfaceCompilation() {
-        final SurfaceCompilation newSurfaceCompilation = new SurfaceCompilation();
         List<IndexedVertex> knownVertices = new ArrayList<>();
         //Iterate over the Rings to create polygon surfaces for closed rings and quad strip surfaces for two consecutive Rings.
         for (int i = 0; i < rings.size(); i++) {
             if (rings.get(i).isClosed()) {
                 //If the ring represents a closed surface, create a polygon Surface to close the Ring.
                 final Surface surface = makeSurfacePolygon(rings.get(i));
-                newSurfaceCompilation.addSurface(surface);
+                surfaceCompilation.addSurface(surface);
             }
             if (i != 0) {
                 //From the second Ring onwards create Surfaces between two consecutive Rings.
                 final Surface surface = makeSurfaceQuadStrip((i < 2) ? null : rings.get(i - 2), rings.get(i - 1), rings.get(i), ((i + 1) >= rings.size()) ? null : rings.get(i + 1), (i == 1) ? null : knownVertices);
-                knownVertices = newSurfaceCompilation.addSurface(surface);
+                knownVertices = surfaceCompilation.addSurface(surface);
             }
         }
-        //Store the complete SurfaceCompilation globally so it's properties can be queried.
-        this.surfaceCompilation = newSurfaceCompilation;
     }
 
     /**
@@ -136,24 +133,7 @@ public class Assembler {
      * @return A buffer with all vertices of the SurfaceCompilation.
      */
     public DoubleBuffer getDataBuffer() {
-        final List<Double> dataList = new ArrayList<>();
-        //Iterate over all vertices in the SurfaceCompilation.
-        for (IndexedVertex vertex : surfaceCompilation.getVertices()) {
-            //And store all vertices' data in an ArrayList.
-            dataList.add(vertex.getVertex().getPositionA()[IND_X]);
-            dataList.add(vertex.getVertex().getPositionA()[IND_Y]);
-            dataList.add(vertex.getVertex().getPositionA()[IND_Z]);
-            dataList.add(vertex.getVertex().getNormalA()[IND_X]);
-            dataList.add(vertex.getVertex().getNormalA()[IND_Y]);
-            dataList.add(vertex.getVertex().getNormalA()[IND_Z]);
-        }
-        final double[] dataArray = new double[dataList.size()];
-        //Convert the ArrayList into an array.
-        for (int i = 0; i < dataArray.length; i++) {
-            dataArray[i] = dataList.get(i);
-        }
-        //Deliver it in the form of a buffer.
-        return Buffers.newDirectDoubleBuffer(dataArray);
+        return surfaceCompilation.getDataBuffer();
     }
 
     /**
@@ -163,20 +143,7 @@ public class Assembler {
      *         surfaces.
      */
     public List<IntBuffer> getIndicesBuffers() {
-        final List<IntBuffer> indicesBufferList = new ArrayList<>();
-        //Iterate over the surfaces in the SurfaceCompilation.
-        for (Surface surface : surfaceCompilation.getSurfaces()) {
-            //Get the list of indices from the surface.
-            final List<Integer> indicesList = surface.getIndices();
-            final int[] indicesArray = new int[indicesList.size()];
-            //And convert it from an ArrayList to an array.
-            for (int i = 0; i < indicesArray.length; i++) {
-                indicesArray[i] = indicesList.get(i);
-            }
-            //Add it to the buffer list in the form of a buffer.
-            indicesBufferList.add(Buffers.newDirectIntBuffer(indicesArray));
-        }
-        return indicesBufferList;
+        return surfaceCompilation.getIndicesBuffers();
     }
 
     /**
@@ -185,13 +152,7 @@ public class Assembler {
      * @return A list of surface types.
      */
     public List<Boolean> getSurfaceTypeList() {
-        final List<Boolean> surfaceTypeList = new ArrayList<>();
-        //Iterate over all surfaces in the SurfaceCompilation.
-        for (Surface surface : surfaceCompilation.getSurfaces()) {
-            //Add the type of the surface to the list.
-            surfaceTypeList.add(surface.isPolygon());
-        }
-        return surfaceTypeList;
+        return surfaceCompilation.getSurfaceTypeList();
     }
 
     /**
@@ -292,15 +253,13 @@ public class Assembler {
         if (ring1.isVertexNormalCalculated(index)) {
             vertexNormal = ring1.getVertices().get(index).getNormalA();
         } else //If this is the only ring (it has no neighboring rings) then no surface is defined, and also no normal.
-        {
-            if ((ring2 == null) && (ring0 == null)) {
+         if ((ring2 == null) && (ring0 == null)) {
                 vertexNormal = new double[COORD_COUNT];
                 vertexNormal[IND_X] = 0d;
                 vertexNormal[IND_Y] = 0d;
                 vertexNormal[IND_Z] = 0d;
             } else //If this is the last ring, then the normal is equal for both the first and second ring of the surface.
-            {
-                if (ring2 == null) {
+             if (ring2 == null) {
                     vertexNormal = ring0.getVertices().get(index).getNormalA();
                 } //Else the normal will be calculated.
                 else {
@@ -311,8 +270,6 @@ public class Assembler {
                     ring1.setVertex(vertex, index);
                     ring1.setVertexNormalCalculated(index);
                 }
-            }
-        }
         if ((!ring1.isSharp()) && (ring0 != null)) {
             //If the ring represents a smooth edge, the normal will be averaged with the normal below it.
             for (int i = 0; i < COORD_COUNT; i++) {

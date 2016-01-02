@@ -4,21 +4,34 @@
  * Assignment: RobotRace
  * Students: Arjan Boschman & Robke Geenen
  */
-package robotrace;
+package racetrack;
 
+import bodies.Body;
+import bodies.BufferManager;
+import bodies.SimpleBody;
+import bodies.SingletonDrawable;
+import bodies.TrackBuilder;
+import bodies.assembly.Vertex;
 import com.jogamp.opengl.util.gl2.GLUT;
+import java.util.ArrayList;
+import java.util.List;
+import javafx.scene.media.Track;
 import javax.media.opengl.GL2;
 import javax.media.opengl.glu.GLU;
+import robotrace.Vector;
 
 /**
  * Implementation of a race track that is made from Bezier segments.
  */
-class RaceTrack {
+public class RaceTrack implements SingletonDrawable {
 
-    /**
-     * The width of one lane. The total width of the track is 4 * laneWidth.
-     */
-    //private final static float laneWidth = 1.22f;
+    private static final double LANE_WIDTH = 1.22d;
+    private static final int LANE_COUNT = 4;
+    private static final double TRACK_HEIGHT = 2d;
+    private static final int SLICE_COUNT = 50;
+
+    private Body raceTrackBody;
+
     /**
      * Array with 3N control points, where N is the number of segments.
      */
@@ -37,13 +50,23 @@ class RaceTrack {
         this.controlPoints = controlPoints;
     }
 
+    @Override
+    public void initialize(GL2 gl, BufferManager.Initialiser bmInitialiser) {
+        List<Vertex> trackDescription = new ArrayList<>();
+        for (double t = 0d; t < 1d; t += (1d / SLICE_COUNT)) {
+            trackDescription.add(new Vertex(getPoint(t)));
+        }
+        raceTrackBody = new TrackBuilder(bmInitialiser)
+                .setTrackProperties(LANE_WIDTH, LANE_COUNT, TRACK_HEIGHT)
+                .build(trackDescription);
+    }
+
     /**
      * Draws this track, based on the control points.
      */
     public void draw(GL2 gl, GLU glu, GLUT glut) {
         if (controlPoints == null) {
-            // draw the test track
-
+            raceTrackBody.draw(gl, glut);
         } else {
             // draw the spline track
         }
@@ -77,7 +100,7 @@ class RaceTrack {
      * Returns a point on the test track at 0 <= t < 1.
      */
     private Vector getPoint(double t) {
-        return new Vector(10 * Math.cos(2d * Math.PI * t), 14 * Math.sin(2d * Math.PI * t), 1);
+        return new Vector(10 * Math.cos(2d * Math.PI * t), 14 * Math.sin(2d * Math.PI * t), 20*Math.cos(2d * Math.PI * t));
     }
 
     /**
