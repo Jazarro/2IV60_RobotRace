@@ -12,6 +12,7 @@ import bodies.SingletonDrawable;
 import bodies.StackBuilder;
 import com.jogamp.opengl.util.gl2.GLUT;
 import javax.media.opengl.GL2;
+import robot.Animation;
 import robot.RobotBody;
 
 /**
@@ -21,6 +22,11 @@ import robot.RobotBody;
  * @author Robke Geenen
  */
 public class Torso implements SingletonDrawable {
+
+    /**
+     * The rotation of the torso around the X axis during the running stance.
+     */
+    private static final int RUNNING_ANGLE = -5;
 
     /**
      * Radius of the body at the hips.
@@ -146,9 +152,14 @@ public class Torso implements SingletonDrawable {
      *                    robot body.
      * @param stickFigure If true, the robot must draw itself as a stick figure
      *                    rather than a solid body.
+     * @param animation   An instance of animation, containing information about
+     *                    at what point in the animation period the torso is at.
      */
-    public void draw(GL2 gl, GLUT glut, boolean stickFigure) {
-        gl.glRotated(-5, 1, 0, 0);
+    public void draw(GL2 gl, GLUT glut, boolean stickFigure, Animation animation) {
+        final double fractionInRadians = animation.getLinearInterpolation() * 2 * Math.PI;
+        final double height = 0.05 * Math.abs(Math.sin(fractionInRadians));
+        gl.glTranslated(0, 0, height);
+        gl.glRotated(RUNNING_ANGLE, 1, 0, 0);
         if (stickFigure) {
             final double bodyHeight = HEIGHT_ANTENNA_BOTTOM - HEIGHT_PELVIS;
             drawStickFigureBody(gl, glut, bodyHeight);
@@ -165,7 +176,7 @@ public class Torso implements SingletonDrawable {
      * current coordinate system is based at the torso anchor point. This method
      * will transform to the mounting point of the right leg.
      *
-     * @param gl The instance of GL2 responsible for drawing the body. 
+     * @param gl The instance of GL2 responsible for drawing the body.
      */
     public void setRightLegMountPoint(GL2 gl) {
         gl.glTranslated(LEG_OFFCENTER, 0d, 0d);
@@ -177,7 +188,7 @@ public class Torso implements SingletonDrawable {
      * current coordinate system is based at the torso anchor point. This method
      * will transform to the mounting point of the left leg.
      *
-     * @param gl The instance of GL2 responsible for drawing the body. 
+     * @param gl The instance of GL2 responsible for drawing the body.
      */
     public void setLeftLegMountPoint(GL2 gl) {
         gl.glTranslated(-LEG_OFFCENTER, 0d, 0d);
@@ -189,7 +200,7 @@ public class Torso implements SingletonDrawable {
      * current coordinate system is based at the torso anchor point. This method
      * will transform to the mounting point of the right arm.
      *
-     * @param gl The instance of GL2 responsible for drawing the body. 
+     * @param gl The instance of GL2 responsible for drawing the body.
      */
     public void setRightArmMountPoint(GL2 gl) {
         gl.glTranslated(SHOULDER_OFFCENTER, 0d, SHOULDER_HEIGHT);
@@ -201,7 +212,7 @@ public class Torso implements SingletonDrawable {
      * current coordinate system is based at the torso anchor point. This method
      * will transform to the mounting point of the left arm.
      *
-     * @param gl The instance of GL2 responsible for drawing the body. 
+     * @param gl The instance of GL2 responsible for drawing the body.
      */
     public void setLeftArmMountPoint(GL2 gl) {
         gl.glTranslated(-SHOULDER_OFFCENTER, 0d, SHOULDER_HEIGHT);

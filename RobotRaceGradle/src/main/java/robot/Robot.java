@@ -55,7 +55,7 @@ public class Robot {
     }
 
     public void setDirection(Vector direction) {
-        this.direction = direction;
+        this.direction = new Vector(direction.x(), direction.y(), 0);
     }
     
     public void setSpeed(double speed){

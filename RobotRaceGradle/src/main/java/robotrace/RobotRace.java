@@ -22,8 +22,6 @@ import static javax.media.opengl.fixedfunc.GLMatrixFunc.GL_MODELVIEW;
 import static javax.media.opengl.fixedfunc.GLMatrixFunc.GL_PROJECTION;
 import racetrack.RaceTrack;
 import static racetrack.RaceTrackDefinition.RTD_TEST;
-import static racetrack.RaceTrackDefinition.getLanePoint;
-import static racetrack.RaceTrackDefinition.getLaneTangent;
 import racetrack.RaceTrackFactory;
 import robot.Robot;
 import robot.RobotFactory;
@@ -106,9 +104,9 @@ public class RobotRace extends Base {
 //        robots[3] = factory.makeBenderAt(Material.PLASTIC_ORANGE, new Vector(-1, 3, 0), Vector.X);
 
         robots[0].setSpeed(0.1d);
-        robots[1].setSpeed(0.12d);
-        robots[2].setSpeed(0.15d);
-        robots[3].setSpeed(0.2d);
+        robots[1].setSpeed(0.1d);
+        robots[2].setSpeed(0.1d);
+        robots[3].setSpeed(0.1d);
 
         // Test track
         //raceTracks[0] = new RaceTrack();
@@ -219,16 +217,16 @@ public class RobotRace extends Base {
             final Robot robot = robots[i];
             final double robotT = gs.tAnim * robot.getSpeed();
             lighting.setMaterial(gl, robot.getMaterial());
-            robot.setPosition(getLanePoint(robotT, raceTracks[gs.trackNr], i));
-            robot.setDirection(getLaneTangent(robotT, raceTracks[gs.trackNr], i));
-            robot.draw(gl, glu, glut, gs.showStick, (float) robotT);
+//            robot.setPosition(getLanePoint(robotT, raceTracks[gs.trackNr], i));
+//            robot.setDirection(getLaneTangent(robotT, raceTracks[gs.trackNr], i));
+            robot.draw(gl, glu, glut, gs.showStick, gs.tAnim);//TODO: sort out speed => anim period conversion.
         }
 
         // Draw the race track.
         raceTracks[gs.trackNr].draw(gl, glu, glut);
 
         // Draw the terrain.
-//        terrain.draw(gl, glu, glut, lighting);
+        terrain.draw(gl, glu, glut, lighting);
 
         bodyManager.endDraw(gl);
     }

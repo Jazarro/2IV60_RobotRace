@@ -55,7 +55,7 @@ public class Bender implements RobotBody {
             final double legHeight = Limb.HEIGHT_OUTER_SEGMENT * Limb.RING_COUNT + Limb.HEIGHT_FOOT;
             gl.glTranslated(0d, 0d, legHeight);
 
-            torso.draw(gl, glut, stickFigure);
+            torso.draw(gl, glut, stickFigure, animation);
 
             gl.glPushMatrix();
             {
