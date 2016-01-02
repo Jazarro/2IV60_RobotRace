@@ -9,38 +9,29 @@ public class RaceTrackDefinition {
     public static Vector getTrackPoint(double t, RaceTrack raceTrack) {
         switch (raceTrack.getTrackType()) {
             case RTD_TEST:
-                return new Vector(10 * Math.cos(2d * Math.PI * t), 14 * Math.sin(2d * Math.PI * t), -5 * Math.cos(2d * Math.PI * t));
+                return new Vector(10 * Math.cos(2d * Math.PI * t), 14 * Math.sin(2d * Math.PI * t), -10 * Math.cos(2d * Math.PI * t));
             default:
                 return Vector.O;
         }
     }
 
-    private static Vector getTrackNormalLen(double t, RaceTrack raceTrack) {
+    public static Vector getTrackNormal(double t, RaceTrack raceTrack) {
         final Vector previous = getTrackPoint(t - (1d / RaceTrack.SLICE_COUNT), raceTrack);
         final Vector original = getTrackPoint(t, raceTrack);
         final Vector next = getTrackPoint(t + (1d / RaceTrack.SLICE_COUNT), raceTrack);
-        final Vector lower = new Vector(original.x(), original.y(), original.z() - RaceTrack.TRACK_HEIGHT);
+        final Vector lower = original.subtract(Vector.Z.normalized().scale(RaceTrack.TRACK_HEIGHT));
         final Vector normal1 = lower.subtract(original).cross(next.subtract(original));
         final Vector normal2 = previous.subtract(original).cross(lower.subtract(original));
-        return normal1.add(normal2);
+        return normal1.add(normal2).normalized();
     }
 
-    public static Vector getTrackNormal(double t, RaceTrack raceTrack) {
-        return getTrackNormalLen(t, raceTrack).normalized();
-    }
-
-    private static Vector getTrackTangentLen(double t, RaceTrack raceTrack) {
+    public static Vector getTrackTangent(double t, RaceTrack raceTrack) {
         final Vector previous = getTrackPoint(t - (1d / RaceTrack.SLICE_COUNT), raceTrack);
         final Vector original = getTrackPoint(t, raceTrack);
         final Vector next = getTrackPoint(t + (1d / RaceTrack.SLICE_COUNT), raceTrack);
         final Vector delta1 = next.subtract(original);
         final Vector delta2 = original.subtract(previous);
-        final Vector deltaTotal = delta1.add(delta2);
-        return new Vector(deltaTotal.x(), deltaTotal.y(), 0);
-    }
-
-    public static Vector getTrackTangent(double t, RaceTrack raceTrack) {
-        return getTrackTangentLen(t, raceTrack).normalized();
+        return delta1.add(delta2).normalized();
     }
 
     public static Vector getLanePoint(double t, RaceTrack raceTrack, int laneNumber) {
