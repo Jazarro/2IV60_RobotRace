@@ -83,7 +83,7 @@ public class TrackAssembler {
         private TrackSlice(Vertex previous, Vertex current, Vertex next, double laneWidth, int laneCount, double trackHeight) {
             final double halfTrackWidth = laneWidth * laneCount / 2d;
             final Vector original = current.getPositionV();
-            final Vector lower = new Vector(original.x(), original.y(), original.z() - trackHeight);
+            final Vector lower = original.subtract(Vector.Z.normalized().scale(trackHeight));
             final Vector lonNormal1 = lower.subtract(original).cross(next.getPositionV().subtract(original));
             final Vector lonNormal2 = previous.getPositionV().subtract(original).cross(lower.subtract(original));
             final Vector outerNormal = lonNormal1.add(lonNormal2).normalized();
