@@ -100,7 +100,7 @@ public class Torso implements SingletonDrawable {
     /**
      * Height of the body at the top of the transmitter.
      */
-    private static final double HEIGHT_ANTENNA_BALL_TOP = HEIGHT_ANTENNA_BALL_MIDDLE + RADIUS_ANTENNA_BALL_MIDDLE; //1.2d;
+    public static final double HEIGHT_ANTENNA_BALL_TOP = HEIGHT_ANTENNA_BALL_MIDDLE + RADIUS_ANTENNA_BALL_MIDDLE; //1.2d;
 
     /**
      * The default number of edges to give the rings of the various shapes.
@@ -142,7 +142,7 @@ public class Torso implements SingletonDrawable {
                 .addPartialTorus(STACK_COUNT, RADIUS_ANTENNA_BALL_MIDDLE, RADIUS_ANTENNA_BALL_TOP, HEIGHT_ANTENNA_BALL_MIDDLE, HEIGHT_ANTENNA_BALL_TOP, false, false)
                 .build();
     }
-
+    
     /**
      * To be called in the draw loop. Uses the given instance of GL2 to draw the
      * body.
@@ -156,10 +156,9 @@ public class Torso implements SingletonDrawable {
      *                    at what point in the animation period the torso is at.
      */
     public void draw(GL2 gl, GLUT glut, boolean stickFigure, Animation animation) {
-        final double fractionInRadians = animation.getLinearInterpolation() * 2 * Math.PI;
-        final double height = 0.05 * Math.abs(Math.sin(fractionInRadians));
-        gl.glTranslated(0, 0, height);
-        gl.glRotated(RUNNING_ANGLE, 1, 0, 0);
+        if(/**TODO: stance is RUNNING */ true){
+            applyRunningTransformation(gl, animation);
+        }
         if (stickFigure) {
             final double bodyHeight = HEIGHT_ANTENNA_BOTTOM - HEIGHT_PELVIS;
             drawStickFigureBody(gl, glut, bodyHeight);
@@ -170,7 +169,48 @@ public class Torso implements SingletonDrawable {
         }
         drawEyes(gl, glut);
     }
+    
+    private void applyRunningTransformation(GL2 gl, Animation animation) {
+        final double fractionInRadians = animation.getLinearInterpolation() * 2 * Math.PI;
+        final double bobbingUpAndDownHeight = 0.05 * Math.abs(Math.sin(fractionInRadians));
+        gl.glTranslated(0, 0, bobbingUpAndDownHeight);
+        gl.glRotated(RUNNING_ANGLE, 1, 0, 0);
+    }
 
+    private void drawStickFigureBody(GL2 gl, GLUT glut, double bodyHeight) {
+        gl.glPushMatrix();
+        gl.glScaled(RobotBody.STICK_THICKNESS, RobotBody.STICK_THICKNESS, bodyHeight);
+        gl.glTranslated(0d, 0d, bodyHeight / 2);
+        glut.glutSolidCube(1f);
+        gl.glPopMatrix();
+    }
+
+    private void drawStickFigurePelvis(GL2 gl, GLUT glut, double bodyHeight) {
+        final double pelvisWidth = LEG_OFFCENTER * 2;
+        gl.glPushMatrix();
+        gl.glScaled(pelvisWidth, RobotBody.STICK_THICKNESS, RobotBody.STICK_THICKNESS);
+        glut.glutSolidCube(1f);
+        gl.glPopMatrix();
+    }
+
+    private void drawStickFigureShoulders(GL2 gl, GLUT glut) {
+        final double shoulderWidth = SHOULDER_OFFCENTER * 2;
+        gl.glPushMatrix();
+        gl.glTranslated(0d, 0d, SHOULDER_HEIGHT);
+        gl.glScaled(shoulderWidth, RobotBody.STICK_THICKNESS, RobotBody.STICK_THICKNESS);
+        glut.glutSolidCube(1f);
+        gl.glPopMatrix();
+    }
+
+    private void drawEyes(GL2 gl, GLUT glut) {
+        gl.glPushMatrix();
+        gl.glTranslated(0.05d, 0.125d, 0.8d);
+        glut.glutSolidSphere(0.025d, 50, 50);
+        gl.glTranslated(-0.1d, 0d, 0d);
+        glut.glutSolidSphere(0.025d, 50, 50);
+        gl.glPopMatrix();
+    }
+    
     /**
      * Adds a transformation to the given GL2 instance. It is assumed that the
      * current coordinate system is based at the torso anchor point. This method
@@ -217,40 +257,6 @@ public class Torso implements SingletonDrawable {
     public void setLeftArmMountPoint(GL2 gl) {
         gl.glTranslated(-SHOULDER_OFFCENTER, 0d, SHOULDER_HEIGHT);
         gl.glRotated(-90d, 0d, 1d, 0d);
-    }
-
-    private void drawStickFigureBody(GL2 gl, GLUT glut, double bodyHeight) {
-        gl.glPushMatrix();
-        gl.glScaled(RobotBody.STICK_THICKNESS, RobotBody.STICK_THICKNESS, bodyHeight);
-        gl.glTranslated(0d, 0d, bodyHeight / 2);
-        glut.glutSolidCube(1f);
-        gl.glPopMatrix();
-    }
-
-    private void drawStickFigurePelvis(GL2 gl, GLUT glut, double bodyHeight) {
-        final double pelvisWidth = LEG_OFFCENTER * 2;
-        gl.glPushMatrix();
-        gl.glScaled(pelvisWidth, RobotBody.STICK_THICKNESS, RobotBody.STICK_THICKNESS);
-        glut.glutSolidCube(1f);
-        gl.glPopMatrix();
-    }
-
-    private void drawStickFigureShoulders(GL2 gl, GLUT glut) {
-        final double shoulderWidth = SHOULDER_OFFCENTER * 2;
-        gl.glPushMatrix();
-        gl.glTranslated(0d, 0d, SHOULDER_HEIGHT);
-        gl.glScaled(shoulderWidth, RobotBody.STICK_THICKNESS, RobotBody.STICK_THICKNESS);
-        glut.glutSolidCube(1f);
-        gl.glPopMatrix();
-    }
-
-    private void drawEyes(GL2 gl, GLUT glut) {
-        gl.glPushMatrix();
-        gl.glTranslated(0.05d, 0.125d, 0.8d);
-        glut.glutSolidSphere(0.025d, 50, 50);
-        gl.glTranslated(-0.1d, 0d, 0d);
-        glut.glutSolidSphere(0.025d, 50, 50);
-        gl.glPopMatrix();
     }
 
 }

@@ -233,6 +233,7 @@ public class Limb implements SingletonDrawable {
      * @return The distance of the torso to the ground, assuming that at least
      *         one leg touches the ground.
      */
+    @Deprecated
     public double height(double[] anglesAxis, double[] anglesBend, LimbType limbType) {
         double currAngleAxis;
         double currAngleBend;
@@ -256,6 +257,7 @@ public class Limb implements SingletonDrawable {
     }
 
     //todo: fix relative angles?
+    @Deprecated
     private double[] nextPos(double[] currPos, double height, double currAngleBend, double currAngleAxis) {
         currPos[0] -= height * Math.sin(Math.toRadians(currAngleBend)) * Math.sin(Math.toRadians(currAngleAxis));
         currPos[1] += height * Math.sin(Math.toRadians(currAngleBend)) * Math.cos(Math.toRadians(currAngleAxis));
