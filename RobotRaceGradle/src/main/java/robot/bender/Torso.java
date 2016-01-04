@@ -142,7 +142,7 @@ public class Torso implements SingletonDrawable {
                 .addPartialTorus(STACK_COUNT, RADIUS_ANTENNA_BALL_MIDDLE, RADIUS_ANTENNA_BALL_TOP, HEIGHT_ANTENNA_BALL_MIDDLE, HEIGHT_ANTENNA_BALL_TOP, false, false)
                 .build();
     }
-    
+
     /**
      * To be called in the draw loop. Uses the given instance of GL2 to draw the
      * body.
@@ -156,8 +156,12 @@ public class Torso implements SingletonDrawable {
      *                    at what point in the animation period the torso is at.
      */
     public void draw(GL2 gl, GLUT glut, boolean stickFigure, Animation animation) {
-        if(/**TODO: stance is RUNNING */ true){
-            applyRunningTransformation(gl, animation);
+        switch (animation.getCurrentAnimationType()) {
+            case RUNNING:
+                applyRunningTransformation(gl, animation);
+                break;
+            default:
+                break;
         }
         if (stickFigure) {
             final double bodyHeight = HEIGHT_ANTENNA_BOTTOM - HEIGHT_PELVIS;
@@ -169,7 +173,7 @@ public class Torso implements SingletonDrawable {
         }
         drawEyes(gl, glut);
     }
-    
+
     private void applyRunningTransformation(GL2 gl, Animation animation) {
         final double fractionInRadians = animation.getLinearInterpolation() * 2 * Math.PI;
         final double bobbingUpAndDownHeight = 0.05 * Math.abs(Math.sin(fractionInRadians));
@@ -210,7 +214,7 @@ public class Torso implements SingletonDrawable {
         glut.glutSolidSphere(0.025d, 50, 50);
         gl.glPopMatrix();
     }
-    
+
     /**
      * Adds a transformation to the given GL2 instance. It is assumed that the
      * current coordinate system is based at the torso anchor point. This method

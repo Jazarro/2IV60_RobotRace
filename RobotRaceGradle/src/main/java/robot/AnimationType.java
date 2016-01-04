@@ -7,20 +7,20 @@
 package robot;
 
 /**
- * Sums up the stances or animations that robots can display. Each robot body
- * implements its own versions of these stances.
+ * Sums up the types of animations that robots can display. Each robot body
+ * implements its own versions of these animations.
  *
  * Robot bodies don't necessarily need to provide implementations for all
- * stances. If a robot body is assigned a stance it doesn't support, it will
- * default to the IDLE stance instead. The IDLE stance is therefore an exception
+ * animations. If a robot body is assigned a animation it doesn't support, it will
+ * default to the IDLE animation instead. IDLE is therefore an exception
  * to the rule; all robot bodies all obliged to support it.
  *
  * @author Arjan Boschman
  */
-public enum Stance {
+public enum AnimationType {
     /**
-     * The default stance. Just standing around, doing nothing. All robot bodies
-     * must implement at least this stance.
+     * The default animation type. Just standing around, doing nothing. All robot bodies
+     * must implement at least this animation.
      */
     IDLE,
     /**
@@ -39,7 +39,7 @@ public enum Stance {
      */
     CHEERING,
     /**
-     * Celebration can take many forms, for instance jumping or throwing ones
+     * Celebration can take many forms, for instance jumping or throwing one's
      * arms into the air. Primarily used by athletes and spectators upon winning
      * the game.
      */
