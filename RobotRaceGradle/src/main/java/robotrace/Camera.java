@@ -39,9 +39,12 @@ class Camera {
 
     private static final Vector HELICOPTER_EYE = new Vector(0d, 0d, 10d);
     private static final Vector HELICOPTER_LOOKAT = new Vector(0d, 0d, 0d);
-    
-    private static final Vector MOTORCYCLE_EYE = new Vector(5d, 0d, 1d);
+
+    private static final Vector MOTORCYCLE_EYE = new Vector(7d, 0d, 1d);
     private static final Vector MOTORCYCLE_LOOKAT = new Vector(0d, 0d, 1d);
+
+    private static final Vector FIRSTPERSON_EYE = new Vector(0d, 0d, 2d);
+    private static final Vector FIRSTPERSON_LOOKAT = new Vector(0d, 2d, 2d);
 
     /**
      * Sets the camera's position, focus point and up direction to the given GLU
@@ -114,9 +117,7 @@ class Camera {
         //Calculate the needed field of view angle to make the displayed portion 
         //of the line through the center point exactly vDist long.
 
-        fovAngle = (float) calcFOVAngle(gs);
-        planeNear = 0.1f * gs.vDist;
-        planeFar = 10f * gs.vDist;
+        setFOVAndPlane(gs, center, eye);
     }
 
     /**
@@ -125,12 +126,9 @@ class Camera {
      */
     private void setHelicopterMode(GlobalState gs, Robot focus) {
         up = focus.getDirection();
-        eye = addRelative(focus.getPosition(), HELICOPTER_EYE);
+        eye = focus.getPosition().add(HELICOPTER_EYE);
         center = focus.getPosition().add(HELICOPTER_LOOKAT);
-        fovAngle = (float) calcFOVAngle(gs);
-        final double dist = center.subtract(eye).length();
-        planeNear = 0.1f * (float) dist;
-        planeFar = 10f * (float) dist;
+        setFOVAndPlane(gs, center, eye);
     }
 
     /**
@@ -139,16 +137,9 @@ class Camera {
      */
     private void setMotorCycleMode(GlobalState gs, Robot focus) {
         up = Vector.Z;
-        eye = addRelative(focus.getPosition(), MOTORCYCLE_EYE);
-        eye = focus.getPosition()
-                .add(Vector.Z.cross(focus.getPosition()).normalized().scale(MOTORCYCLE_EYE.x()))
-                .add(focus.getPosition().normalized().scale(MOTORCYCLE_EYE.y()))
-                .add(Vector.Z.normalized().scale(MOTORCYCLE_EYE.z()));
+        eye = addRelative(focus.getPosition(), focus.getDirection(), MOTORCYCLE_EYE);
         center = focus.getPosition().add(MOTORCYCLE_LOOKAT);
-        fovAngle = (float) calcFOVAngle(gs);
-        final double dist = center.subtract(eye).length();
-        planeNear = 0.1f * (float) dist;
-        planeFar = 10f * (float) dist;
+        setFOVAndPlane(gs, center, eye);
     }
 
     /**
@@ -156,7 +147,11 @@ class Camera {
      * should view from the perspective of the robot.
      */
     private void setFirstPersonMode(GlobalState gs, Robot focus) {
-        // code goes here ...
+        up = Vector.Z;
+        eye = addRelative(focus.getPosition(), focus.getDirection(), FIRSTPERSON_EYE);
+        //center = focus.getPosition().add(FIRSTPERSON_LOOKAT);
+        center = addRelative(focus.getPosition(), focus.getDirection(), FIRSTPERSON_LOOKAT);
+        setFOVAndPlane(gs, center, eye);
     }
 
     /**
@@ -167,17 +162,20 @@ class Camera {
         // code goes here ...
     }
 
-    private double calcFOVAngle(GlobalState gs) {
+    private void setFOVAndPlane(GlobalState gs, Vector center, Vector eye) {
         //todo: figure out why calculation below is weird
-        //return Math.toDegrees(2 * Math.atan(gs.vDist / (2 * gs.vWidth)));
-        return 40d;
+        //fovAngle = Math.toDegrees(2 * Math.atan(gs.vDist / (2 * gs.vWidth)));
+        fovAngle = (float) 40d;
+        final double dist = center.subtract(eye).length();
+        planeNear = 0.1f * (float) dist;
+        planeFar = 10f * (float) dist;
     }
-    
-    private Vector addRelative(Vector vector1, Vector vector2){
-        return vector1
-                .add(Vector.Z.cross(vector1).normalized().scale(vector2.x()))
-                .add(vector1.normalized().scale(vector2.y()))
-                .add(Vector.Z.normalized().scale(vector2.z()));
+
+    private Vector addRelative(Vector position, Vector direction, Vector vector) {
+        return position
+                .add(direction.cross(Vector.Z).normalized().scale(vector.x()))
+                .add(direction.normalized().scale(vector.y()))
+                .add(Vector.Z.normalized().scale(vector.z()));
     }
 
 }
