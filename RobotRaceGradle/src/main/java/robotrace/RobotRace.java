@@ -181,9 +181,7 @@ public class RobotRace extends Base {
         //Load the identity matrix.
         gl.glLoadIdentity();
 
-        // Set the perspective.
-        // Modify this to meet the requirements in the assignment.
-        glu.gluPerspective(camera.getFovAngle(), (float) gs.w / gs.h, 0.1 * gs.vDist, 10 * gs.vDist);
+        camera.setPerspective(glu, gs);
 
         // Set camera.
         gl.glMatrixMode(GL_MODELVIEW);

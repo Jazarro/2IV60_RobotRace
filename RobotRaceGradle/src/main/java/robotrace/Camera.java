@@ -31,17 +31,17 @@ class Camera {
     /**
      * The up vector.
      */
-    private final Vector up = Vector.Z;
+    private Vector up = Vector.Z;
 
     private float fovAngle;
+    private float planeNear;
+    private float planeFar;
 
-    public float getFovAngle() {
-        return fovAngle;
-    }
-
-    public void setFovAngle(float fovAngle) {
-        this.fovAngle = fovAngle;
-    }
+    private static final Vector HELICOPTER_EYE = new Vector(0d, 0d, 10d);
+    private static final Vector HELICOPTER_LOOKAT = new Vector(0d, 0d, 0d);
+    
+    private static final Vector MOTORCYCLE_EYE = new Vector(5d, 0d, 1d);
+    private static final Vector MOTORCYCLE_LOOKAT = new Vector(0d, 0d, 1d);
 
     /**
      * Sets the camera's position, focus point and up direction to the given GLU
@@ -53,6 +53,11 @@ class Camera {
         glu.gluLookAt(eye.x(), eye.y(), eye.z(),
                 center.x(), center.y(), center.z(),
                 up.x(), up.y(), up.z());
+    }
+
+    public void setPerspective(GLU glu, GlobalState gs) {
+        // Set the perspective.
+        glu.gluPerspective(fovAngle, (float) gs.w / gs.h, planeNear, planeFar);
     }
 
     /**
@@ -94,6 +99,8 @@ class Camera {
     private void setDefaultMode(GlobalState gs) {
         //Get the center point from the global state.
         center = gs.cnt;
+        //Reset the up vector.
+        up = Vector.Z;
         //Calculate the x coordinate of the eye point relative to the center point.
         final double xEyeLocal = Math.cos(getAzimuth(gs)) * Math.cos(getInclination(gs)) * gs.vDist;
         //Calculate the y coordinate of the eye point relative to the center point.
@@ -107,8 +114,9 @@ class Camera {
         //Calculate the needed field of view angle to make the displayed portion 
         //of the line through the center point exactly vDist long.
 
-        fovAngle = 40f;//todo: figure out why calculation below is weird
-        /*fovAngle = (float)Math.toDegrees(2 * Math.atan(gs.vDist / (2 * gs.vWidth)));*/
+        fovAngle = (float) calcFOVAngle(gs);
+        planeNear = 0.1f * gs.vDist;
+        planeFar = 10f * gs.vDist;
     }
 
     /**
@@ -116,7 +124,13 @@ class Camera {
      * should focus on the robot.
      */
     private void setHelicopterMode(GlobalState gs, Robot focus) {
-        // code goes here ...
+        up = focus.getDirection();
+        eye = addRelative(focus.getPosition(), HELICOPTER_EYE);
+        center = focus.getPosition().add(HELICOPTER_LOOKAT);
+        fovAngle = (float) calcFOVAngle(gs);
+        final double dist = center.subtract(eye).length();
+        planeNear = 0.1f * (float) dist;
+        planeFar = 10f * (float) dist;
     }
 
     /**
@@ -124,7 +138,17 @@ class Camera {
      * should focus on the robot.
      */
     private void setMotorCycleMode(GlobalState gs, Robot focus) {
-        // code goes here ...
+        up = Vector.Z;
+        eye = addRelative(focus.getPosition(), MOTORCYCLE_EYE);
+        eye = focus.getPosition()
+                .add(Vector.Z.cross(focus.getPosition()).normalized().scale(MOTORCYCLE_EYE.x()))
+                .add(focus.getPosition().normalized().scale(MOTORCYCLE_EYE.y()))
+                .add(Vector.Z.normalized().scale(MOTORCYCLE_EYE.z()));
+        center = focus.getPosition().add(MOTORCYCLE_LOOKAT);
+        fovAngle = (float) calcFOVAngle(gs);
+        final double dist = center.subtract(eye).length();
+        planeNear = 0.1f * (float) dist;
+        planeFar = 10f * (float) dist;
     }
 
     /**
@@ -141,6 +165,19 @@ class Camera {
      */
     private void setAutoMode(GlobalState gs, Robot focus) {
         // code goes here ...
+    }
+
+    private double calcFOVAngle(GlobalState gs) {
+        //todo: figure out why calculation below is weird
+        //return Math.toDegrees(2 * Math.atan(gs.vDist / (2 * gs.vWidth)));
+        return 40d;
+    }
+    
+    private Vector addRelative(Vector vector1, Vector vector2){
+        return vector1
+                .add(Vector.Z.cross(vector1).normalized().scale(vector2.x()))
+                .add(vector1.normalized().scale(vector2.y()))
+                .add(Vector.Z.normalized().scale(vector2.z()));
     }
 
 }

@@ -54,8 +54,16 @@ public class Robot {
         this.position = position;
     }
 
+    public Vector getPosition() {
+        return position;
+    }
+
     public void setDirection(Vector direction) {
         this.direction = direction;
+    }
+
+    public Vector getDirection() {
+        return direction;
     }
 
     public void setSpeed(double speed) {
