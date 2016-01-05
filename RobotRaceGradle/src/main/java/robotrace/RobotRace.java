@@ -230,7 +230,7 @@ public class RobotRace extends Base {
 
             {//TODO: remove temp code.
 //                if (Math.abs(tempScrollVarPrev - tempScrollVar) > 0.1F) {
-//                    robot.getRobotBody().playAnimation(AnimationType.RUNNING, 2);
+////                    robot.getRobotBody().playAnimation(AnimationType.RUNNING, 2);
 //                }
 //                if (gs.tAnim <= 0) {
 //                    robot.setPosition(Vector.O);

@@ -9,12 +9,11 @@ package robotrace;
 import com.jogamp.opengl.util.gl2.GLUT;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import javax.media.opengl.GL2;
 import javax.media.opengl.glu.GLU;
 
 /**
- * Terrain made for measuring robot velocities. 
+ * Terrain made for measuring robot velocities.
  *
  * @author Arjan Boschman
  */
@@ -28,58 +27,30 @@ public class TestingTerrain extends Terrain {
     /**
      * The edge length of the ground.
      */
-    private static final double GROUND_EDGE_LENGTH = 100;
-    /**
-     * The edge length of the square in which ground clutter is allowed to
-     * appear.
-     */
-    private static final double GROUND_CLUTTER_RANGE = 100;
-    /**
-     * The number of objects that will appear on the ground as ground clutter.
-     */
-    private static final int AMOUNT_OF_GROUND_CLUTTER = 100;
-    /**
-     * A seed to use for producing random values. By making this a constant the
-     * terrain won't change from one run to another.
-     */
-    private static final long RANDOM_SEED = 123456761L;
+    private static final double GROUND_EDGE_LENGTH = 25;
 
     private final List<Shape> shapes = new ArrayList<>();
 
     @Override
     public void initialize() {
         for (int i = -5; i < 1000; i++) {
-            final Vector translation = new Vector(i * 0.1F, 0, GROUND_LEVEL);
-            final Vector scaling = new Vector(0.1F, GROUND_EDGE_LENGTH, 1);
-            final Material material = i % 2 == 0 ? Material.BOULDER : Material.DIRT;
-            shapes.add(new Shape(translation, Vector.O, 0, scaling, material));
+            shapes.add(makeFloorShape(i));
+            shapes.add(makeWallShape(i));
         }
     }
 
-    private Shape makeGround() {
-        final Vector translation = new Vector(0, 0, GROUND_LEVEL);
-        final Vector scaling = new Vector(GROUND_EDGE_LENGTH, GROUND_EDGE_LENGTH, 1);
-        return new Shape(translation, Vector.O, 0, scaling, Material.DIRT);
+    private Shape makeFloorShape(int i) {
+        final Vector translation = new Vector(i * 0.1F, 0, GROUND_LEVEL);
+        final Vector scaling = new Vector(0.1F, GROUND_EDGE_LENGTH, 1);
+        final Material material = i % 2 == 0 ? Material.BOULDER : Material.DIRT;
+        return new Shape(translation, Vector.O, 0, scaling, material);
     }
-
-    private Shape makeRandomCube(Random rand) {
-        final Vector translation = new Vector(getCoord(rand), getCoord(rand), GROUND_LEVEL);
-        final Vector rotation = new Vector(rand.nextDouble(), rand.nextDouble(), rand.nextDouble()).normalized();
-        final double rotationAngle = rand.nextDouble() * 360;
-        final Vector scaling = new Vector(rand.nextDouble() * 2, rand.nextDouble() * 2, rand.nextDouble() * 2);
-        final Material material = Material.BOULDER;
-        return new Shape(translation, rotation, rotationAngle, scaling, material);
-    }
-
-    /**
-     * Calculate a random x or y coordinate that would fit on the ground.
-     *
-     * @param rand An instance of Random.
-     *
-     * @return The random coordinate.
-     */
-    private double getCoord(Random rand) {
-        return (rand.nextDouble() * GROUND_CLUTTER_RANGE) - (GROUND_CLUTTER_RANGE / 2);
+    
+    private Shape makeWallShape(int i) {
+        final Vector translation = new Vector(i * 0.1F, 0.5F, 1);
+        final Vector scaling = new Vector(0.1F, 1, 2);
+        final Material material = i % 2 != 0 ? Material.BOULDER : Material.DIRT;
+        return new Shape(translation, Vector.O, 0, scaling, material);
     }
 
     @Override
