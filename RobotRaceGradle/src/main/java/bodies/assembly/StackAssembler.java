@@ -253,13 +253,15 @@ public class StackAssembler {
         if (ring1.isVertexNormalCalculated(index)) {
             vertexNormal = ring1.getVertices().get(index).getNormalA();
         } else //If this is the only ring (it has no neighboring rings) then no surface is defined, and also no normal.
-         if ((ring2 == null) && (ring0 == null)) {
+        {
+            if ((ring2 == null) && (ring0 == null)) {
                 vertexNormal = new double[COORD_COUNT];
                 vertexNormal[IND_X] = 0d;
                 vertexNormal[IND_Y] = 0d;
                 vertexNormal[IND_Z] = 0d;
             } else //If this is the last ring, then the normal is equal for both the first and second ring of the surface.
-             if (ring2 == null) {
+            {
+                if (ring2 == null) {
                     vertexNormal = ring0.getVertices().get(index).getNormalA();
                 } //Else the normal will be calculated.
                 else {
@@ -270,6 +272,8 @@ public class StackAssembler {
                     ring1.setVertex(vertex, index);
                     ring1.setVertexNormalCalculated(index);
                 }
+            }
+        }
         if ((!ring1.isSharp()) && (ring0 != null)) {
             //If the ring represents a smooth edge, the normal will be averaged with the normal below it.
             for (int i = 0; i < COORD_COUNT; i++) {
@@ -277,6 +281,17 @@ public class StackAssembler {
                 vertexNormal[i] += ring0.getVertices().get(index).getNormalA()[i];
                 vertexNormal[i] *= 0.5d;
             }
+        }
+        //Average the last vertex with the first one to get a smooth transition and use that normal for both the first and the last vertex.
+        if ((index == (ring1.getVertices().size() - 1))) {
+            final Vertex firstVertex = ring1.getVertices().get(0);
+            for (int i = 0; i < COORD_COUNT; i++) {
+                //This also happens by element-wise averaging.
+                vertexNormal[i] += firstVertex.getNormalA()[i];
+                vertexNormal[i] *= 0.5d;
+            }
+            firstVertex.setNormalA(vertexNormal);
+            ring1.setVertex(firstVertex, 0);
         }
         //Lastly the normal is returned.
         return vertexNormal;
