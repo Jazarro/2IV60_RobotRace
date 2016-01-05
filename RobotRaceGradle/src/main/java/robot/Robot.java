@@ -30,6 +30,10 @@ public class Robot {
     private Vector direction = Vector.Y;
 
     private double speed = 1d;
+    private double trackTime = 0d;
+    private double distanceTime = 0d;
+    private int laps = 0;
+
     /**
      * The material from which this robot is built.
      */
@@ -74,6 +78,33 @@ public class Robot {
         return this.speed;
     }
 
+    public void resetDistance(double distance) {
+        this.trackTime = 0d;
+        this.distanceTime = 0d;
+    }
+
+    public void moveDistance(double deltaTime, double laneDistance) {
+        double deltaTrack = 0d;
+        if (laneDistance != 0d) {
+            deltaTrack = deltaTime / laneDistance;
+        }
+        final double scaleFactor = speed * getGravityDrag(direction.normalized().dot(Vector.Z));
+        distanceTime += deltaTime * scaleFactor;
+        trackTime += deltaTrack * scaleFactor;
+        while (trackTime >= 1d) {
+            laps++;
+            trackTime -= 1d;
+        }
+    }
+
+    public double getDistance() {
+        return distanceTime;
+    }
+
+    public double getTrackTime() {
+        return trackTime;
+    }
+
     public Material getMaterial() {
         return material;
     }
@@ -106,4 +137,10 @@ public class Robot {
         }
         gl.glPopMatrix();
     }
+
+    private double getGravityDrag(double zInclination) {
+        final double gravity = Math.pow(2d, Math.pow(zInclination, 2d) * 4d); //TODO: Find nice value!
+        return (zInclination < 0d) ? (gravity) : (1d / gravity);
+    }
+
 }

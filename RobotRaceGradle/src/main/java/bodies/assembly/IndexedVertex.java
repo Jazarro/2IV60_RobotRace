@@ -117,4 +117,12 @@ final class IndexedVertex {
     public final void setIndex(int index) {
         this.index = index;
     }
+
+    public static IndexedVertex crossNormal(IndexedVertex vertex1, IndexedVertex vertex2, boolean flipNormal) {
+        final Vertex vertex = Vertex.crossNormal(vertex1.getVertex(), vertex2.getVertex(), flipNormal);
+        final boolean shared = vertex1.isShared() && vertex2.isShared();
+        final int index = (vertex1.getIndex() == vertex2.getIndex()) ? (vertex1.getIndex()) : (0);
+        return new IndexedVertex(vertex, shared, index);
+    }
+
 }

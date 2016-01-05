@@ -82,6 +82,8 @@ public class RobotRace extends Base {
     private final Robot[] robots;
     private final RaceTrack[] raceTracks;
 
+    private double tPrevious = 0d;
+
     /**
      * Constructs this robot race by initializing robots, camera, track, and
      * terrain.
@@ -102,10 +104,10 @@ public class RobotRace extends Base {
 //        robots[2] = factory.makeBenderAt(Material.WOOD, new Vector(-1, 1, 0), Vector.X);
 //        robots[3] = factory.makeBenderAt(Material.PLASTIC_ORANGE, new Vector(-1, 3, 0), Vector.X);
 
-        robots[0].setSpeed(0.05d);
-        robots[1].setSpeed(0.05d);
-        robots[2].setSpeed(0.05d);
-        robots[3].setSpeed(0.05d);
+        robots[0].setSpeed(0.005d);
+        robots[1].setSpeed(0.005d);
+        robots[2].setSpeed(0.005d);
+        robots[3].setSpeed(0.005d);
 
         // Test track
         //raceTracks[0] = new RaceTrack();
@@ -213,11 +215,12 @@ public class RobotRace extends Base {
         //Draw the robots.
         for (int i = 0; i < robots.length; i++) {
             final Robot robot = robots[i];
-            final double robotT = gs.tAnim * robot.getSpeed();
             lighting.setMaterial(gl, robot.getMaterial());
-            robot.setPosition(racetrack.RaceTrackDefinition.getLanePoint(robotT, raceTracks[gs.trackNr], i));
-            robot.setDirection(racetrack.RaceTrackDefinition.getLaneTangent(robotT, raceTracks[gs.trackNr], i));
-            robot.draw(gl, glu, glut, gs.showStick, gs.tAnim);//TODO: sort out speed => anim period conversion.
+            robot.setPosition(racetrack.RaceTrackDefinition.getLanePoint(robot.getTrackTime(), raceTracks[gs.trackNr], i));
+            robot.setDirection(racetrack.RaceTrackDefinition.getLaneTangent(robot.getTrackTime(), raceTracks[gs.trackNr], i));
+            final double laneDistance = racetrack.RaceTrackDefinition.getLaneDistance(gs.tAnim, tPrevious, raceTracks[gs.trackNr], i);
+            robot.moveDistance(RaceTrack.SLICE_COUNT * (gs.tAnim - tPrevious), laneDistance);
+            robot.draw(gl, glu, glut, gs.showStick, (float) robot.getDistance()*5);//TODO: sort out speed => anim period conversion.
         }
 
         // Draw the race track.
@@ -227,6 +230,7 @@ public class RobotRace extends Base {
         terrain.draw(gl, glu, glut, lighting);
 
         bodyManager.endDraw(gl);
+        tPrevious = gs.tAnim;
     }
 
     /**

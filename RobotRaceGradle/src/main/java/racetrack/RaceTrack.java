@@ -17,6 +17,7 @@ import java.util.List;
 import javax.media.opengl.GL2;
 import javax.media.opengl.glu.GLU;
 import static racetrack.RaceTrackDefinition.RTD_TEST;
+import static racetrack.RaceTrackDefinition.getClosedTrack;
 import static racetrack.RaceTrackDefinition.getTrackPoint;
 import robotrace.Vector;
 
@@ -66,7 +67,7 @@ public class RaceTrack implements SingletonDrawable {
             trackDescription.add(new Vertex(getTrackPoint(t, this)));
         }
         raceTrackBody = new TrackBuilder(bmInitialiser)
-                .setTrackProperties(LANE_WIDTH, LANE_COUNT, TRACK_HEIGHT)
+                .setTrackProperties(LANE_WIDTH, LANE_COUNT, TRACK_HEIGHT, getClosedTrack(this))
                 .build(trackDescription);
     }
 

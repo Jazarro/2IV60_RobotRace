@@ -7,12 +7,23 @@ public class RaceTrackDefinition {
     public static final int RTD_TEST = 0;
     public static final int RTD_TEST_ELEVATED = 1;
 
+    public static boolean getClosedTrack(RaceTrack raceTrack) {
+        switch (raceTrack.getTrackType()) {
+            case RTD_TEST:
+                return true;
+            case RTD_TEST_ELEVATED:
+                return false;
+            default:
+                return true;
+        }
+    }
+
     public static Vector getTrackPoint(double t, RaceTrack raceTrack) {
         switch (raceTrack.getTrackType()) {
             case RTD_TEST:
                 return new Vector(10d * Math.cos(2d * Math.PI * t), 14d * Math.sin(2d * Math.PI * t), 1d);
             case RTD_TEST_ELEVATED:
-                return new Vector(10d * Math.cos(2d * Math.PI * t), 14d * Math.sin(2d * Math.PI * t), 11d - (10d * Math.cos(2d * Math.PI * t)));
+                return new Vector(10d * Math.cos(2d * Math.PI * t), 14d * Math.sin(2d * Math.PI * t), 6d - (5d * Math.cos(3d * Math.PI * t)));
             default:
                 return Vector.O;
         }
@@ -37,6 +48,12 @@ public class RaceTrackDefinition {
         return delta1.add(delta2).normalized();
     }
 
+    public static double getTrackDistance(double t, double tPrevious, RaceTrack raceTrack) {
+        final Vector vector = getTrackPoint(t, raceTrack);
+        final Vector vectorPrevious = getTrackPoint(tPrevious, raceTrack);
+        return vector.subtract(vectorPrevious).length();
+    }
+
     public static Vector getLanePoint(double t, RaceTrack raceTrack, int laneNumber) {
         final Vector translate = getTrackNormal(t, raceTrack).scale((laneNumber - (RaceTrack.LANE_COUNT / 2d) + 0.5d) * RaceTrack.LANE_WIDTH);
         return getTrackPoint(t, raceTrack).add(translate);
@@ -49,4 +66,11 @@ public class RaceTrackDefinition {
     public static Vector getLaneTangent(double t, RaceTrack raceTrack, int laneNumber) {
         return getTrackTangent(t, raceTrack);
     }
+
+    public static double getLaneDistance(double t, double tPrevious, RaceTrack raceTrack, int laneNumber) {
+        final Vector vector = getLanePoint(t, raceTrack, laneNumber);
+        final Vector vectorPrevious = getLanePoint(tPrevious, raceTrack, laneNumber);
+        return vector.subtract(vectorPrevious).length();
+    }
+
 }

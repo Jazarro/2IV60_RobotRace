@@ -8,26 +8,35 @@ import robotrace.Vector;
 
 public class TrackAssembler {
 
-
     private final SurfaceCompilation surfaceCompilation = new SurfaceCompilation();
 
-    public void calculateTrack(List<Vertex> trackDescription, double laneWidth, int laneCount, double trackHeight) {
+    public void calculateTrack(List<Vertex> trackDescription, double laneWidth, int laneCount, double trackHeight, boolean closedTrack) {
         final List<TrackSlice> slices = new ArrayList<>();
         for (Vertex vertex : trackDescription) {
             Vertex previous, next;
             if (trackDescription.indexOf(vertex) == 0) {
-                previous = trackDescription.get(trackDescription.size() - 1);
                 next = trackDescription.get(trackDescription.indexOf(vertex) + 1);
+                if (closedTrack) {
+                    previous = trackDescription.get(trackDescription.size() - 1);
+                } else {
+                    previous = new Vertex(vertex.getPositionV().subtract(next.getPositionV().subtract(vertex.getPositionV())));
+                }
             } else if (trackDescription.indexOf(vertex) == (trackDescription.size() - 1)) {
                 previous = trackDescription.get(trackDescription.indexOf(vertex) - 1);
-                next = trackDescription.get(0);
+                if (closedTrack) {
+                    next = trackDescription.get(0);
+                } else {
+                    next = new Vertex(vertex.getPositionV().add(vertex.getPositionV().subtract(previous.getPositionV())));
+                }
             } else {
                 previous = trackDescription.get(trackDescription.indexOf(vertex) - 1);
                 next = trackDescription.get(trackDescription.indexOf(vertex) + 1);
             }
             slices.add(new TrackSlice(previous, vertex, next, laneWidth, laneCount, trackHeight));
         }
-        slices.add(slices.get(0));
+        if (closedTrack) {
+            slices.add(slices.get(0));
+        }
         final List<IndexedVertex> topVertices = new ArrayList<>();
         final List<IndexedVertex> bottomVertices = new ArrayList<>();
         final List<IndexedVertex> innerVertices = new ArrayList<>();
@@ -46,6 +55,10 @@ public class TrackAssembler {
         surfaceCompilation.addSurface(new Surface(bottomVertices, false));
         surfaceCompilation.addSurface(new Surface(innerVertices, false));
         surfaceCompilation.addSurface(new Surface(outerVertices, false));
+        if (!closedTrack) {
+            surfaceCompilation.addSurface(slices.get(0).getEndPlate(true));
+            surfaceCompilation.addSurface(slices.get(slices.size() - 1).getEndPlate(false));
+        }
     }
 
     /**
@@ -110,20 +123,29 @@ public class TrackAssembler {
             );
         }
 
-        public TrackSliceSide getTop() {
+        private TrackSliceSide getTop() {
             return top;
         }
 
-        public TrackSliceSide getBottom() {
+        private TrackSliceSide getBottom() {
             return bottom;
         }
 
-        public TrackSliceSide getInner() {
+        private TrackSliceSide getInner() {
             return inner;
         }
 
-        public TrackSliceSide getOuter() {
+        private TrackSliceSide getOuter() {
             return outer;
+        }
+
+        private Surface getEndPlate(boolean flipNormal) {
+            final List<IndexedVertex> vertices = new ArrayList<>();
+            vertices.add(IndexedVertex.makeIndexedVertex(Vertex.crossNormal(top.getVertex2(), inner.getVertex1(), flipNormal)));
+            vertices.add(IndexedVertex.makeIndexedVertex(Vertex.crossNormal(outer.getVertex1(), top.getVertex1(), flipNormal)));
+            vertices.add(IndexedVertex.makeIndexedVertex(Vertex.crossNormal(bottom.getVertex1(), outer.getVertex2(), flipNormal)));
+            vertices.add(IndexedVertex.makeIndexedVertex(Vertex.crossNormal(inner.getVertex2(), bottom.getVertex2(), flipNormal)));
+            return new Surface(vertices, true);
         }
 
         private static final class TrackSliceSide {

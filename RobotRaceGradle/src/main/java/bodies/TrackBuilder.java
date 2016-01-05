@@ -14,6 +14,7 @@ public class TrackBuilder {
     private double laneWidth = 1.22d;
     private int laneCount = 4;
     private double trackHeight = 1d;
+    private boolean closedTrack = true;
 
     public TrackBuilder(BufferManager.Initialiser bmInitialiser) {
         this.bmInitialiser = bmInitialiser;
@@ -21,7 +22,7 @@ public class TrackBuilder {
     }
 
     public SimpleBody build(List<Vertex> trackDescription) {
-        assembler.calculateTrack(trackDescription, laneWidth, laneCount, trackHeight);
+        assembler.calculateTrack(trackDescription, laneWidth, laneCount, trackHeight, closedTrack);
         //Buffer containing all Vertextdata off all previously added shapes. 
         //The data in in the format: vertexX, vertexY, vertexZ, normalX, normalY, normalZ.
         final DoubleBuffer dataBuffer = assembler.getDataBuffer();
@@ -44,10 +45,11 @@ public class TrackBuilder {
         return simpleBody;
     }
 
-    public TrackBuilder setTrackProperties(double laneWidth, int laneCount, double trackHeight) {
+    public TrackBuilder setTrackProperties(double laneWidth, int laneCount, double trackHeight, boolean closedTrack) {
         this.laneWidth = laneWidth;
         this.laneCount = laneCount;
         this.trackHeight = trackHeight;
+        this.closedTrack = closedTrack;
         return this;
     }
 }

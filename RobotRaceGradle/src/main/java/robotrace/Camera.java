@@ -117,7 +117,7 @@ class Camera {
         //Calculate the needed field of view angle to make the displayed portion 
         //of the line through the center point exactly vDist long.
 
-        setFOVAndPlane(gs, center, eye);
+        setFOVAndPlane(gs, center, eye, 0d);
     }
 
     /**
@@ -128,7 +128,7 @@ class Camera {
         up = focus.getDirection();
         eye = focus.getPosition().add(HELICOPTER_EYE);
         center = focus.getPosition().add(HELICOPTER_LOOKAT);
-        setFOVAndPlane(gs, center, eye);
+        setFOVAndPlane(gs, center, eye, 40d);
     }
 
     /**
@@ -139,7 +139,7 @@ class Camera {
         up = Vector.Z;
         eye = addRelative(focus.getPosition(), focus.getDirection(), MOTORCYCLE_EYE);
         center = focus.getPosition().add(MOTORCYCLE_LOOKAT);
-        setFOVAndPlane(gs, center, eye);
+        setFOVAndPlane(gs, center, eye, 40d);
     }
 
     /**
@@ -151,7 +151,7 @@ class Camera {
         eye = addRelative(focus.getPosition(), focus.getDirection(), FIRSTPERSON_EYE);
         //center = focus.getPosition().add(FIRSTPERSON_LOOKAT);
         center = addRelative(focus.getPosition(), focus.getDirection(), FIRSTPERSON_LOOKAT);
-        setFOVAndPlane(gs, center, eye);
+        setFOVAndPlane(gs, center, eye, 40d);
     }
 
     /**
@@ -162,20 +162,24 @@ class Camera {
         // code goes here ...
     }
 
-    private void setFOVAndPlane(GlobalState gs, Vector center, Vector eye) {
+    private void setFOVAndPlane(GlobalState gs, Vector center, Vector eye, double fovAngle) {
         //todo: figure out why calculation below is weird
-        //fovAngle = Math.toDegrees(2 * Math.atan(gs.vDist / (2 * gs.vWidth)));
-        fovAngle = (float) 40d;
+        if (fovAngle < 1d) {
+            this.fovAngle = (float) Math.toDegrees(2d * Math.atan(gs.vDist / (2d * gs.vWidth)));
+        } else {
+            this.fovAngle = (float) fovAngle;
+        }
         final double dist = center.subtract(eye).length();
         planeNear = 0.1f * (float) dist;
         planeFar = 10f * (float) dist;
     }
 
     private Vector addRelative(Vector position, Vector direction, Vector vector) {
+        final Vector normal = direction.cross(Vector.Z).normalized();
         return position
-                .add(direction.cross(Vector.Z).normalized().scale(vector.x()))
+                .add(normal.scale(vector.x()))
                 .add(direction.normalized().scale(vector.y()))
-                .add(Vector.Z.normalized().scale(vector.z()));
+                .add(normal.cross(direction).normalized().scale(vector.z()));
     }
 
 }
