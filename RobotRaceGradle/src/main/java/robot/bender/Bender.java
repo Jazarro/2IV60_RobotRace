@@ -30,6 +30,12 @@ public class Bender implements RobotBody {
      */
     public static final Vector LOCAL_ORIENTATION = new Vector(0, 1, 0);
 
+    /**
+     * Meters bridged per animation period in seconds. Can be used to calculate
+     * the proper animation period for a given velocity in meters per second.
+     */
+    public static final float ANIM_RUNNING_CONSTANT = 1.3333F;
+
     private final Animation animation;
     private final Torso torso;
     private final Leg rightLeg;
@@ -46,7 +52,7 @@ public class Bender implements RobotBody {
         this.rightArm = rightArm;
         this.leftArm = leftArm;
     }
-    
+
     @Override
     public void draw(GL2 gl, GLUT glut, boolean stickFigure, float tAnim) {
         animation.update(tAnim);

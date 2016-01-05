@@ -90,7 +90,8 @@ public class RobotFactory {
         final Arm rightArm = new Arm(benderLimb, 0.5F, Vector.Y, Vector.Z.scale(-1));
         final Arm leftArm = new Arm(benderLimb, 0F, Vector.Y.scale(-1), Vector.Z);
         final Animation animation = new Animation();
-        animation.addAnimationType(AnimationType.RUNNING, 0.8F);
+        animation.addAnimationType(AnimationType.RUNNING, Bender.ANIM_RUNNING_CONSTANT / 1.5F);
+        animation.setDefaultAnimation(AnimationType.RUNNING);
         return new Bender(animation, benderTorso, rightLeg, leftLeg, rightArm, leftArm);
     }
 

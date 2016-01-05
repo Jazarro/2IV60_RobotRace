@@ -21,8 +21,8 @@ import static javax.media.opengl.fixedfunc.GLLightingFunc.GL_NORMALIZE;
 import static javax.media.opengl.fixedfunc.GLMatrixFunc.GL_MODELVIEW;
 import static javax.media.opengl.fixedfunc.GLMatrixFunc.GL_PROJECTION;
 import racetrack.RaceTrack;
+import racetrack.RaceTrackDefinition;
 import racetrack.RaceTrackFactory;
-import robot.AnimationType;
 import robot.Robot;
 import robot.RobotFactory;
 
@@ -76,7 +76,7 @@ public class RobotRace extends Base {
 
     private final BufferManager bodyManager = new BufferManager();
     private final Camera camera = new Camera();
-    private final Terrain terrain = new EasyTerrain();
+    private final Terrain terrain = new TestingTerrain();
     private final RobotFactory robotFactory = new RobotFactory();
     private final RaceTrackFactory raceTrackFactory = new RaceTrackFactory();
     private final Lighting lighting = new Lighting();
@@ -197,8 +197,8 @@ public class RobotRace extends Base {
         tempScrollVar = gs.vDist;//TODO: remove temp code.
     }
 
-    private float tempScrollVar = 10F;
-    private float tempScrollVarPrev = 10F;
+    private float tempScrollVar = 10F;//TODO: remove temp code.
+    private float tempScrollVarPrev = 10F;//TODO: remove temp code.
 
     /**
      * Draws the entire scene.
@@ -223,19 +223,28 @@ public class RobotRace extends Base {
         for (int i = 0; i < robots.length; i++) {
             final Robot robot = robots[i];
             lighting.setMaterial(gl, robot.getMaterial());
-            robot.setPosition(racetrack.RaceTrackDefinition.getLanePoint(robot.getTrackTime(), raceTracks[gs.trackNr], i));
-            robot.setDirection(racetrack.RaceTrackDefinition.getLaneTangent(robot.getTrackTime(), raceTracks[gs.trackNr], i));
-            final double laneDistance = racetrack.RaceTrackDefinition.getLaneDistance(gs.tAnim, tPrevious, raceTracks[gs.trackNr], i);
+            robot.setPosition(RaceTrackDefinition.getLanePoint(robot.getTrackTime(), raceTracks[gs.trackNr], i));
+            robot.setDirection(RaceTrackDefinition.getLaneTangent(robot.getTrackTime(), raceTracks[gs.trackNr], i));
+            final double laneDistance = RaceTrackDefinition.getLaneDistance(gs.tAnim, tPrevious, raceTracks[gs.trackNr], i);
             robot.moveDistance(RaceTrack.SLICE_COUNT * (gs.tAnim - tPrevious), laneDistance);
-            if (Math.abs(tempScrollVarPrev - tempScrollVar) > 0.1F) {
-                robot.getRobotBody().playAnimation(AnimationType.RUNNING, 2);
+
+            {//TODO: remove temp code.
+//                if (Math.abs(tempScrollVarPrev - tempScrollVar) > 0.1F) {
+//                    robot.getRobotBody().playAnimation(AnimationType.RUNNING, 2);
+//                }
+//                if (gs.tAnim <= 0) {
+//                    robot.setPosition(Vector.O);
+//                }
+//                final float velocity = 1.5F;
+//                robot.setPosition(new Vector(gs.tAnim * velocity, 0, 0));
+//                robot.moveDistance(gs.tAnim - tPrevious, (gs.tAnim - tPrevious) * velocity);
             }
-            robot.draw(gl, glu, glut, gs.showStick, (float) robot.getDistance()*5);
+            
+            robot.draw(gl, glu, glut, gs.showStick, gs.tAnim);
         }
 
         // Draw the race track.
         raceTracks[gs.trackNr].draw(gl, glu, glut);
-
         // Draw the terrain.
         terrain.draw(gl, glu, glut, lighting);
 

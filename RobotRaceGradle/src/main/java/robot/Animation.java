@@ -14,7 +14,7 @@ import java.util.Map;
  * @author Arjan Boschman
  */
 public class Animation {
-
+    
     private final Map<AnimationType, Float> supportedAnims = new HashMap<>();
 
     private final AnimationTimer animationTimer;
@@ -41,11 +41,13 @@ public class Animation {
 
     public void update(float tAnim) {
         final int periodsAdvanced = animationTimer.updateTime(tAnim);
-        nrPeriodsLeft -= periodsAdvanced;
-        if (nrPeriodsLeft <= 0) {
-            nrPeriodsLeft = 0;
-            currentAnimationType = defaultAnimationType;
-            animationTimer.restart(supportedAnims.get(defaultAnimationType));
+        if (currentAnimationType != defaultAnimationType) {
+            nrPeriodsLeft -= periodsAdvanced;
+            if (nrPeriodsLeft <= 0) {
+                nrPeriodsLeft = 0;
+                currentAnimationType = defaultAnimationType;
+                animationTimer.restart(supportedAnims.get(defaultAnimationType));
+            }
         }
     }
 
