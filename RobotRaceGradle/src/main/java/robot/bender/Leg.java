@@ -34,40 +34,68 @@ public class Leg {
         drawHips(gl, glut, stickFigure, animation);
         drawKnees(gl, glut, stickFigure, animation);
         drawAnkles(gl, glut, stickFigure, animation);
-        limb.drawFoot(gl, glut, stickFigure);
         gl.glPopMatrix();
     }
 
     private void drawHips(GL2 gl, GLUT glut, boolean stickFigure, Animation animation) {
-        final float hipFraction = animation.getLinearInterpolation(animationPeriodOffset + HIP_PERIOD_OFFSET);
-        final float hipJointAngle = 26 - 48 - 48 * (float) Math.sin(hipFraction * 2 * Math.PI);
         for (int i = 0; i < NR_HIP_JOINTS; i++) {
-            final float partialHipJointAngle = hipJointAngle / NR_HIP_JOINTS;
-            gl.glRotated(partialHipJointAngle, -1, 0, 0);
+            gl.glRotated(getPartialHipAngle(animation), -1, 0, 0);
             limb.drawSegment(gl, glut, stickFigure);
             gl.glTranslated(0, 0, Limb.HEIGHT_OUTER_SEGMENT);
+        }
+    }
+
+    private float getPartialHipAngle(Animation animation) {
+        switch (animation.getCurrentAnimationType()) {
+            case RUNNING:
+                final float hipFraction = animation.getLinearInterpolation(animationPeriodOffset + HIP_PERIOD_OFFSET);
+                final float hipJointAngle = 26 - 48 - 48 * (float) Math.sin(hipFraction * 2 * Math.PI);
+                return hipJointAngle / NR_HIP_JOINTS;
+            case IDLE:
+            default:
+                return 0F;
         }
     }
 
     private void drawKnees(GL2 gl, GLUT glut, boolean stickFigure, Animation animation) {
-        final float kneeFraction = animation.getLinearInterpolation(animationPeriodOffset);
-        final float fractionInRadians = (float) (kneeFraction * 2 * Math.PI);
-        final float kneeJointAngle = 25 + 36.6F + 12.2F * (float) ((Math.cos(fractionInRadians) * 4 + Math.cos(fractionInRadians*1) * 2));
         for (int i = 0; i < NR_KNEE_JOINTS; i++) {
-            final float partialKneeJointAngle = kneeJointAngle / NR_KNEE_JOINTS;
-            gl.glRotated(partialKneeJointAngle, -1, 0, 0);
+            gl.glRotated(getPartialKneeAngle(animation), -1, 0, 0);
             limb.drawSegment(gl, glut, stickFigure);
             gl.glTranslated(0, 0, Limb.HEIGHT_OUTER_SEGMENT);
         }
     }
 
+    private float getPartialKneeAngle(Animation animation) {
+        switch (animation.getCurrentAnimationType()) {
+            case RUNNING:
+                final float kneeFraction = animation.getLinearInterpolation(animationPeriodOffset);
+                final float fractionInRadians = (float) (kneeFraction * 2 * Math.PI);
+                final float kneeJointAngle = 25 + 36.6F + 12.2F
+                        * (float) ((Math.cos(fractionInRadians) * 4 + Math.cos(fractionInRadians * 1) * 2));
+                return kneeJointAngle / NR_KNEE_JOINTS;
+            case IDLE:
+            default:
+                return 0F;
+        }
+    }
+
     private void drawAnkles(GL2 gl, GLUT glut, boolean stickFigure, Animation animation) {
-        final float ankleJointAngle = 0F;
-        for (int i = 0; i < NR_ANKLE_JOINTS; i++) {
-            final float partialAnkleJointAngle = ankleJointAngle / NR_ANKLE_JOINTS;
-            gl.glRotated(partialAnkleJointAngle, -1, 0, 0);
-            limb.drawSegment(gl, glut, stickFigure);
-            gl.glTranslated(0, 0, Limb.HEIGHT_OUTER_SEGMENT);
+        for (int i = 0; i < NR_ANKLE_JOINTS + 1; i++) {
+            gl.glRotated(getPartialAnkleAngle(animation), -1, 0, 0);
+            if (i == NR_ANKLE_JOINTS) {
+                limb.drawFoot(gl, glut, stickFigure);
+            } else {
+                limb.drawSegment(gl, glut, stickFigure);
+                gl.glTranslated(0, 0, Limb.HEIGHT_OUTER_SEGMENT);
+            }
+        }
+    }
+    
+    private float getPartialAnkleAngle(Animation animation) {
+        switch (animation.getCurrentAnimationType()) {
+            case IDLE:
+            default:
+                return 0F;
         }
     }
 

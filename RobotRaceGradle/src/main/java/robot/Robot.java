@@ -9,7 +9,6 @@ package robot;
 import com.jogamp.opengl.util.gl2.GLUT;
 import javax.media.opengl.GL2;
 import javax.media.opengl.glu.GLU;
-import robot.bender.Bender;
 import robotrace.Material;
 import robotrace.Vector;
 
@@ -109,6 +108,10 @@ public class Robot {
         return material;
     }
 
+    public RobotBody getRobotBody() {
+        return robotBody;
+    }
+    
     /**
      * Draws this robot on the screen.
      *

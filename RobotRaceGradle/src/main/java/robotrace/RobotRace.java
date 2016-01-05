@@ -22,6 +22,7 @@ import static javax.media.opengl.fixedfunc.GLMatrixFunc.GL_MODELVIEW;
 import static javax.media.opengl.fixedfunc.GLMatrixFunc.GL_PROJECTION;
 import racetrack.RaceTrack;
 import racetrack.RaceTrackFactory;
+import robot.AnimationType;
 import robot.Robot;
 import robot.RobotFactory;
 
@@ -191,7 +192,13 @@ public class RobotRace extends Base {
         gl.glLoadIdentity();
 
         camera.setLookAt(glu);
+
+        tempScrollVarPrev = tempScrollVar;//TODO: remove temp code.
+        tempScrollVar = gs.vDist;//TODO: remove temp code.
     }
+
+    private float tempScrollVar = 10F;
+    private float tempScrollVarPrev = 10F;
 
     /**
      * Draws the entire scene.
@@ -220,7 +227,10 @@ public class RobotRace extends Base {
             robot.setDirection(racetrack.RaceTrackDefinition.getLaneTangent(robot.getTrackTime(), raceTracks[gs.trackNr], i));
             final double laneDistance = racetrack.RaceTrackDefinition.getLaneDistance(gs.tAnim, tPrevious, raceTracks[gs.trackNr], i);
             robot.moveDistance(RaceTrack.SLICE_COUNT * (gs.tAnim - tPrevious), laneDistance);
-            robot.draw(gl, glu, glut, gs.showStick, (float) robot.getDistance()*5);//TODO: sort out speed => anim period conversion.
+            if (Math.abs(tempScrollVarPrev - tempScrollVar) > 0.1F) {
+                robot.getRobotBody().playAnimation(AnimationType.RUNNING, 2);
+            }
+            robot.draw(gl, glu, glut, gs.showStick, (float) robot.getDistance()*5);
         }
 
         // Draw the race track.

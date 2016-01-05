@@ -41,42 +41,42 @@ public interface RobotBody {
     void draw(GL2 gl, GLUT glut, boolean stickFigure, float tAnim);
 
     /**
-     * Sets the default stance or animation. This animation will be repeated
+     * Sets the default animation or animation. This animation will be repeated
      * indefinitely. When {@link #playAnimation} or {@link #playAnimationOnce}
      * get called, after those animations finish running the robot body will
-     * return to displaying the default stance.
+     * return to displaying the default animation.
      *
-     * The default stance is always the IDLE stance, until this method gets
-     * called.
+     * The default animation is always the IDLE animation, until this method
+     * gets called.
      *
      * Note that robot bodies are free to provide their own implementations of
-     * the animations, and are in fact not obliged to support any stances other
-     * than the IDLE stance.
+     * the animations, and are in fact not obliged to support any animation
+     * types other than the IDLE stance.
      *
-     * @param stance The animation type to display by default. If this robot
-     *               body doesn't support the given stance, it will default to
-     *               the IDLE stance.
+     * @param animationType The animation type to display by default. If this
+     *                      robot body doesn't support the given stance, it will
+     *                      default to AnimationType.IDLE.
      */
-    void setDefaultAnimation(Stance stance);
+    void setDefaultAnimation(AnimationType animationType);
 
     /**
      * Interrupt the currently playing animation and run the given animation
-     * type once. After the animation is done, return to the default stance.
+     * type once. After the animation is done, return to the default animation type.
      *
-     * @param stance Specifies the animation to run once.
+     * @param animationType Specifies the animation to run once.
      */
-    void playAnimationOnce(Stance stance);
+    void playAnimationOnce(AnimationType animationType);
 
     /**
      * Interrupt the currently playing animation and run the given animation
      * type a given number of times. After the animation is done, return to the
-     * default stance.
+     * default animation type.
      *
-     * @param stance  Specifies the animation to run.
+     * @param animationType  Specifies the animation to run.
      * @param repeats How often the animation should repeat. A value equal to or
      *                lower than zero is interpreted as indefinitely and will
      *                trigger a call to {@link #setDefaultAnimation}.
      */
-    void playAnimation(Stance stance, int repeats);
+    void playAnimation(AnimationType animationType, int repeats);
 
 }

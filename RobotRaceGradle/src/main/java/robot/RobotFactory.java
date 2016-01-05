@@ -8,7 +8,9 @@ package robot;
 
 import bodies.BufferManager;
 import javax.media.opengl.GL2;
+import robot.bender.Arm;
 import robot.bender.Bender;
+import robot.bender.Leg;
 import robot.bender.Limb;
 import robot.bender.Torso;
 import robotrace.Material;
@@ -83,7 +85,13 @@ public class RobotFactory {
     }
 
     private Bender makeBenderBody() {
-        return new Bender(benderTorso, benderLimb);
+        final Leg rightLeg = new Leg(benderLimb, 0F);
+        final Leg leftLeg = new Leg(benderLimb, 0.5F);
+        final Arm rightArm = new Arm(benderLimb, 0.5F, Vector.Y, Vector.Z.scale(-1));
+        final Arm leftArm = new Arm(benderLimb, 0F, Vector.Y.scale(-1), Vector.Z);
+        final Animation animation = new Animation();
+        animation.addAnimationType(AnimationType.RUNNING, 0.8F);
+        return new Bender(animation, benderTorso, rightLeg, leftLeg, rightArm, leftArm);
     }
 
 }

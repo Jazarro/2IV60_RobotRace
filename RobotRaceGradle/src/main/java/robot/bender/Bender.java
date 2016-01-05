@@ -9,8 +9,8 @@ package robot.bender;
 import com.jogamp.opengl.util.gl2.GLUT;
 import javax.media.opengl.GL2;
 import robot.Animation;
+import robot.AnimationType;
 import robot.RobotBody;
-import robot.Stance;
 import robotrace.Vector;
 
 /**
@@ -30,26 +30,26 @@ public class Bender implements RobotBody {
      */
     public static final Vector LOCAL_ORIENTATION = new Vector(0, 1, 0);
 
+    private final Animation animation;
+    private final Torso torso;
     private final Leg rightLeg;
     private final Leg leftLeg;
     private final Arm rightArm;
     private final Arm leftArm;
-    private final Torso torso;
-    private final Animation animation = new Animation(0.8F);
 
-    private Stance defaultStance = Stance.IDLE;
-
-    public Bender(Torso torso, Limb limb) {
-        this.rightLeg = new Leg(limb, 0F);
-        this.leftLeg = new Leg(limb, 0.5F);
-        this.rightArm = new Arm(limb, 0.5F, Vector.Y, Vector.Z.scale(-1));
-        this.leftArm = new Arm(limb, 0F, Vector.Y.scale(-1), Vector.Z);
+    //TODO: docs
+    public Bender(Animation animation, Torso torso, Leg rightLeg, Leg leftLeg, Arm rightArm, Arm leftArm) {
+        this.animation = animation;
         this.torso = torso;
+        this.rightLeg = rightLeg;
+        this.leftLeg = leftLeg;
+        this.rightArm = rightArm;
+        this.leftArm = leftArm;
     }
-
+    
     @Override
     public void draw(GL2 gl, GLUT glut, boolean stickFigure, float tAnim) {
-        animation.updateTime(tAnim);
+        animation.update(tAnim);
         gl.glPushMatrix();
         {
             final double legHeight = Limb.HEIGHT_OUTER_SEGMENT * Limb.RING_COUNT + Limb.HEIGHT_FOOT;
@@ -86,18 +86,18 @@ public class Bender implements RobotBody {
     }
 
     @Override
-    public void setDefaultAnimation(Stance stance) {
-        this.defaultStance = stance;
+    public void setDefaultAnimation(AnimationType animationType) {
+        animation.setDefaultAnimationType(animationType);
     }
 
     @Override
-    public void playAnimationOnce(Stance stance) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void playAnimationOnce(AnimationType animationType) {
+        animation.playAnimationOnce(animationType);
     }
 
     @Override
-    public void playAnimation(Stance stance, int repeats) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void playAnimation(AnimationType animationType, int repeats) {
+        animation.playAnimation(animationType, repeats);
     }
 
 }
