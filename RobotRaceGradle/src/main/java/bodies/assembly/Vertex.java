@@ -6,18 +6,28 @@
  */
 package bodies.assembly;
 
-import robotrace.*;
+import robotrace.Vector;
 
 /**
  *
  * @author Robke Geenen
+ * @author Arjan Boschman
  */
-public final class Vertex {
+public class Vertex {
 
     /**
      * The number of coordinates a Vertex consists of.
      */
     public static final int COORD_COUNT = 3;
+    /**
+     * How many different data elements are encoded within one vertex. Examples
+     * of such elements are the location, the normal, the colour and the
+     * texture.
+     *
+     * This value, along with {@link #COORD_COUNT}, are needed to calculate the
+     * stride.
+     */
+    public static final int NR_VERTEX_ELEMENTS = 2;
     /**
      * The indices in the position and normal arrays that signify the x, y, and
      * z components.
@@ -216,11 +226,11 @@ public final class Vertex {
     public final Vector getNormalV() {
         return new Vector(normalX, normalY, normalZ);
     }
-    
-    public static Vertex crossNormal(Vertex vertex1, Vertex vertex2, boolean flipNormal){
+
+    public static Vertex crossNormal(Vertex vertex1, Vertex vertex2, boolean flipNormal) {
         final Vector position = vertex1.getPositionV().add(vertex2.getPositionV()).scale(0.5d);
         Vector normal = vertex1.getNormalV().cross(vertex2.getNormalV());
-        if(flipNormal){
+        if (flipNormal) {
             normal = normal.scale(-1d);
         }
         return new Vertex(position, normal);

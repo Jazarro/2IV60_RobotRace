@@ -4,13 +4,18 @@
  * Assignment: RobotRace
  * Students: Arjan Boschman & Robke Geenen
  */
-package robotrace;
+package terrain.debug;
 
+import bodies.BufferManager;
 import com.jogamp.opengl.util.gl2.GLUT;
 import java.util.ArrayList;
 import java.util.List;
 import javax.media.opengl.GL2;
 import javax.media.opengl.glu.GLU;
+import robotrace.Lighting;
+import robotrace.Material;
+import robotrace.Vector;
+import terrain.Terrain;
 
 /**
  * Terrain made for measuring robot velocities.
@@ -32,7 +37,7 @@ public class TestingTerrain extends Terrain {
     private final List<Shape> shapes = new ArrayList<>();
 
     @Override
-    public void initialize() {
+    public void initialize(GL2 gl, BufferManager.Initialiser bmInitialiser) {
         for (int i = -5; i < 1000; i++) {
             shapes.add(makeFloorShape(i));
             shapes.add(makeWallShape(i));

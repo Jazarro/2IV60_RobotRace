@@ -9,6 +9,7 @@ package bodies;
 import bodies.assembly.Vertex;
 import java.nio.DoubleBuffer;
 import java.nio.IntBuffer;
+import java.util.ArrayList;
 import java.util.List;
 import javax.media.opengl.GL2;
 
@@ -30,9 +31,6 @@ public class BufferManager {
      */
     public static final int INDEX_BUFFER_OFFSET = 0;
 
-    private boolean isInitialised = false;
-    private boolean drawStarted = false;
-
     private int dataBufferName;
 
     public Initialiser makeInitialiser(GL2 gl) {
@@ -47,12 +45,11 @@ public class BufferManager {
      * @see #endDraw Must be called in conjunction with this method.
      */
     public void startDraw(GL2 gl) {
-        assertFlags(true);
         gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
         gl.glEnableClientState(GL2.GL_NORMAL_ARRAY);
         //Use the name under which the data buffer was stored to bind it.
         gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, dataBufferName);
-        final int stride = 2 * Vertex.COORD_COUNT * Double.BYTES;
+        final int stride = Vertex.NR_VERTEX_ELEMENTS * Vertex.COORD_COUNT * Double.BYTES;
         /**
          * Tell OpenGL what formats and what stride length to expect when
          * extracting vertex coordinate information from the data buffer.
@@ -74,38 +71,8 @@ public class BufferManager {
      * @see #startDraw Must be called in conjunction with this method.
      */
     public void endDraw(GL2 gl) {
-        assertFlags(false);
         gl.glDisableClientState(GL2.GL_NORMAL_ARRAY);
         gl.glDisableClientState(GL2.GL_VERTEX_ARRAY);
-    }
-
-    /**
-     * Provides a little assurance that this class won't fail silently and in
-     * some subtle way, when certain API calls are forgotten or are made at the
-     * wrong moment.
-     *
-     * Makes sure that the BodyManager will not be used before it has been
-     * initialised by an {@link Initialiser}. Makes sure that all
-     * {@link #startDraw} calls are followed up by exactly one call to
-     * {@link #endDraw}.
-     *
-     * @param isStart What method this method is called from. True for
-     *                startDraw, false for endDraw.
-     */
-    private void assertFlags(boolean isStart) {
-        if (!isInitialised) {
-            throw new IllegalStateException(String.format(
-                    "Tried to call %s but the BodyManager hasn't been initialised yet!",
-                    isStart ? "startDraw" : "endDraw"));
-        } else if (isStart && drawStarted) {
-            throw new IllegalStateException(
-                    "Tried to call startDraw twice in a row without calling endDraw!");
-        } else if (!isStart && !drawStarted) {
-            throw new IllegalStateException(
-                    "Tried to call endDraw without first calling startDraw!");
-        } else {
-            drawStarted = isStart;
-        }
     }
 
     @SuppressWarnings("PublicInnerClass")
@@ -140,8 +107,26 @@ public class BufferManager {
             gl.glBufferData(GL2.GL_ARRAY_BUFFER, dataBuffer.capacity() * Double.BYTES, dataBuffer, GL2.GL_STATIC_DRAW);
             //Erase buffer data so nothing will stay in memory or silently fail if people abuse this class.
             dataBuffer = null;
-            //Flag the BodyManager as initialised.
-            isInitialised = true;
+        }
+
+        /**
+         * Adds some vertices to the data buffer. Also adds an index buffer to
+         * OpenGL.
+         *
+         * @param data        This data will be appended to the existing data
+         *                    buffer that is backing this Initialiser. The data
+         *                    doesn't get sent to OpenGL yet, that only happens
+         *                    at the end of this objects lifespan, upon calling
+         *                    {@link #finish()}.
+         * @param indexBuffer This index buffer will be sent to OpenGl
+         *                    immediately.
+         * @return The index buffer name that was used to register the given
+         *         indexBuffer with OpenGL.
+         */
+        public int addData(DoubleBuffer data, IntBuffer indexBuffer) {
+            final List<IntBuffer> list = new ArrayList<>();
+            list.add(indexBuffer);
+            return addData(data, list)[0];
         }
 
         /**
@@ -161,7 +146,7 @@ public class BufferManager {
          */
         public int[] addData(DoubleBuffer data, List<IntBuffer> indexBuffers) {
             //Append databuffer to the one already stored in here.
-            final int coordLength = 2 * Vertex.COORD_COUNT;
+            final int coordLength = Vertex.NR_VERTEX_ELEMENTS * Vertex.COORD_COUNT;
             final int oldLength = appendToDataBuffer(data) / coordLength;
             //Increment each index by the previous length of the databuffer.
             incrementEachElement(indexBuffers, oldLength);

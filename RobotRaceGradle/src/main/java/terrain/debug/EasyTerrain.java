@@ -4,14 +4,19 @@
  * Assignment: RobotRace
  * Students: Arjan Boschman & Robke Geenen
  */
-package robotrace;
+package terrain.debug;
 
+import bodies.BufferManager;
 import com.jogamp.opengl.util.gl2.GLUT;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import javax.media.opengl.GL2;
 import javax.media.opengl.glu.GLU;
+import robotrace.Lighting;
+import robotrace.Material;
+import robotrace.Vector;
+import terrain.Terrain;
 
 /**
  * Temporary setup for Terrain, just puts down some rough cubes to test things
@@ -49,7 +54,7 @@ public class EasyTerrain extends Terrain {
     private final List<Shape> shapes = new ArrayList<>();
 
     @Override
-    public void initialize() {
+    public void initialize(GL2 gl, BufferManager.Initialiser bmInitialiser) {
         shapes.add(makeGround());
         final Random rand = new Random(RANDOM_SEED);
         for (int i = 0; i < AMOUNT_OF_GROUND_CLUTTER; i++) {

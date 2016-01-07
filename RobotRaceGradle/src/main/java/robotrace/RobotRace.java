@@ -25,6 +25,7 @@ import racetrack.RaceTrackDefinition;
 import racetrack.RaceTrackFactory;
 import robot.Robot;
 import robot.RobotFactory;
+import terrain.Terrain;
 
 /**
  * Handles all of the RobotRace graphics functionality, which should be extended
@@ -76,7 +77,7 @@ public class RobotRace extends Base {
 
     private final BufferManager bodyManager = new BufferManager();
     private final Camera camera = new Camera();
-    private final Terrain terrain = new TestingTerrain();
+    private final Terrain terrain = new Terrain();
     private final RobotFactory robotFactory = new RobotFactory();
     private final RaceTrackFactory raceTrackFactory = new RaceTrackFactory();
     private final Lighting lighting = new Lighting();
@@ -156,7 +157,7 @@ public class RobotRace extends Base {
         robotFactory.initialize(gl, bmInitialiser);
         raceTrackFactory.initialize(gl, bmInitialiser);
 
-        terrain.initialize();
+        terrain.initialize(gl, bmInitialiser);
 
         // Try to load four textures, add more if you like.
         track = loadTexture("track.jpg");
