@@ -7,29 +7,30 @@
 package racetrack;
 
 import bodies.BufferManager;
+import java.util.*;
 import javax.media.opengl.GL2;
+import static racetrack.RaceTrackDefinition.getMaxTypeID;
 
 public class RaceTrackFactory {
 
-    private final RaceTrack testRaceTrack = new RaceTrack();
-    private final RaceTrack testElevatedRaceTrack = new RaceTrack();
+    private final List<RaceTrack> raceTrackTypes = new ArrayList<>();
 
     public RaceTrackFactory() {
+        for (int i = 0; i <= getMaxTypeID(); i++) {
+            final RaceTrack newRaceTrack = new RaceTrack();
+            newRaceTrack.setTrackType(i);
+            raceTrackTypes.add(newRaceTrack);
+        }
     }
 
     public void initialize(GL2 gl, BufferManager.Initialiser bmInitialiser) {
-        testRaceTrack.setTrackType(RaceTrackDefinition.RTD_TEST);
-        testRaceTrack.initialize(gl, bmInitialiser);
-        testElevatedRaceTrack.setTrackType(RaceTrackDefinition.RTD_TEST_ELEVATED);
-        testElevatedRaceTrack.initialize(gl, bmInitialiser);
+        for (RaceTrack raceTrack : raceTrackTypes) {
+            raceTrack.initialize(gl, bmInitialiser);
+        }
     }
 
-    public RaceTrack makeTestRaceTrack() {
-        return testRaceTrack;
-    }
-
-    public RaceTrack makeTestElevatedRaceTrack() {
-        return testElevatedRaceTrack;
+    public RaceTrack makeRaceTrack(int raceTrackType) {
+        return raceTrackTypes.get(raceTrackType);
     }
 
 }

@@ -117,7 +117,7 @@ class Camera {
         //Calculate the needed field of view angle to make the displayed portion 
         //of the line through the center point exactly vDist long.
 
-        setFOVAndPlane(gs, center, eye, 0d);
+        setFOVAndPlane(gs, center, eye, 40d);//TODO: Fix FOVAngle
     }
 
     /**
