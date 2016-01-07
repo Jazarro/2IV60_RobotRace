@@ -16,26 +16,33 @@ import robotrace.Material;
 
 /**
  * Implementation of the terrain.
+ *
  * @author Arjan Boschman
  */
 public class Terrain {
 
+    private static final int WATER_LEVEL = -20;
     private Body terrainBody;
+    private Body waterBody;
 
     public void initialize(GL2 gl, BufferManager.Initialiser bmInitialiser) {
-        this.terrainBody = new TerrainFactory(100, 100, 1)
-                .makeTerrain(bmInitialiser,
-                        (float x, float y) -> {
-                            return (float) (0.6 * Math.cos(0.3 * x + 0.2 * y) + 0.4 * Math.cos(x - 0.5 * y));
-                        });
+        this.terrainBody = new TerrainFactory(1000, 1000, 1F)
+                .makeTerrain(bmInitialiser, FractalTerrainGenerator.create());
+        this.waterBody = new TerrainFactory(1000, 1000, 1000)
+                .makeTerrain(bmInitialiser, (x, y) -> WATER_LEVEL);
     }
 
     /**
      * Draws the terrain.
      */
     public void draw(GL2 gl, GLU glu, GLUT glut, Lighting lighting) {
+        gl.glPushMatrix();
+        gl.glTranslated(0, 0, -125);
         lighting.setMaterial(gl, Material.DIRT);
         terrainBody.draw(gl, glut);
+        lighting.setMaterial(gl, Material.WATER);
+        waterBody.draw(gl, glut);
+        gl.glPopMatrix();
     }
 
 }

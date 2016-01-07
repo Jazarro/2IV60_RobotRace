@@ -1,7 +1,8 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Course: Computer Graphics
+ * Course Code: 2IV60
+ * Assignment: RobotRace
+ * Students: Arjan Boschman & Robke Geenen
  */
 package bodies;
 
@@ -11,14 +12,13 @@ import java.nio.IntBuffer;
 import java.util.List;
 import javax.media.opengl.GL2;
 
-//=============== Nested Classes: ==========================================
-
 /**
  * Can create an instance of {@link SimpleBody} that consists of a stack of
  * partial toruses and conical frustums.
  *
  * The initial shape will be built at the bottom, with progressive shapes
  * built back to back on top of each other, creating a tunnel-like shape.
+ * @author Arjan Boschman
  */
 public class StackBuilder {
 

@@ -47,8 +47,8 @@ public class TerrainFactory {
         this.heightInMeters = heightInMeters;
         this.widthInMeters = widthInMeters;
         this.blockScale = blockScale;
-        this.widthInVertices = (int) (widthInMeters / blockScale);
-        this.heightInVertices = (int) (heightInMeters / blockScale);
+        this.widthInVertices = (int) (widthInMeters / blockScale) + 1;
+        this.heightInVertices = (int) (heightInMeters / blockScale) + 1;
     }
 
     //TODO: docs.
@@ -76,7 +76,7 @@ public class TerrainFactory {
     private IntBuffer generateIndexBuffer() {
         final IntBuffer buffer = IntBuffer.allocate(getNrTriangles() * Vertex.COORD_COUNT);
         for (int x = 0; x < widthInVertices - 1; x++) {
-            for (int y = 0; y < heightInVertices - 1; y++) {//Be mindful of possible error here.
+            for (int y = 0; y < heightInVertices - 1; y++) {
                 final int vertexIndex = (y * widthInVertices) + x;
                 // Top triangle (T0)
                 buffer.put(vertexIndex);                                        //V0
