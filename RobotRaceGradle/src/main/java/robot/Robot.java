@@ -9,6 +9,7 @@ package robot;
 import com.jogamp.opengl.util.gl2.GLUT;
 import javax.media.opengl.GL2;
 import javax.media.opengl.glu.GLU;
+import racetrack.RaceTrack;
 import robotrace.Material;
 import robotrace.Vector;
 
@@ -29,9 +30,10 @@ public class Robot {
     private Vector direction = Vector.Y;
 
     private double speed = 1d;
-    private double trackTime = 0d;
-    private double distanceTime = 0d;
+    private double trackPosition = 0d;
+    private double distanceTravelled = 0d;
     private int laps = 0;
+    private int laneNumber = 0;
 
     /**
      * The material from which this robot is built.
@@ -57,12 +59,20 @@ public class Robot {
         this.position = position;
     }
 
+    public void setPositionOnTrack(RaceTrack raceTrack) {
+        this.position = raceTrack.getLanePoint(trackPosition, laneNumber);
+    }
+
     public Vector getPosition() {
         return position;
     }
 
     public void setDirection(Vector direction) {
         this.direction = direction;
+    }
+
+    public void setDirectionOnTrack(RaceTrack raceTrack) {
+        this.direction = raceTrack.getLaneTangent(trackPosition, laneNumber);
     }
 
     public Vector getDirection() {
@@ -74,39 +84,44 @@ public class Robot {
     }
 
     public double getSpeed() {
-        return this.speed;
+        return speed;
+    }
+    
+    public double getCurrentSpeed(){
+        return speed;
     }
 
-    public void resetDistance(double distance) {
-        this.trackTime = 0d;
-        this.distanceTime = 0d;
+    public void setLaneNumber(int laneNumber) {
+        this.laneNumber = laneNumber;
     }
 
-    public void moveDistance(double deltaTime, double laneDistance) {
-        double deltaTrack = 0d;
-        if (laneDistance != 0d) {
-            deltaTrack = deltaTime / laneDistance;
-        }
-        final double scaleFactor = speed * getGravityDrag(direction.normalized().dot(Vector.Z));
-        distanceTime += deltaTime * scaleFactor;
-        trackTime += deltaTrack * scaleFactor;
-        while (trackTime >= 1d) {
-            laps++;
-            trackTime -= 1d;
-        }
+    public int getLaneNumber() {
+        return laneNumber;
     }
 
-    private double getGravityDrag(double zInclination) {
+    public void resetDistance() {
+        this.trackPosition = 0d;
+        this.distanceTravelled = 0d;
+    }
+
+    public void moveDistance(RaceTrack raceTrack, double deltaTime) {
+        distanceTravelled += deltaTime * getCurrentSpeed();
+        trackPosition = raceTrack.getLaneT(distanceTravelled, laneNumber);
+    }
+
+    private double getGravityDrag(Vector direction) {
+        final double zInclination = direction.normalized().dot(Vector.Z);
         final double gravity = Math.pow(2d, Math.pow(zInclination, 2d) * 4d); //TODO: Find nice value!
-        return (zInclination < 0d) ? (gravity) : (1d / gravity);
+        //return (zInclination < 0d) ? (gravity) : (1d / gravity);
+        return 1d;
     }
 
-    public double getDistance() {
-        return distanceTime;
+    public double getDistanceTravelled() {
+        return distanceTravelled;
     }
 
-    public double getTrackTime() {
-        return trackTime;
+    public double getTrackPosition() {
+        return trackPosition;
     }
 
     public Material getMaterial() {
@@ -115,6 +130,12 @@ public class Robot {
 
     public RobotBody getRobotBody() {
         return robotBody;
+    }
+
+    public void update(RaceTrack raceTrack, double deltaTime) {
+        moveDistance(raceTrack, deltaTime);
+        setPositionOnTrack(raceTrack);
+        setDirectionOnTrack(raceTrack);
     }
 
     /**

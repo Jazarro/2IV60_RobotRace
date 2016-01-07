@@ -145,14 +145,6 @@ public class RaceTrackDefinition {
         return delta1.add(delta2).normalized();
     }
 
-    protected static double getTrackDistance(int trackType, double t, double tPrevious) {
-        t = clip(t);
-        tPrevious = clip(tPrevious);
-        final Vector vector = getTrackPoint(trackType, t);
-        final Vector vectorPrevious = getTrackPoint(trackType, tPrevious);
-        return vector.subtract(vectorPrevious).length();
-    }
-
     protected static Vector getLanePoint(int trackType, int laneNumber, double t) {
         t = clip(t);
         final Vector translate = getTrackNormal(trackType, t).scale((laneNumber - (RaceTrack.LANE_COUNT / 2d) + 0.5d) * RaceTrack.LANE_WIDTH);
@@ -167,14 +159,6 @@ public class RaceTrackDefinition {
     protected static Vector getLaneTangent(int trackType, int laneNumber, double t) {
         t = clip(t);
         return getTrackTangent(trackType, t);
-    }
-
-    protected static double getLaneDistance(int trackType, int laneNumber, double t, double tPrevious) {
-        t = clip(t);
-        tPrevious = clip(tPrevious);
-        final Vector vector = getLanePoint(trackType, laneNumber, t);
-        final Vector vectorPrevious = getLanePoint(trackType, laneNumber, tPrevious);
-        return vector.subtract(vectorPrevious).length();
     }
 
     private static Vector calculateBezierPoint(double t, List<CubicBezierPath> bezierElements) {

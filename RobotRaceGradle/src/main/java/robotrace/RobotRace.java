@@ -106,10 +106,15 @@ public class RobotRace extends Base {
 //        robots[2] = factory.makeBenderAt(Material.WOOD, new Vector(-1, 1, 0), Vector.X);
 //        robots[3] = factory.makeBenderAt(Material.PLASTIC_ORANGE, new Vector(-1, 3, 0), Vector.X);
 
-        robots[0].setSpeed(0.005d);
-        robots[1].setSpeed(0.005d);
-        robots[2].setSpeed(0.005d);
-        robots[3].setSpeed(0.005d);
+        robots[0].setSpeed(1d);
+        robots[1].setSpeed(1d);
+        robots[2].setSpeed(1d);
+        robots[3].setSpeed(1d);
+
+        robots[0].setLaneNumber(0);
+        robots[1].setLaneNumber(1);
+        robots[2].setLaneNumber(2);
+        robots[3].setLaneNumber(3);
 
         raceTracks[0] = raceTrackFactory.makeRaceTrack(RaceTrackDefinition.RTD_TEST);
         raceTracks[1] = raceTrackFactory.makeRaceTrack(RaceTrackDefinition.RTD_O);
@@ -196,6 +201,7 @@ public class RobotRace extends Base {
      */
     @Override
     public void drawScene() {
+        final RaceTrack raceTrack = raceTracks[gs.trackNr];
         bodyManager.startDraw(gl);
         lighting.drawScene(gl);
 
@@ -211,13 +217,9 @@ public class RobotRace extends Base {
         }
 
         //Draw the robots.
-        for (int i = 0; i < robots.length; i++) {
-            final Robot robot = robots[i];
+        for (Robot robot : robots) {
             lighting.setMaterial(gl, robot.getMaterial());
-            robot.setPosition(raceTracks[gs.trackNr].getLanePoint(robot.getTrackTime(), i));
-            robot.setDirection(raceTracks[gs.trackNr].getLaneTangent(robot.getTrackTime(), i));
-            final double laneDistance = raceTracks[gs.trackNr].getLaneDistance(gs.tAnim % 1d, tPrevious % 1d, i);
-            robot.moveDistance(gs.tAnim - tPrevious, laneDistance);
+            robot.update(raceTrack, gs.tAnim - tPrevious);
 
             {//TODO: remove temp code.
 //                if (Math.abs(tempScrollVarPrev - tempScrollVar) > 0.1F) {
@@ -235,7 +237,7 @@ public class RobotRace extends Base {
         }
 
         // Draw the race track.
-        raceTracks[gs.trackNr].draw(gl, glu, glut);
+        raceTrack.draw(gl, glu, glut);
         // Draw the terrain.
         terrain.draw(gl, glu, glut, lighting);
 

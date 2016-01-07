@@ -30,9 +30,8 @@ public class RaceTrack implements SingletonDrawable {
 
     private Body raceTrackBody;
     private int trackType = RTD_TEST;
-
-    public RaceTrack() {
-    }
+    private RaceTrackDistances trackDistances;
+    private List<RaceTrackDistances> laneDistances;
 
     public void setTrackType(int trackType) {
         this.trackType = trackType;
@@ -45,12 +44,16 @@ public class RaceTrack implements SingletonDrawable {
     @Override
     public void initialize(GL2 gl, BufferManager.Initialiser bmInitialiser) {
         List<Vertex> trackDescription = new ArrayList<>();
+        List<Double> trackT = new ArrayList<>();
         for (double t = 0d; t <= 1d; t += (1d / getSliceCount())) {
             trackDescription.add(new Vertex(getTrackPoint(t)));
+            trackT.add(t);
         }
-        raceTrackBody = new TrackBuilder(bmInitialiser)
-                .setTrackProperties(LANE_WIDTH, LANE_COUNT, TRACK_HEIGHT, getClosedTrack())
-                .build(trackDescription);
+        final TrackBuilder raceTrackBuilder = new TrackBuilder(bmInitialiser)
+                .setTrackProperties(LANE_WIDTH, LANE_COUNT, TRACK_HEIGHT, getClosedTrack());
+        raceTrackBody = raceTrackBuilder.build(trackDescription, trackT);
+        trackDistances = raceTrackBuilder.getTrackDistances();
+        laneDistances = raceTrackBuilder.getLaneDistances();
     }
 
     public boolean getClosedTrack() {
@@ -72,9 +75,13 @@ public class RaceTrack implements SingletonDrawable {
     public Vector getTrackTangent(double t) {
         return RaceTrackDefinition.getTrackTangent(trackType, t);
     }
-
-    public double getTrackDistance(double t, double tPrevious) {
-        return RaceTrackDefinition.getTrackDistance(trackType, t, tPrevious);
+    
+    public double getTrackDistance(double t){
+        return trackDistances.getDistance(t);
+    }
+    
+    public double getTrackT(double distance){
+        return trackDistances.getT(distance);
     }
 
     public Vector getLanePoint(double t, int laneNumber) {
@@ -88,9 +95,13 @@ public class RaceTrack implements SingletonDrawable {
     public Vector getLaneTangent(double t, int laneNumber) {
         return RaceTrackDefinition.getLaneTangent(trackType, laneNumber, t);
     }
-
-    public double getLaneDistance(double t, double tPrevious, int laneNumber) {
-        return RaceTrackDefinition.getLaneDistance(trackType, laneNumber, t, tPrevious);
+    
+    public double getLaneDistance(double t, int laneNumber){
+        return laneDistances.get(laneNumber).getDistance(t);
+    }
+    
+    public double getLaneT(double distance, int laneNumber){
+        return laneDistances.get(laneNumber).getT(distance);
     }
 
     /**
@@ -99,4 +110,5 @@ public class RaceTrack implements SingletonDrawable {
     public void draw(GL2 gl, GLU glu, GLUT glut) {
         raceTrackBody.draw(gl, glut);
     }
+
 }
