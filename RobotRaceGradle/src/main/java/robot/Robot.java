@@ -96,6 +96,11 @@ public class Robot {
         }
     }
 
+    private double getGravityDrag(double zInclination) {
+        final double gravity = Math.pow(2d, Math.pow(zInclination, 2d) * 4d); //TODO: Find nice value!
+        return (zInclination < 0d) ? (gravity) : (1d / gravity);
+    }
+
     public double getDistance() {
         return distanceTime;
     }
@@ -111,7 +116,7 @@ public class Robot {
     public RobotBody getRobotBody() {
         return robotBody;
     }
-    
+
     /**
      * Draws this robot on the screen.
      *
@@ -139,11 +144,6 @@ public class Robot {
             robotBody.draw(gl, glut, stickFigure, tAnim);
         }
         gl.glPopMatrix();
-    }
-
-    private double getGravityDrag(double zInclination) {
-        final double gravity = Math.pow(2d, Math.pow(zInclination, 2d) * 4d); //TODO: Find nice value!
-        return (zInclination < 0d) ? (gravity) : (1d / gravity);
     }
 
 }

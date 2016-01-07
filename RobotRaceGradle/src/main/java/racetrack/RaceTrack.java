@@ -16,9 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.media.opengl.GL2;
 import javax.media.opengl.glu.GLU;
-import static racetrack.RaceTrackDefinition.RTD_TEST;
-import static racetrack.RaceTrackDefinition.getClosedTrack;
-import static racetrack.RaceTrackDefinition.getTrackPoint;
+import static racetrack.RaceTrackDefinition.*;
 import robotrace.Vector;
 
 /**
@@ -29,27 +27,11 @@ public class RaceTrack implements SingletonDrawable {
     public static final double LANE_WIDTH = 1.22d;
     public static final int LANE_COUNT = 4;
     public static final double TRACK_HEIGHT = 2d;
-    public static final int SLICE_COUNT = 50;
 
     private Body raceTrackBody;
     private int trackType = RTD_TEST;
 
-    /**
-     * Array with 3N control points, where N is the number of segments.
-     */
-    private Vector[] controlPoints = null;
-
-    /**
-     * Constructor for the default track.
-     */
     public RaceTrack() {
-    }
-
-    /**
-     * Constructor for a spline track.
-     */
-    public RaceTrack(Vector[] controlPoints) {
-        this.controlPoints = controlPoints;
     }
 
     public void setTrackType(int trackType) {
@@ -63,22 +45,58 @@ public class RaceTrack implements SingletonDrawable {
     @Override
     public void initialize(GL2 gl, BufferManager.Initialiser bmInitialiser) {
         List<Vertex> trackDescription = new ArrayList<>();
-        for (double t = 0d; t < 1d; t += (1d / SLICE_COUNT)) {
-            trackDescription.add(new Vertex(getTrackPoint(t, this)));
+        for (double t = 0d; t <= 1d; t += (1d / getSliceCount())) {
+            trackDescription.add(new Vertex(getTrackPoint(t)));
         }
         raceTrackBody = new TrackBuilder(bmInitialiser)
-                .setTrackProperties(LANE_WIDTH, LANE_COUNT, TRACK_HEIGHT, getClosedTrack(this))
+                .setTrackProperties(LANE_WIDTH, LANE_COUNT, TRACK_HEIGHT, getClosedTrack())
                 .build(trackDescription);
+    }
+
+    public boolean getClosedTrack() {
+        return RaceTrackDefinition.getClosedTrack(trackType);
+    }
+
+    public int getSliceCount() {
+        return RaceTrackDefinition.getSliceCount(trackType);
+    }
+
+    public Vector getTrackPoint(double t) {
+        return RaceTrackDefinition.getTrackPoint(trackType, t);
+    }
+
+    public Vector getTrackNormal(double t) {
+        return RaceTrackDefinition.getTrackNormal(trackType, t);
+    }
+
+    public Vector getTrackTangent(double t) {
+        return RaceTrackDefinition.getTrackTangent(trackType, t);
+    }
+
+    public double getTrackDistance(double t, double tPrevious) {
+        return RaceTrackDefinition.getTrackDistance(trackType, t, tPrevious);
+    }
+
+    public Vector getLanePoint(double t, int laneNumber) {
+        return RaceTrackDefinition.getLanePoint(trackType, laneNumber, t);
+    }
+
+    public Vector getLaneNormal(double t, int laneNumber) {
+        return RaceTrackDefinition.getTrackNormal(trackType, t);
+    }
+
+    public Vector getLaneTangent(double t, int laneNumber) {
+        return RaceTrackDefinition.getLaneTangent(trackType, laneNumber, t);
+    }
+
+    public double getLaneDistance(double t, double tPrevious, int laneNumber) {
+        return RaceTrackDefinition.getLaneDistance(trackType, laneNumber, t, tPrevious);
     }
 
     /**
      * Draws this track, based on the control points.
      */
     public void draw(GL2 gl, GLU glu, GLUT glut) {
-        if (controlPoints == null) {
-            raceTrackBody.draw(gl, glut);
-        } else {
-            // draw the spline track
-        }
+        raceTrackBody.draw(gl, glut);
     }
 }
