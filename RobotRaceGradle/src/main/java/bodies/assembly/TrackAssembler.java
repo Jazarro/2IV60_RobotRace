@@ -4,22 +4,13 @@ import java.nio.DoubleBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
-import racetrack.RaceTrackDistances;
 import robotrace.Vector;
 
 public class TrackAssembler {
 
     private final SurfaceCompilation surfaceCompilation = new SurfaceCompilation();
-    private final List<RaceTrackDistances> laneDistances = new ArrayList<>();
-    private final RaceTrackDistances trackDistances = new RaceTrackDistances();
 
-    public void calculateTrack(List<Vertex> trackDescription, List<Double> trackT, double laneWidth, int laneCount, double trackHeight, boolean closedTrack) {
-        double trackDistance = 0d;
-        final List<Double> laneDistance = new ArrayList<>();
-        for (int i = 0; i < laneCount; i++) {
-            laneDistances.add(new RaceTrackDistances());
-            laneDistance.add(0d);
-        }
+    public void calculateTrack(List<Vertex> trackDescription, double laneWidth, int laneCount, double trackHeight, boolean closedTrack) {
         final List<TrackSlice> slices = new ArrayList<>();
         for (Vertex vertex : trackDescription) {
             Vertex previous, next;
@@ -41,17 +32,7 @@ public class TrackAssembler {
                 previous = trackDescription.get(trackDescription.indexOf(vertex) - 1);
                 next = trackDescription.get(trackDescription.indexOf(vertex) + 1);
             }
-            final TrackSlice newSlice = new TrackSlice(previous, vertex, next, laneWidth, laneCount, trackHeight);
-            final double t = trackT.get(slices.size());
-            if (t <= 1d && slices.size() > 0) {
-                trackDistance = calculateDistance(slices.get(slices.size() - 1), newSlice, laneCount * 0.5d * laneWidth, trackDistance);
-                trackDistances.addPair(trackDistance, t);
-                for (int i = 0; i < laneCount; i++) {
-                    laneDistance.set(i, calculateDistance(slices.get(slices.size() - 1), newSlice, (i + 0.5d) * laneWidth, laneDistance.get(i)));
-                    laneDistances.get(i).addPair(laneDistance.get(i), t);
-                }
-            }
-            slices.add(newSlice);
+            slices.add(new TrackSlice(previous, vertex, next, laneWidth, laneCount, trackHeight));
         }
         if (closedTrack) {
             slices.add(slices.get(0));
@@ -106,24 +87,6 @@ public class TrackAssembler {
      */
     public List<Boolean> getSurfaceTypeList() {
         return surfaceCompilation.getSurfaceTypeList();
-    }
-
-    public RaceTrackDistances getTrackDistances() {
-        return trackDistances;
-    }
-
-    public List<RaceTrackDistances> getLaneDistances() {
-        return laneDistances;
-    }
-
-    private double calculateDistance(TrackSlice previous, TrackSlice current, double lanePosition, double lastDistance) {
-        final Vector previousInnerPosition = previous.getInner().getVertex1().getPositionV();
-        final Vector previousOuterNormal = previous.getOuter().getVertex1().getNormalV().normalized();
-        final Vector currentInnerPosition = current.getInner().getVertex1().getPositionV();
-        final Vector currentOuterNormal = current.getInner().getVertex1().getNormalV().normalized();
-        final Vector previousLane = previousInnerPosition.add(previousOuterNormal.scale(lanePosition));
-        final Vector currentLane = currentInnerPosition.add(currentOuterNormal.scale(lanePosition));
-        return lastDistance + currentLane.subtract(previousLane).length();
     }
 
     private static final class TrackSlice {

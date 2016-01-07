@@ -165,12 +165,16 @@ public class RaceTrackDefinition {
         t = clip(t);
         final double tScaled = t * bezierElements.size();
         int iElement = (int) Math.floor(tScaled);
-        final double tElement = tScaled % 1d;
+        double tElement = tScaled % 1d;
         if (iElement <= 0) {
             iElement = 0;
         }
         if (iElement >= bezierElements.size()) {
             iElement = bezierElements.size() - 1;
+        }
+        if (t == 1d) {
+            iElement = bezierElements.size() - 1;
+            tElement = 1d;
         }
         return bezierElements.get(iElement).calculatePointOnPath(tElement);
     }

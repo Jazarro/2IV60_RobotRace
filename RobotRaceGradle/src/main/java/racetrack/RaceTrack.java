@@ -30,8 +30,8 @@ public class RaceTrack implements SingletonDrawable {
 
     private Body raceTrackBody;
     private int trackType = RTD_TEST;
-    private RaceTrackDistances trackDistances;
-    private List<RaceTrackDistances> laneDistances;
+    private RaceTrackDistances trackDistances = new RaceTrackDistances();
+    private List<RaceTrackDistances> laneDistances = new ArrayList<>();
 
     public void setTrackType(int trackType) {
         this.trackType = trackType;
@@ -43,17 +43,26 @@ public class RaceTrack implements SingletonDrawable {
 
     @Override
     public void initialize(GL2 gl, BufferManager.Initialiser bmInitialiser) {
-        List<Vertex> trackDescription = new ArrayList<>();
-        List<Double> trackT = new ArrayList<>();
-        for (double t = 0d; t <= 1d; t += (1d / getSliceCount())) {
-            trackDescription.add(new Vertex(getTrackPoint(t)));
-            trackT.add(t);
+        for (int i = 0; i < LANE_COUNT; i++) {
+            laneDistances.add(new RaceTrackDistances());
         }
-        final TrackBuilder raceTrackBuilder = new TrackBuilder(bmInitialiser)
-                .setTrackProperties(LANE_WIDTH, LANE_COUNT, TRACK_HEIGHT, getClosedTrack());
-        raceTrackBody = raceTrackBuilder.build(trackDescription, trackT);
-        trackDistances = raceTrackBuilder.getTrackDistances();
-        laneDistances = raceTrackBuilder.getLaneDistances();
+        final List<Vertex> trackDescription = new ArrayList<>();
+        final double stepSize = 1d / getSliceCount();
+        double tPrevious = 0d;
+        for (double t = 0d; t < (1d + stepSize); t += stepSize) {
+            if (t > 1d) {
+                t = 1d;
+            }
+            trackDescription.add(new Vertex(getTrackPoint(t)));
+            trackDistances.addPair(getTrackPoint(t).subtract(getTrackPoint(tPrevious)).length(), t);
+            for (int i = 0; i < LANE_COUNT; i++) {
+                laneDistances.get(i).addPair(getLanePoint(t, i).subtract(getLanePoint(tPrevious, i)).length(), t);
+            }
+            tPrevious = t;
+        }
+        raceTrackBody = new TrackBuilder(bmInitialiser)
+                .setTrackProperties(LANE_WIDTH, LANE_COUNT, TRACK_HEIGHT, getClosedTrack())
+                .build(trackDescription);
     }
 
     public boolean getClosedTrack() {
@@ -75,12 +84,12 @@ public class RaceTrack implements SingletonDrawable {
     public Vector getTrackTangent(double t) {
         return RaceTrackDefinition.getTrackTangent(trackType, t);
     }
-    
-    public double getTrackDistance(double t){
+
+    public double getTrackDistance(double t) {
         return trackDistances.getDistance(t);
     }
-    
-    public double getTrackT(double distance){
+
+    public double getTrackT(double distance) {
         return trackDistances.getT(distance);
     }
 
@@ -95,12 +104,12 @@ public class RaceTrack implements SingletonDrawable {
     public Vector getLaneTangent(double t, int laneNumber) {
         return RaceTrackDefinition.getLaneTangent(trackType, laneNumber, t);
     }
-    
-    public double getLaneDistance(double t, int laneNumber){
+
+    public double getLaneDistance(double t, int laneNumber) {
         return laneDistances.get(laneNumber).getDistance(t);
     }
-    
-    public double getLaneT(double distance, int laneNumber){
+
+    public double getLaneT(double distance, int laneNumber) {
         return laneDistances.get(laneNumber).getT(distance);
     }
 

@@ -88,7 +88,7 @@ public class Robot {
     }
     
     public double getCurrentSpeed(){
-        return speed;
+        return speed * getGravityDrag();
     }
 
     public void setLaneNumber(int laneNumber) {
@@ -109,11 +109,10 @@ public class Robot {
         trackPosition = raceTrack.getLaneT(distanceTravelled, laneNumber);
     }
 
-    private double getGravityDrag(Vector direction) {
+    private double getGravityDrag() {
         final double zInclination = direction.normalized().dot(Vector.Z);
         final double gravity = Math.pow(2d, Math.pow(zInclination, 2d) * 4d); //TODO: Find nice value!
-        //return (zInclination < 0d) ? (gravity) : (1d / gravity);
-        return 1d;
+        return (zInclination < 0d) ? (gravity) : (1d / gravity);
     }
 
     public double getDistanceTravelled() {

@@ -5,17 +5,14 @@ import java.util.*;
 public class RaceTrackDistances {
 
     private final List<RaceTrackDistanceT> raceTrackDistances = new ArrayList<>();
-
-    public RaceTrackDistances() {
-        raceTrackDistances.add(new RaceTrackDistanceT(0d, 0d));
-    }
+    private double distance = 0d;
 
     public double getDistance(double t) {
         int i = 0;
         while (t >= raceTrackDistances.get(i).getT()) {
             i++;
             if (i >= raceTrackDistances.size() - 1) {
-                i = 0;
+                i = 1;
                 t -= raceTrackDistances.get(raceTrackDistances.size() - 1).getT();
             }
         }
@@ -28,7 +25,7 @@ public class RaceTrackDistances {
         while (distance >= raceTrackDistances.get(i).getDistance()) {
             i++;
             if (i >= raceTrackDistances.size() - 1) {
-                i = 0;
+                i = 1;
                 distance -= raceTrackDistances.get(raceTrackDistances.size() - 1).getDistance();
             }
         }
@@ -36,7 +33,8 @@ public class RaceTrackDistances {
         return (1d - scale) * raceTrackDistances.get(i - 1).getT() + scale * raceTrackDistances.get(i).getT();
     }
 
-    public void addPair(double distance, double t) {
+    public void addPair(double deltaDistance, double t) {
+        distance += deltaDistance;
         raceTrackDistances.add(new RaceTrackDistanceT(distance, t));
     }
 

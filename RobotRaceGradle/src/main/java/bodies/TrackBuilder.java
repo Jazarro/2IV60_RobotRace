@@ -17,19 +17,14 @@ public class TrackBuilder {
     private int laneCount = 4;
     private double trackHeight = 1d;
     private boolean closedTrack = true;
-    private RaceTrackDistances trackDistances;
-    private List<RaceTrackDistances> laneDistances;
-    
 
     public TrackBuilder(BufferManager.Initialiser bmInitialiser) {
         this.bmInitialiser = bmInitialiser;
         this.assembler = new TrackAssembler();
     }
 
-    public SimpleBody build(List<Vertex> trackDescription, List<Double> trackT) {
-        assembler.calculateTrack(trackDescription, trackT, laneWidth, laneCount, trackHeight, closedTrack);
-        trackDistances = assembler.getTrackDistances();
-        laneDistances = assembler.getLaneDistances();
+    public SimpleBody build(List<Vertex> trackDescription) {
+        assembler.calculateTrack(trackDescription, laneWidth, laneCount, trackHeight, closedTrack);
         //Buffer containing all Vertextdata off all previously added shapes. 
         //The data in in the format: vertexX, vertexY, vertexZ, normalX, normalY, normalZ.
         final DoubleBuffer dataBuffer = assembler.getDataBuffer();
@@ -58,14 +53,6 @@ public class TrackBuilder {
         this.trackHeight = trackHeight;
         this.closedTrack = closedTrack;
         return this;
-    }
-
-    public RaceTrackDistances getTrackDistances() {
-        return trackDistances;
-    }
-
-    public List<RaceTrackDistances> getLaneDistances() {
-        return laneDistances;
     }
 
 }

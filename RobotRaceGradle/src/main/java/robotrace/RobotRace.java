@@ -106,10 +106,10 @@ public class RobotRace extends Base {
 //        robots[2] = factory.makeBenderAt(Material.WOOD, new Vector(-1, 1, 0), Vector.X);
 //        robots[3] = factory.makeBenderAt(Material.PLASTIC_ORANGE, new Vector(-1, 3, 0), Vector.X);
 
-        robots[0].setSpeed(1d);
-        robots[1].setSpeed(1d);
-        robots[2].setSpeed(1d);
-        robots[3].setSpeed(1d);
+        robots[0].setSpeed(3d);
+        robots[1].setSpeed(3d);
+        robots[2].setSpeed(3d);
+        robots[3].setSpeed(3d);
 
         robots[0].setLaneNumber(0);
         robots[1].setLaneNumber(1);
