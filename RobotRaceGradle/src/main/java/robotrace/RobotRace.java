@@ -237,7 +237,7 @@ public class RobotRace extends Base {
         // Draw the race track.
         raceTracks[gs.trackNr].draw(gl, glu, glut);
         // Draw the terrain.
-        //terrain.draw(gl, glu, glut, lighting);
+        terrain.draw(gl, glu, glut, lighting);
 
         bodyManager.endDraw(gl);
         tPrevious = gs.tAnim;
