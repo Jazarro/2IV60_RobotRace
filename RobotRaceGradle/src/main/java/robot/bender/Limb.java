@@ -68,7 +68,7 @@ public class Limb implements SingletonDrawable {
     public void initialize(GL2 gl, BufferManager.Initialiser bmInitialiser) {
         outerSegmentBody = new StackBuilder(bmInitialiser)
                 .setSliceCount(SLICE_COUNT)
-                .addConicalFrustum(RADIUS_OUTER_SEGMENT, RADIUS_OUTER_SEGMENT, 0d, HEIGHT_OUTER_SEGMENT, true, true)
+                .addConicalFrustum(RADIUS_OUTER_SEGMENT, RADIUS_OUTER_SEGMENT, 0d, HEIGHT_OUTER_SEGMENT, false, false)
                 .build();
         innerSegmentBody = new StackBuilder(bmInitialiser)
                 .setSliceCount(SLICE_COUNT)
