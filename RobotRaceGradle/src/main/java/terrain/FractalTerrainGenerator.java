@@ -29,7 +29,7 @@ public class FractalTerrainGenerator implements HeightMap {
         return instance;
     }
     private final Random rand = new Random(RAND_SEED);
-    private final int gloabalSize;
+    private final int globalSize;
     private final int max;
     private final float[][] map;
     private final float roughness;
@@ -48,9 +48,9 @@ public class FractalTerrainGenerator implements HeightMap {
      * creates the generator using some default values and also initialises it.
      */
     public FractalTerrainGenerator(int detail, float roughness) {
-        this.gloabalSize = (int) Math.pow(2, detail) + 1;
-        this.max = gloabalSize - 1;
-        this.map = new float[gloabalSize][gloabalSize];
+        this.globalSize = (int) Math.pow(2, detail) + 1;
+        this.max = globalSize - 1;
+        this.map = new float[globalSize][globalSize];
         this.roughness = roughness;
     }
 
@@ -98,10 +98,10 @@ public class FractalTerrainGenerator implements HeightMap {
      */
     private void performSquareStep(int x, int y, int radius, float offset) {
         final float average
-                = (map[x][Math.floorMod(y - radius, gloabalSize)] //Top
-                + map[Math.floorMod(x - radius, gloabalSize)][y] //Left
-                + map[x][Math.floorMod(y + radius, gloabalSize)] //Bottom
-                + map[Math.floorMod(x + radius, gloabalSize)][y]) / 4;  //Right
+                = (map[x][Math.floorMod(y - radius, globalSize)] //Top
+                + map[Math.floorMod(x - radius, globalSize)][y] //Left
+                + map[x][Math.floorMod(y + radius, globalSize)] //Bottom
+                + map[Math.floorMod(x + radius, globalSize)][y]) / 4;  //Right
         map[x][y] = average + offset;
     }
 
@@ -117,23 +117,23 @@ public class FractalTerrainGenerator implements HeightMap {
      *               adds randomness to the generation.
      */
     private void performDiamondStep(int x, int y, int radius, float offset) {
-        final float a1 = map[Math.floorMod(x - radius, gloabalSize)][Math.floorMod(y - radius, gloabalSize)]; //Top-Left
-        final float a2 = map[Math.floorMod(x - radius, gloabalSize)][Math.floorMod(y + radius, gloabalSize)]; //Bottom-Left
-        final float a3 = map[Math.floorMod(x + radius, gloabalSize)][Math.floorMod(y - radius, gloabalSize)]; //Top-Right
-        final float a4 = map[Math.floorMod(x + radius, gloabalSize)][Math.floorMod(y + radius, gloabalSize)]; //Bottom-Right
+        final float a1 = map[Math.floorMod(x - radius, globalSize)][Math.floorMod(y - radius, globalSize)]; //Top-Left
+        final float a2 = map[Math.floorMod(x - radius, globalSize)][Math.floorMod(y + radius, globalSize)]; //Bottom-Left
+        final float a3 = map[Math.floorMod(x + radius, globalSize)][Math.floorMod(y - radius, globalSize)]; //Top-Right
+        final float a4 = map[Math.floorMod(x + radius, globalSize)][Math.floorMod(y + radius, globalSize)]; //Bottom-Right
         final float average
-                = (map[Math.floorMod(x - radius, gloabalSize)][Math.floorMod(y - radius, gloabalSize)] //Top-Left
-                + map[Math.floorMod(x - radius, gloabalSize)][Math.floorMod(y + radius, gloabalSize)] //Bottom-Left
-                + map[Math.floorMod(x + radius, gloabalSize)][Math.floorMod(y - radius, gloabalSize)] //Top-Right
-                + map[Math.floorMod(x + radius, gloabalSize)][Math.floorMod(y + radius, gloabalSize)]) / 4; //Bottom-Right
+                = (map[Math.floorMod(x - radius, globalSize)][Math.floorMod(y - radius, globalSize)] //Top-Left
+                + map[Math.floorMod(x - radius, globalSize)][Math.floorMod(y + radius, globalSize)] //Bottom-Left
+                + map[Math.floorMod(x + radius, globalSize)][Math.floorMod(y - radius, globalSize)] //Top-Right
+                + map[Math.floorMod(x + radius, globalSize)][Math.floorMod(y + radius, globalSize)]) / 4; //Bottom-Right
         map[x][y] = average + offset;
     }
 
     @Override
     public float heightAt(float x, float y) {
-        final int gridX = (int) x + gloabalSize / 2;
-        final int gridY = (int) y + gloabalSize / 2;
-        return map[Math.floorMod(gridX, gloabalSize)][Math.floorMod(gridY, gloabalSize)];
+        final int gridX = (int) x + globalSize / 2;
+        final int gridY = (int) y + globalSize / 2;
+        return map[Math.floorMod(gridX, globalSize)][Math.floorMod(gridY, globalSize)];
         
 //        final float topLeft = map[Math.floorMod(gridX, gloabalSize)][Math.floorMod(gridY, gloabalSize)];
 //        final float topRight = map[Math.floorMod(gridX + 1, gloabalSize)][Math.floorMod(gridY, gloabalSize)];

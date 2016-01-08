@@ -16,6 +16,9 @@ class RaceTrackDistances {
                 t -= raceTrackDistances.get(raceTrackDistances.size() - 1).getT();
             }
         }
+        if(i == 0){
+            return 0d;
+        }
         final double scale = (t - raceTrackDistances.get(i - 1).getT()) / (raceTrackDistances.get(i).getT() - raceTrackDistances.get(i - 1).getT());
         return (1d - scale) * raceTrackDistances.get(i - 1).getDistance() + scale * raceTrackDistances.get(i).getDistance();
     }
@@ -28,6 +31,9 @@ class RaceTrackDistances {
                 i = 1;
                 distance -= raceTrackDistances.get(raceTrackDistances.size() - 1).getDistance();
             }
+        }
+        if(i == 0){
+            return 0d;
         }
         final double scale = (distance - raceTrackDistances.get(i - 1).getDistance()) / (raceTrackDistances.get(i).getDistance() - raceTrackDistances.get(i - 1).getDistance());
         return (1d - scale) * raceTrackDistances.get(i - 1).getT() + scale * raceTrackDistances.get(i).getT();
