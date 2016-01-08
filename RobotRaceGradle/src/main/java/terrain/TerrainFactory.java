@@ -97,17 +97,17 @@ public class TerrainFactory {
      */
     private IntBuffer generateIndexBuffer() {
         final IntBuffer buffer = IntBuffer.allocate(getNrTriangles() * 3);
-        for (int x = 0; x < widthInVertices - 1; x++) {
-            for (int y = 0; y < heightInVertices - 1; y++) {
+        for (int y = 0; y < heightInVertices - 1; y++) {
+            for (int x = 0; x < widthInVertices - 1; x++) {
                 final int vertexIndex = (y * widthInVertices) + x;
                 // Top triangle (T0)
-                buffer.put(vertexIndex);                                        //V0
-                buffer.put(vertexIndex + widthInVertices + 1);                  //V3
                 buffer.put(vertexIndex + 1);                                    //V1
-                // Bottom triangle (T1)
-                buffer.put(vertexIndex);                                        //V0
-                buffer.put(vertexIndex + widthInVertices);                      //V2
                 buffer.put(vertexIndex + widthInVertices + 1);                  //V3
+                buffer.put(vertexIndex);                                        //V0
+                // Bottom triangle (T1)
+                buffer.put(vertexIndex + widthInVertices + 1);                  //V3
+                buffer.put(vertexIndex + widthInVertices);                      //V2
+                buffer.put(vertexIndex);                                        //V0
             }
         }
         buffer.position(0);
@@ -127,8 +127,8 @@ public class TerrainFactory {
     private Vector[] generatePoints(HeightMap heightMap) {
         final int nrVertices = widthInVertices * heightInVertices;
         final Vector[] points = new Vector[nrVertices];
-        for (int x = 0; x < widthInVertices; x++) {
-            for (int y = 0; y < heightInVertices; y++) {
+        for (int y = 0; y < heightInVertices; y++) {
+            for (int x = 0; x < widthInVertices; x++) {
                 final int vertexIndex = (y * widthInVertices) + x;
                 final float xInMeters = x * blockScale - widthInMeters * 0.5f;
                 final float yInMeters = y * blockScale - heightInMeters * 0.5f;
@@ -160,7 +160,7 @@ public class TerrainFactory {
             final Vector point0 = points[indexBuffer.get(i + 0)];
             final Vector point1 = points[indexBuffer.get(i + 1)];
             final Vector point2 = points[indexBuffer.get(i + 2)];
-            final Vector faceNormal = point2.subtract(point0).cross(point1.subtract(point0)).normalized();
+            final Vector faceNormal = point1.subtract(point0).cross(point2.subtract(point0)).normalized();
             addVectorToVertex(faceNormal, normals, indexBuffer.get(i + 0));
             addVectorToVertex(faceNormal, normals, indexBuffer.get(i + 1));
             addVectorToVertex(faceNormal, normals, indexBuffer.get(i + 2));
