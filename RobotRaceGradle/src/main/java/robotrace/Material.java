@@ -38,13 +38,13 @@ public enum Material {
             32f),
     DIRT(new float[]{0.2f, 0.2f, 0.2f, 1.0f},
             new float[]{0.6f, 0.5f, 0.3f, 1.0f},
-            0f),
+            2f),
     BOULDER(new float[]{0.4f, 0.4f, 0.3f, 1.0f},
             new float[]{0.4f, 0.4f, 0.3f, 1.0f},
             0f),
-    WATER(new float[]{0.1f, 0.2f, 0.3f, 0.5f},
-            new float[]{0.1f, 0.2f, 0.3f, 0.01f},
-            10f);
+    WATER(new float[]{0.0f, 0.1f, 0.2f, 0.9f},
+            new float[]{0.2f, 0.2f, 0.2f, 1f},
+            1f);
 
     /**
      * The ambient RGBA reflectance of the material.

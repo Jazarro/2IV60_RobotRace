@@ -28,7 +28,7 @@ public class Terrain {
     public void initialize(GL2 gl, BufferManager.Initialiser bmInitialiser) {
         this.terrainBody = new TerrainFactory(1000, 1000, 1F)
                 .makeTerrain(bmInitialiser, FractalTerrainGenerator.create());
-        this.waterBody = new TerrainFactory(1000, 1000, 1000)
+        this.waterBody = new TerrainFactory(1000, 1000, 100)
                 .makeTerrain(bmInitialiser, (x, y) -> WATER_LEVEL);
     }
 

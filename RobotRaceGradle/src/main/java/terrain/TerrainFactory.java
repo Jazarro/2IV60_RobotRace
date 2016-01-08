@@ -51,7 +51,17 @@ public class TerrainFactory {
         this.heightInVertices = (int) (heightInMeters / blockScale) + 1;
     }
 
-    //TODO: docs.
+    /**
+     * Use the given HeightMap to create data- and index buffers, then hand that
+     * to the bmInitialiser and construct a {@link Body} for the terrain.
+     *
+     * @param bmInitialiser The BufferManager.Initialiser that takes the raw
+     *                      buffers and gives them to OpenGL.
+     * @param heightMap     The HeightMap instance that dictates what the data
+     *                      should look like.
+     * @return A Body, which can be used during the draw phase to easily draw
+     *         the entire terrain.
+     */
     public Body makeTerrain(BufferManager.Initialiser bmInitialiser, HeightMap heightMap) {
         final IntBuffer indexBuffer = generateIndexBuffer();
         final Vector[] points = generatePoints(heightMap);
@@ -61,6 +71,14 @@ public class TerrainFactory {
         return new Shape(indexBufferName, indexBuffer.capacity(), GL2.GL_TRIANGLES);
     }
 
+    /**
+     * Take the arrays of points and normals that were previously generated and
+     * interleave them into a data buffer.
+     *
+     * @param points  An array of points, parallel to the normals.
+     * @param normals An array of normals, parallel to the points.
+     * @return A DoubleBuffer with points and vectors interleaved.
+     */
     private DoubleBuffer generateVertices(Vector[] points, Vector[] normals) {
         final int nrVertices = widthInVertices * heightInVertices;
         final DoubleBuffer buffer = DoubleBuffer.allocate(Vertex.COORD_COUNT * Vertex.NR_VERTEX_ELEMENTS * nrVertices);
@@ -72,9 +90,13 @@ public class TerrainFactory {
         return buffer;
     }
 
-    //TODO: doc.
+    /**
+     * Generates the index buffer for this terrain's data buffer.
+     *
+     * @return An IntBuffer with pointers to each triangle's vertexes.
+     */
     private IntBuffer generateIndexBuffer() {
-        final IntBuffer buffer = IntBuffer.allocate(getNrTriangles() * Vertex.COORD_COUNT);
+        final IntBuffer buffer = IntBuffer.allocate(getNrTriangles() * 3);
         for (int x = 0; x < widthInVertices - 1; x++) {
             for (int y = 0; y < heightInVertices - 1; y++) {
                 final int vertexIndex = (y * widthInVertices) + x;
@@ -92,7 +114,16 @@ public class TerrainFactory {
         return buffer;
     }
 
-    //TODO: doc.
+    /**
+     * Generates an array of points in a grid. The x and y values of the points
+     * range from zero to respectively widthInVertices and heightInVertices. The
+     * z-values are arranged according to the given HeightMap.
+     *
+     * @param heightMap A HeightMap that dictates the z-values of the points
+     *                  that are generated.
+     * @return An array of points, equal in length to widthInVertices *
+     *         heightInVertices.
+     */
     private Vector[] generatePoints(HeightMap heightMap) {
         final int nrVertices = widthInVertices * heightInVertices;
         final Vector[] points = new Vector[nrVertices];
@@ -108,7 +139,19 @@ public class TerrainFactory {
         return points;
     }
 
-    //TODO: doc.
+    /**
+     * Generates the vertex normals for the given points, by first calculating
+     * the sum of the face normals of the neighbouring triangles, and then
+     * normalising that.
+     *
+     * @param points      An array of points.
+     * @param indexBuffer Index buffer for the given points. For all n where
+     *                    n%3=0, the vectors at indices n, n+1 and n+2 describe
+     *                    a triangle in a clockwise manner.
+     * @return An array of vertex normals parallel to the points array. Each
+     *         normal corresponds to the point at the same index in the point
+     *         array.
+     */
     private Vector[] generateNormals(Vector[] points, IntBuffer indexBuffer) {
         final int nrVertices = widthInVertices * heightInVertices;
         final Vector[] normals = new Vector[nrVertices];
