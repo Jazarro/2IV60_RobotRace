@@ -1,3 +1,9 @@
+/*
+ * Course: Computer Graphics
+ * Course Code: 2IV60
+ * Assignment: RobotRace
+ * Students: Arjan Boschman & Robke Geenen
+ */
 package bodies;
 
 import bodies.assembly.TrackAssembler;
@@ -7,6 +13,10 @@ import java.nio.IntBuffer;
 import java.util.List;
 import javax.media.opengl.GL2;
 
+/**
+ * 
+ * @author Robke Geenen
+ */
 public class TrackBuilder {
 
     private final BufferManager.Initialiser bmInitialiser;
