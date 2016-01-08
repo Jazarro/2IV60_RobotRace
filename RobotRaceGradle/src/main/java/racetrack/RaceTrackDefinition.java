@@ -16,7 +16,7 @@ public class RaceTrackDefinition {
 
     private static final int RTD_MAX_TYPE = 6;
 
-    public static int getMaxTypeID() {
+    protected static int getMaxTypeID() {
         return RTD_MAX_TYPE;
     }
 
@@ -45,19 +45,19 @@ public class RaceTrackDefinition {
             new CubicBezierPath(new Vector(10d, 17d, 1d), new Vector(-15d, 17d, 1d), new Vector(-15d, -17d, 1d), new Vector(10d, -17d, 1d))
     );
     private static final List<CubicBezierPath> BEZIER_CUSTOM = Arrays.asList(
-            new CubicBezierPath(new Vector(-17d, 14d, 1d), new Vector(-17d, 7d, 1d), new Vector(-17d, -7d, 6d), new Vector(-17d, -14d, 6d)),
-            new CubicBezierPath(new Vector(-17d, -14d, 6d), new Vector(-17d, -17d, 6d), new Vector(-17d, -17d, 6d), new Vector(-14d, -17d, 6d)),
-            new CubicBezierPath(new Vector(-14d, -17d, 6d), new Vector(-7d, -17d, 6d), new Vector(6d, -17d, 11d), new Vector(13d, -17d, 11d)),
+            new CubicBezierPath(new Vector(-17d, 12d, 1d), new Vector(-17d, 5d, 1d), new Vector(-17d, -5d, 6d), new Vector(-17d, -12d, 6d)),
+            new CubicBezierPath(new Vector(-17d, -12d, 6d), new Vector(-17d, -15d, 6d), new Vector(-15d, -17d, 6d), new Vector(-12d, -17d, 6d)),
+            new CubicBezierPath(new Vector(-12d, -17d, 6d), new Vector(-5d, -17d, 6d), new Vector(6d, -17d, 11d), new Vector(13d, -17d, 11d)),
             new CubicBezierPath(new Vector(13d, -17d, 11d), new Vector(18d, -17d, 11d), new Vector(18d, -10d, 11d), new Vector(13d, -10d, 11d)),
             new CubicBezierPath(new Vector(13d, -10d, 11d), new Vector(6d, -10d, 11d), new Vector(-6d, -10d, 16d), new Vector(-13d, -10d, 16d)),
             new CubicBezierPath(new Vector(-13d, -10d, 16d), new Vector(-18d, -10d, 16d), new Vector(-18d, -3d, 16d), new Vector(-13d, -3d, 16d)),
             new CubicBezierPath(new Vector(-13d, -3d, 16d), new Vector(6d, -3d, 16d), new Vector(4d, 12d, 13.4d), new Vector(-4d, 12d, 12d)),
             new CubicBezierPath(new Vector(-4d, 12d, 12d), new Vector(-12d, 12d, 10.6d), new Vector(-13d, -3d, 8d), new Vector(6d, -3d, 8d)),
             new CubicBezierPath(new Vector(6d, -3d, 8d), new Vector(19d, -3d, 8d), new Vector(19d, 17d, 8d), new Vector(13d, 17d, 8d)),
-            new CubicBezierPath(new Vector(13d, 17d, 8d), new Vector(10d, 17d, 8d), new Vector(8d, 17d, 1d), new Vector(4d, 17d, 1d)),
-            new CubicBezierPath(new Vector(4d, 17d, 1d), new Vector(1d, 17d, 1d), new Vector(-2d, 17d, 3d), new Vector(-5d, 17d, 3d)),
-            new CubicBezierPath(new Vector(-5d, 17d, 3d), new Vector(-8d, 17d, 3d), new Vector(-11d, 17d, 1d), new Vector(-14d, 17d, 1d)),
-            new CubicBezierPath(new Vector(-14d, 17d, 1d), new Vector(-17d, 17d, 1d), new Vector(-17d, 17d, 1d), new Vector(-17d, 14d, 1d))
+            new CubicBezierPath(new Vector(13d, 17d, 8d), new Vector(10d, 17d, 8d), new Vector(6d, 17d, 1d), new Vector(2d, 17d, 1d)),
+            new CubicBezierPath(new Vector(2d, 17d, 1d), new Vector(-1d, 17d, 1d), new Vector(-2d, 17d, 3d), new Vector(-5d, 17d, 3d)),
+            new CubicBezierPath(new Vector(-5d, 17d, 3d), new Vector(-8d, 17d, 3d), new Vector(-9d, 17d, 1d), new Vector(-12d, 17d, 1d)),
+            new CubicBezierPath(new Vector(-12d, 17d, 1d), new Vector(-15d, 17d, 1d), new Vector(-17d, 15d, 1d), new Vector(-17d, 12d, 1d))
     );
 
     protected static boolean getClosedTrack(int trackType) {
@@ -126,9 +126,10 @@ public class RaceTrackDefinition {
 
     protected static Vector getTrackNormal(int trackType, double t) {
         t = clip(t);
-        final Vector previous = getTrackPoint(trackType, t - (1d / getSliceCount(trackType)));
+        final double stepSize = 1d / getSliceCount(trackType);
+        final Vector previous = getTrackPoint(trackType, t - stepSize);
         final Vector original = getTrackPoint(trackType, t);
-        final Vector next = getTrackPoint(trackType, t + (1d / getSliceCount(trackType)));
+        final Vector next = getTrackPoint(trackType, t + stepSize);
         final Vector lower = original.subtract(Vector.Z.normalized().scale(RaceTrack.TRACK_HEIGHT));
         final Vector normal1 = lower.subtract(original).cross(next.subtract(original));
         final Vector normal2 = previous.subtract(original).cross(lower.subtract(original));
@@ -137,9 +138,10 @@ public class RaceTrackDefinition {
 
     protected static Vector getTrackTangent(int trackType, double t) {
         t = clip(t);
-        final Vector previous = getTrackPoint(trackType, t - (1d / getSliceCount(trackType)));
+        final double stepSize = 1d / getSliceCount(trackType);
+        final Vector previous = getTrackPoint(trackType, t - stepSize);
         final Vector original = getTrackPoint(trackType, t);
-        final Vector next = getTrackPoint(trackType, t + (1d / getSliceCount(trackType)));
+        final Vector next = getTrackPoint(trackType, t + stepSize);
         final Vector delta1 = next.subtract(original);
         final Vector delta2 = original.subtract(previous);
         return delta1.add(delta2).normalized();
@@ -147,7 +149,7 @@ public class RaceTrackDefinition {
 
     protected static Vector getLanePoint(int trackType, int laneNumber, double t) {
         t = clip(t);
-        final Vector translate = getTrackNormal(trackType, t).scale((laneNumber - (RaceTrack.LANE_COUNT / 2d) + 0.5d) * RaceTrack.LANE_WIDTH);
+        final Vector translate = getTrackNormal(trackType, t).scale((laneNumber - (RaceTrack.LANE_COUNT - 1) * 0.5d) * RaceTrack.LANE_WIDTH);
         return getTrackPoint(trackType, t).add(translate);
     }
 

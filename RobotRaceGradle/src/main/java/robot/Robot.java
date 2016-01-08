@@ -30,9 +30,8 @@ public class Robot {
     private Vector direction = Vector.Y;
 
     private double speed = 1d;
-    private double trackPosition = 0d;
+    private double trackT = 0d;
     private double distanceTravelled = 0d;
-    private int laps = 0;
     private int laneNumber = 0;
 
     /**
@@ -60,7 +59,7 @@ public class Robot {
     }
 
     public void setPositionOnTrack(RaceTrack raceTrack) {
-        this.position = raceTrack.getLanePoint(trackPosition, laneNumber);
+        this.position = raceTrack.getLanePoint(trackT, laneNumber);
     }
 
     public Vector getPosition() {
@@ -72,7 +71,7 @@ public class Robot {
     }
 
     public void setDirectionOnTrack(RaceTrack raceTrack) {
-        this.direction = raceTrack.getLaneTangent(trackPosition, laneNumber);
+        this.direction = raceTrack.getLaneTangent(trackT, laneNumber);
     }
 
     public Vector getDirection() {
@@ -86,8 +85,8 @@ public class Robot {
     public double getSpeed() {
         return speed;
     }
-    
-    public double getCurrentSpeed(){
+
+    public double getCurrentSpeed() {
         return speed * getGravityDrag();
     }
 
@@ -100,13 +99,18 @@ public class Robot {
     }
 
     public void resetDistance() {
-        this.trackPosition = 0d;
+        this.trackT = 0d;
         this.distanceTravelled = 0d;
     }
 
     public void moveDistance(RaceTrack raceTrack, double deltaTime) {
         distanceTravelled += deltaTime * getCurrentSpeed();
-        trackPosition = raceTrack.getLaneT(distanceTravelled, laneNumber);
+        final double newTrackT = raceTrack.getLaneT(distanceTravelled, laneNumber);
+        if (newTrackT < (trackT - Math.floor(trackT))) {
+            trackT = Math.floor(trackT) + 1d + newTrackT;
+        } else {
+            trackT = Math.floor(trackT) + newTrackT;
+        }
     }
 
     private double getGravityDrag() {
@@ -119,8 +123,12 @@ public class Robot {
         return distanceTravelled;
     }
 
-    public double getTrackPosition() {
-        return trackPosition;
+    public double getTrackT() {
+        return trackT;
+    }
+
+    public int getLapsCompleted() {
+        return (int) Math.floor(trackT);
     }
 
     public Material getMaterial() {

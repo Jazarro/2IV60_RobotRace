@@ -30,8 +30,8 @@ public class RaceTrack implements SingletonDrawable {
 
     private Body raceTrackBody;
     private int trackType = RTD_TEST;
-    private RaceTrackDistances trackDistances = new RaceTrackDistances();
-    private List<RaceTrackDistances> laneDistances = new ArrayList<>();
+    private final RaceTrackDistances trackDistances = new RaceTrackDistances();
+    private final List<RaceTrackDistances> laneDistances = new ArrayList<>();
 
     public void setTrackType(int trackType) {
         this.trackType = trackType;

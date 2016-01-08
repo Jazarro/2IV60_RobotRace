@@ -6,9 +6,9 @@
  */
 package robotrace;
 
-import robot.Robot;
+import java.util.List;
 import javax.media.opengl.glu.GLU;
-
+import robot.Robot;
 import static utility.GsUtils.getAzimuth;
 import static utility.GsUtils.getInclination;
 
@@ -37,14 +37,34 @@ class Camera {
     private float planeNear;
     private float planeFar;
 
-    private static final Vector HELICOPTER_EYE = new Vector(0d, 0d, 10d);
+    private static final Vector HELICOPTER_EYE = new Vector(0d, 0d, 30d);
     private static final Vector HELICOPTER_LOOKAT = new Vector(0d, 0d, 0d);
 
     private static final Vector MOTORCYCLE_EYE = new Vector(7d, 0d, 1d);
     private static final Vector MOTORCYCLE_LOOKAT = new Vector(0d, 0d, 1d);
 
     private static final Vector FIRSTPERSON_EYE = new Vector(0d, 0d, 2d);
-    private static final Vector FIRSTPERSON_LOOKAT = new Vector(0d, 2d, 2d);
+    private static final Vector FIRSTPERSON_LOOKAT = new Vector(0d, 0d, 1d);
+
+    private static final double SWITCH_TIME = 5d;
+
+    private double tPrevious = 0d;
+    private double tAutoSwitch = 0d;
+    private double tHelicopterSwitch = 0d;
+    private double tMotorCycleSwitch = 0d;
+    private double tFirstPersonSwitch = 0d;
+    private Robot focusAuto;
+    private Robot focusHelicopter;
+    private Robot focusMotorCycle;
+    private Robot focusFirstPerson;
+    private int modeAuto = 0;
+
+    public void initialize(List<Robot> robots) {
+        focusAuto = robots.get(0);
+        focusHelicopter = robots.get(0);
+        focusMotorCycle = robots.get(0);
+        focusFirstPerson = robots.get(0);
+    }
 
     /**
      * Sets the camera's position, focus point and up direction to the given GLU
@@ -67,27 +87,44 @@ class Camera {
      * Updates the camera viewpoint and direction based on the selected camera
      * mode.
      */
-    public void update(GlobalState gs, Robot focus) {
+    public void update(GlobalState gs, List<Robot> robots) {
+        final double deltaTime = gs.tAnim - tPrevious;
+        tPrevious = gs.tAnim;
+        tHelicopterSwitch += deltaTime;
+        if (tHelicopterSwitch >= SWITCH_TIME) {
+            tHelicopterSwitch = 0d;
+            focusHelicopter = getRandomRobot(robots);
+        }
+        tMotorCycleSwitch += deltaTime;
+        if (tMotorCycleSwitch >= SWITCH_TIME) {
+            tMotorCycleSwitch = 0d;
+            focusMotorCycle = getRandomRobot(robots);
+        }
+        tFirstPersonSwitch += deltaTime;
+        if (tFirstPersonSwitch >= SWITCH_TIME) {
+            tFirstPersonSwitch = 0d;
+            focusFirstPerson = getRandomRobot(robots);
+        }
         switch (gs.camMode) {
 
             // Helicopter mode
             case 1:
-                setHelicopterMode(gs, focus);
+                setHelicopterMode(gs, focusHelicopter, robots);
                 break;
 
             // Motor cycle mode    
             case 2:
-                setMotorCycleMode(gs, focus);
+                setMotorCycleMode(gs, focusMotorCycle, robots);
                 break;
 
             // First person mode    
             case 3:
-                setFirstPersonMode(gs, focus);
+                setFirstPersonMode(gs, focusFirstPerson, robots);
                 break;
 
             // Auto mode    
             case 4:
-                setAutoMode(gs, focus);
+                setAutoMode(gs, robots, deltaTime);
                 break;
 
             // Default mode    
@@ -116,7 +153,6 @@ class Camera {
         eye = eye.add(gs.cnt);
         //Calculate the needed field of view angle to make the displayed portion 
         //of the line through the center point exactly vDist long.
-
         setFOVAndPlane(gs, center, eye, 40d);//TODO: Fix FOVAngle
     }
 
@@ -124,7 +160,7 @@ class Camera {
      * Computes eye, center, and up, based on the helicopter mode. The camera
      * should focus on the robot.
      */
-    private void setHelicopterMode(GlobalState gs, Robot focus) {
+    private void setHelicopterMode(GlobalState gs, Robot focus, List<Robot> robots) {
         up = focus.getDirection();
         eye = focus.getPosition().add(HELICOPTER_EYE);
         center = focus.getPosition().add(HELICOPTER_LOOKAT);
@@ -135,7 +171,7 @@ class Camera {
      * Computes eye, center, and up, based on the motorcycle mode. The camera
      * should focus on the robot.
      */
-    private void setMotorCycleMode(GlobalState gs, Robot focus) {
+    private void setMotorCycleMode(GlobalState gs, Robot focus, List<Robot> robots) {
         up = Vector.Z;
         eye = addRelative(focus.getPosition(), focus.getDirection(), MOTORCYCLE_EYE);
         center = focus.getPosition().add(MOTORCYCLE_LOOKAT);
@@ -146,10 +182,17 @@ class Camera {
      * Computes eye, center, and up, based on the first person mode. The camera
      * should view from the perspective of the robot.
      */
-    private void setFirstPersonMode(GlobalState gs, Robot focus) {
+    private void setFirstPersonMode(GlobalState gs, Robot focus, List<Robot> robots) {
+        final Robot robot = getLastRobot(robots);
+        if (focus == robot) {
+            if (robot == robots.get(0)) {
+                focus = robots.get(1);
+            } else {
+                focus = robots.get(0);
+            }
+        }
         up = Vector.Z;
-        eye = addRelative(focus.getPosition(), focus.getDirection(), FIRSTPERSON_EYE);
-        //center = focus.getPosition().add(FIRSTPERSON_LOOKAT);
+        eye = addRelative(robot.getPosition(), robot.getDirection(), FIRSTPERSON_EYE);
         center = addRelative(focus.getPosition(), focus.getDirection(), FIRSTPERSON_LOOKAT);
         setFOVAndPlane(gs, center, eye, 40d);
     }
@@ -158,8 +201,25 @@ class Camera {
      * Computes eye, center, and up, based on the auto mode. The above modes are
      * alternated.
      */
-    private void setAutoMode(GlobalState gs, Robot focus) {
-        // code goes here ...
+    private void setAutoMode(GlobalState gs, List<Robot> robots, double deltaTime) {
+        tAutoSwitch += deltaTime;
+        if (tAutoSwitch >= SWITCH_TIME) {
+            tAutoSwitch = 0d;
+            focusAuto = getRandomRobot(robots);
+            modeAuto = (int) Math.floor(Math.random() * 3);
+        }
+        switch (modeAuto) {
+            case 1:
+                setHelicopterMode(gs, focusAuto, robots);
+                break;
+            case 2:
+                setMotorCycleMode(gs, focusAuto, robots);
+                break;
+            case 3:
+            default:
+                setFirstPersonMode(gs, focusAuto, robots);
+                break;
+        }
     }
 
     private void setFOVAndPlane(GlobalState gs, Vector center, Vector eye, double fovAngle) {
@@ -180,6 +240,23 @@ class Camera {
                 .add(normal.scale(vector.x()))
                 .add(direction.normalized().scale(vector.y()))
                 .add(normal.cross(direction).normalized().scale(vector.z()));
+    }
+
+    private Robot getLastRobot(List<Robot> robots) {
+        int index = 0;
+        double distance = robots.get(index).getTrackT();
+        for (int i = 0; i < robots.size(); i++) {
+            final Robot robot = robots.get(i);
+            if (distance > robot.getTrackT()) {
+                index = i;
+                distance = robot.getTrackT();
+            }
+        }
+        return robots.get(index);
+    }
+
+    private Robot getRandomRobot(List<Robot> robots) {
+        return robots.get((int) Math.floor(Math.random() * robots.size()));
     }
 
 }

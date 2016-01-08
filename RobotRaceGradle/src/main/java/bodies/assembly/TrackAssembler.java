@@ -10,8 +10,21 @@ public class TrackAssembler {
 
     private final SurfaceCompilation surfaceCompilation = new SurfaceCompilation();
 
+    /**
+     * Calculate all parameters of the track.
+     *
+     * @param trackDescription The list of Vertices that define the centerline.
+     * @param laneWidth        The width of one lane.
+     * @param laneCount        The number of lanes per track.
+     * @param trackHeight      The hight of the track.
+     * @param closedTrack      If the track is closed.
+     */
     public void calculateTrack(List<Vertex> trackDescription, double laneWidth, int laneCount, double trackHeight, boolean closedTrack) {
         final List<TrackSlice> slices = new ArrayList<>();
+        /**
+         * Select appropriate previous and next vertices (interpolate if at end
+         * of list and open track)
+         */
         for (Vertex vertex : trackDescription) {
             Vertex previous, next;
             if (trackDescription.indexOf(vertex) == 0) {
@@ -34,9 +47,15 @@ public class TrackAssembler {
             }
             slices.add(new TrackSlice(previous, vertex, next, laneWidth, laneCount, trackHeight));
         }
+        /**
+         * Close the track if necessary.
+         */
         if (closedTrack) {
             slices.add(slices.get(0));
         }
+        /**
+         * And create a SurfaceCompilation of the track.
+         */
         final List<IndexedVertex> topVertices = new ArrayList<>();
         final List<IndexedVertex> bottomVertices = new ArrayList<>();
         final List<IndexedVertex> innerVertices = new ArrayList<>();
@@ -55,6 +74,9 @@ public class TrackAssembler {
         surfaceCompilation.addSurface(new Surface(bottomVertices, false));
         surfaceCompilation.addSurface(new Surface(innerVertices, false));
         surfaceCompilation.addSurface(new Surface(outerVertices, false));
+        /**
+         * With end caps if it is an open track.
+         */
         if (!closedTrack) {
             surfaceCompilation.addSurface(slices.get(0).getEndPlate(true));
             surfaceCompilation.addSurface(slices.get(slices.size() - 1).getEndPlate(false));
@@ -93,7 +115,21 @@ public class TrackAssembler {
 
         private final TrackSliceSide top, bottom, inner, outer;
 
+        /**
+         * Constructor.
+         *
+         * @param previous    The previous vertex.
+         * @param current     The current vertex.
+         * @param next        The next vertex.
+         * @param laneWidth   The width of one lane on the track.
+         * @param laneCount   The number of lanes per track.
+         * @param trackHeight The height of the track.
+         */
         private TrackSlice(Vertex previous, Vertex current, Vertex next, double laneWidth, int laneCount, double trackHeight) {
+            /**
+             * Calculate all four corners of the slice of the track. And
+             * calculate two normals per corner.
+             */
             final double halfTrackWidth = laneWidth * laneCount * 0.5d;
             final Vector original = current.getPositionV();
             final Vector lower = original.subtract(Vector.Z.normalized().scale(trackHeight));
@@ -105,6 +141,9 @@ public class TrackAssembler {
             final Vector latNormal2 = previous.getPositionV().subtract(original).cross(outerNormal);
             final Vector topNormal = latNormal1.add(latNormal2).normalized();
             final Vector bottomNormal = topNormal.scale(-1d).normalized();
+            /**
+             * Store them, two corners per face.
+             */
             top = new TrackSliceSide(
                     new Vertex(original.add(outerNormal.scale(halfTrackWidth)), topNormal),
                     new Vertex(original.add(innerNormal.scale(halfTrackWidth)), topNormal)
@@ -123,22 +162,49 @@ public class TrackAssembler {
             );
         }
 
+        /**
+         * Get the top face.
+         *
+         * @return The top face.
+         */
         private TrackSliceSide getTop() {
             return top;
         }
 
+        /**
+         * Get the bottom face.
+         *
+         * @return The bottom face.
+         */
         private TrackSliceSide getBottom() {
             return bottom;
         }
 
+        /**
+         * Get the inner face.
+         *
+         * @return The inner face.
+         */
         private TrackSliceSide getInner() {
             return inner;
         }
 
+        /**
+         * Get the outer face.
+         *
+         * @return The outer face.
+         */
         private TrackSliceSide getOuter() {
             return outer;
         }
 
+        /**
+         * Calculate an end cap (if the track is open).
+         *
+         * @param flipNormal If the face normal of the end cap should be flipped
+         *                   180 degrees.
+         * @return The Surface of the end cap.
+         */
         private Surface getEndPlate(boolean flipNormal) {
             final List<IndexedVertex> vertices = new ArrayList<>();
             vertices.add(IndexedVertex.makeIndexedVertex(Vertex.crossNormal(top.getVertex2(), inner.getVertex1(), flipNormal)));
@@ -152,15 +218,31 @@ public class TrackAssembler {
 
             private final Vertex vertex1, vertex2;
 
+            /**
+             * Constructor.
+             *
+             * @param vertex1 The first corner of the face.
+             * @param vertex2 The second corner of the face.
+             */
             private TrackSliceSide(Vertex vertex1, Vertex vertex2) {
                 this.vertex1 = vertex1;
                 this.vertex2 = vertex2;
             }
 
+            /**
+             * Get the first corner of the face.
+             *
+             * @return The first corner of the face.
+             */
             private Vertex getVertex1() {
                 return vertex1;
             }
 
+            /**
+             * Get the second corner of the face.
+             *
+             * @return The second corner of the face.
+             */
             private Vertex getVertex2() {
                 return vertex2;
             }

@@ -7,6 +7,7 @@
 package robotrace;
 
 import bodies.BufferManager;
+import java.util.Arrays;
 import javax.media.opengl.GL;
 import static javax.media.opengl.GL.GL_COLOR_BUFFER_BIT;
 import static javax.media.opengl.GL.GL_DEPTH_BUFFER_BIT;
@@ -97,14 +98,11 @@ public class RobotRace extends Base {
     }
 
     private void setupObjects() {
-        robots[0] = robotFactory.makeBenderAt(Material.GOLD, new Vector(0, 0, 0), Vector.X);//Just for testing.
-        robots[1] = robotFactory.makeBenderAt(Material.SILVER, new Vector(-10, 5, 0), Vector.X);
-        robots[2] = robotFactory.makeBenderAt(Material.WOOD, new Vector(-11, 5, 0), Vector.X);
-        robots[3] = robotFactory.makeBenderAt(Material.PLASTIC_ORANGE, new Vector(-12, 5, 0), Vector.X);
-//        robots[0] = factory.makeBenderAt(Material.GOLD, new Vector(-1, -3, 0), Vector.X);
-//        robots[1] = factory.makeBenderAt(Material.SILVER, new Vector(-1, -1, 0), Vector.X);
-//        robots[2] = factory.makeBenderAt(Material.WOOD, new Vector(-1, 1, 0), Vector.X);
-//        robots[3] = factory.makeBenderAt(Material.PLASTIC_ORANGE, new Vector(-1, 3, 0), Vector.X);
+
+        robots[0] = robotFactory.makeBender(Material.GOLD);
+        robots[1] = robotFactory.makeBender(Material.SILVER);
+        robots[2] = robotFactory.makeBender(Material.WOOD);
+        robots[3] = robotFactory.makeBender(Material.PLASTIC_ORANGE);
 
         robots[0].setSpeed(3d);
         robots[1].setSpeed(3d);
@@ -149,10 +147,11 @@ public class RobotRace extends Base {
         gl.glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
         gl.glBindTexture(GL_TEXTURE_2D, 0);
 
+        //Initialize factories and terrain.
         robotFactory.initialize(gl, bmInitialiser);
         raceTrackFactory.initialize(gl, bmInitialiser);
-
         terrain.initialize(gl, bmInitialiser);
+        camera.initialize(Arrays.asList(robots));
 
         // Try to load four textures, add more if you like.
         track = loadTexture("track.jpg");
@@ -170,7 +169,7 @@ public class RobotRace extends Base {
         lighting.setView(gl);
         // Update the view according to the camera mode and robot of interest.
         // For camera modes 1 to 4, determine which robot to focus on.
-        camera.update(gs, robots[0]);
+        camera.update(gs, Arrays.asList(robots));
 
         // Select part of window.
         gl.glViewport(0, 0, gs.w, gs.h);
@@ -188,13 +187,7 @@ public class RobotRace extends Base {
         gl.glLoadIdentity();
 
         camera.setLookAt(glu);
-
-        tempScrollVarPrev = tempScrollVar;//TODO: remove temp code.
-        tempScrollVar = gs.vDist;//TODO: remove temp code.
     }
-
-    private float tempScrollVar = 10F;//TODO: remove temp code.
-    private float tempScrollVarPrev = 10F;//TODO: remove temp code.
 
     /**
      * Draws the entire scene.
@@ -220,19 +213,6 @@ public class RobotRace extends Base {
         for (Robot robot : robots) {
             lighting.setMaterial(gl, robot.getMaterial());
             robot.update(raceTrack, gs.tAnim - tPrevious);
-
-            {//TODO: remove temp code.
-//                if (Math.abs(tempScrollVarPrev - tempScrollVar) > 0.1F) {
-////                    robot.getRobotBody().playAnimation(AnimationType.RUNNING, 2);
-//                }
-//                if (gs.tAnim <= 0) {
-//                    robot.setPosition(Vector.O);
-//                }
-//                final float velocity = 1.5F;
-//                robot.setPosition(new Vector(gs.tAnim * velocity, 0, 0));
-//                robot.moveDistance(gs.tAnim - tPrevious, (gs.tAnim - tPrevious) * velocity);
-            }
-
             robot.draw(gl, glu, glut, gs.showStick, gs.tAnim);
         }
 
@@ -241,6 +221,7 @@ public class RobotRace extends Base {
         // Draw the terrain.
         terrain.draw(gl, glu, glut, lighting);
 
+        //End the drawing and finish up.
         bodyManager.endDraw(gl);
         tPrevious = gs.tAnim;
     }
@@ -294,9 +275,9 @@ public class RobotRace extends Base {
         //Store the current matrix.
         gl.glPushMatrix();
         //Translate the beam half its length into the direction of its axis.
-        gl.glTranslatef(axisLength / 2 * x,
-                axisLength / 2 * y,
-                axisLength / 2 * z);
+        gl.glTranslatef(axisLength * 0.5f * x,
+                axisLength * 0.5f * y,
+                axisLength * 0.5f * z);
         //Stretch the beam along its axis to make it fit the previously defined axisLength.
         gl.glScalef(x == 0 ? 1f : axisLength / axisThickness,
                 y == 0 ? 1f : axisLength / axisThickness,

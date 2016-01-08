@@ -227,6 +227,14 @@ public class Vertex {
         return new Vector(normalX, normalY, normalZ);
     }
 
+    /**
+     * Cross the normals of two Vertices, average the positions.
+     *
+     * @param vertex1    The first vertex.
+     * @param vertex2    The second vertex.
+     * @param flipNormal If the calculated normal should be flipped 180 degrees.
+     * @return The vertex with crossed normals.
+     */
     public static Vertex crossNormal(Vertex vertex1, Vertex vertex2, boolean flipNormal) {
         final Vector position = vertex1.getPositionV().add(vertex2.getPositionV()).scale(0.5d);
         Vector normal = vertex1.getNormalV().cross(vertex2.getNormalV());

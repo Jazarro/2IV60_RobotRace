@@ -2,12 +2,12 @@ package racetrack;
 
 import java.util.*;
 
-public class RaceTrackDistances {
+class RaceTrackDistances {
 
     private final List<RaceTrackDistanceT> raceTrackDistances = new ArrayList<>();
     private double distance = 0d;
 
-    public double getDistance(double t) {
+    protected double getDistance(double t) {
         int i = 0;
         while (t >= raceTrackDistances.get(i).getT()) {
             i++;
@@ -20,7 +20,7 @@ public class RaceTrackDistances {
         return (1d - scale) * raceTrackDistances.get(i - 1).getDistance() + scale * raceTrackDistances.get(i).getDistance();
     }
 
-    public double getT(double distance) {
+    protected double getT(double distance) {
         int i = 0;
         while (distance >= raceTrackDistances.get(i).getDistance()) {
             i++;
@@ -33,7 +33,7 @@ public class RaceTrackDistances {
         return (1d - scale) * raceTrackDistances.get(i - 1).getT() + scale * raceTrackDistances.get(i).getT();
     }
 
-    public void addPair(double deltaDistance, double t) {
+    protected void addPair(double deltaDistance, double t) {
         distance += deltaDistance;
         raceTrackDistances.add(new RaceTrackDistanceT(distance, t));
     }

@@ -4,10 +4,8 @@ import bodies.assembly.TrackAssembler;
 import bodies.assembly.Vertex;
 import java.nio.DoubleBuffer;
 import java.nio.IntBuffer;
-import java.util.ArrayList;
 import java.util.List;
 import javax.media.opengl.GL2;
-import racetrack.RaceTrackDistances;
 
 public class TrackBuilder {
 
@@ -18,6 +16,12 @@ public class TrackBuilder {
     private double trackHeight = 1d;
     private boolean closedTrack = true;
 
+    /**
+     * The constructor.
+     *
+     * @param bmInitialiser The BufferManager initializer used to construct the
+     *                      RaceTracks.
+     */
     public TrackBuilder(BufferManager.Initialiser bmInitialiser) {
         this.bmInitialiser = bmInitialiser;
         this.assembler = new TrackAssembler();
@@ -25,8 +29,11 @@ public class TrackBuilder {
 
     public SimpleBody build(List<Vertex> trackDescription) {
         assembler.calculateTrack(trackDescription, laneWidth, laneCount, trackHeight, closedTrack);
-        //Buffer containing all Vertextdata off all previously added shapes. 
-        //The data in in the format: vertexX, vertexY, vertexZ, normalX, normalY, normalZ.
+        /**
+         * Buffer containing all Vertextdata off all previously added shapes.
+         * The data in in the format: vertexX, vertexY, vertexZ, normalX,
+         * normalY, normalZ.
+         */
         final DoubleBuffer dataBuffer = assembler.getDataBuffer();
         /**
          * List of index buffers. Each index buffer belongs to a shape and
@@ -39,6 +46,9 @@ public class TrackBuilder {
          */
         final List<Boolean> surfaceTypeList = assembler.getSurfaceTypeList();
         final int[] indexBufferNames = bmInitialiser.addData(dataBuffer, indicesBufferList);
+        /**
+         * Create the SimpleBody that represents this RaceTrack.
+         */
         final SimpleBody simpleBody = new SimpleBody();
         for (int i = 0; i < indexBufferNames.length; i++) {
             final int shapeMode = surfaceTypeList.get(i) ? GL2.GL_POLYGON : GL2.GL_QUAD_STRIP;
@@ -47,6 +57,15 @@ public class TrackBuilder {
         return simpleBody;
     }
 
+    /**
+     * Set the properties of the RaceTrack.
+     *
+     * @param laneWidth   The width of one lane.
+     * @param laneCount   The number of lanes on a track.
+     * @param trackHeight The height of the RaceTrack.
+     * @param closedTrack If the track is closed.
+     * @return The updated TrackBuilder object.
+     */
     public TrackBuilder setTrackProperties(double laneWidth, int laneCount, double trackHeight, boolean closedTrack) {
         this.laneWidth = laneWidth;
         this.laneCount = laneCount;

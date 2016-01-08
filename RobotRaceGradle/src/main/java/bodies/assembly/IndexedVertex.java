@@ -33,7 +33,7 @@ final class IndexedVertex {
      * @param shared If this IndexedVertex is shared between objects.
      * @param index  The index of this IndexedVertex in the vertex array.
      */
-    private IndexedVertex(Vertex vertex, boolean shared, int index) {
+    protected IndexedVertex(Vertex vertex, boolean shared, int index) {
         this.vertex = vertex;
         this.shared = shared;
         this.index = index;
@@ -46,7 +46,7 @@ final class IndexedVertex {
      *
      * @return The new IndexedVertex.
      */
-    public static IndexedVertex makeIndexedVertex(Vertex vertex) {
+    protected static IndexedVertex makeIndexedVertex(Vertex vertex) {
         return makeIndexedVertex(vertex, false, 0);
     }
 
@@ -59,7 +59,7 @@ final class IndexedVertex {
      *
      * @return The new IndexedVertex.
      */
-    public static IndexedVertex makeIndexedVertex(Vertex vertex, boolean shared, int index) {
+    protected static IndexedVertex makeIndexedVertex(Vertex vertex, boolean shared, int index) {
         final Vertex clone = new Vertex(vertex.getPositionA(), vertex.getNormalA());
         return new IndexedVertex(clone, shared, index);
     }
@@ -69,7 +69,7 @@ final class IndexedVertex {
      *
      * @return The Vertex this IndexedVertex is based on.
      */
-    public Vertex getVertex() {
+    protected Vertex getVertex() {
         return vertex;
     }
 
@@ -78,7 +78,7 @@ final class IndexedVertex {
      *
      * @param vertex The new Vertex this IndexedVertex is based on.
      */
-    public void setVertex(Vertex vertex) {
+    protected void setVertex(Vertex vertex) {
         this.vertex = vertex;
     }
 
@@ -87,7 +87,7 @@ final class IndexedVertex {
      *
      * @param shared If this IndexedVertex is shared between objects.
      */
-    public final void setShared(boolean shared) {
+    protected final void setShared(boolean shared) {
         this.shared = shared;
     }
 
@@ -96,7 +96,7 @@ final class IndexedVertex {
      *
      * @return If this IndexedVertex is shared between objects.
      */
-    public final boolean isShared() {
+    protected final boolean isShared() {
         return shared;
     }
 
@@ -105,7 +105,7 @@ final class IndexedVertex {
      *
      * @return The index of this IndexedVertex in the vertex array.
      */
-    public final int getIndex() {
+    protected final int getIndex() {
         return index;
     }
 
@@ -114,11 +114,19 @@ final class IndexedVertex {
      *
      * @param index The index of this IndexedVertex in the vertex array.
      */
-    public final void setIndex(int index) {
+    protected final void setIndex(int index) {
         this.index = index;
     }
 
-    public static IndexedVertex crossNormal(IndexedVertex vertex1, IndexedVertex vertex2, boolean flipNormal) {
+    /**
+     * Cross the normals of two IndexedVertices, average the positions.
+     *
+     * @param vertex1    The first vertex.
+     * @param vertex2    The second vertex.
+     * @param flipNormal If the calculated normal should be flipped 180 degrees.
+     * @return The vertex with crossed normals.
+     */
+    protected static IndexedVertex crossNormal(IndexedVertex vertex1, IndexedVertex vertex2, boolean flipNormal) {
         final Vertex vertex = Vertex.crossNormal(vertex1.getVertex(), vertex2.getVertex(), flipNormal);
         final boolean shared = vertex1.isShared() && vertex2.isShared();
         final int index = (vertex1.getIndex() == vertex2.getIndex()) ? (vertex1.getIndex()) : (0);

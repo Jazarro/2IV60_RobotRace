@@ -10,7 +10,6 @@ import static bodies.assembly.Vertex.COORD_COUNT;
 import static bodies.assembly.Vertex.IND_X;
 import static bodies.assembly.Vertex.IND_Y;
 import static bodies.assembly.Vertex.IND_Z;
-import com.jogamp.common.nio.Buffers;
 import static java.lang.Math.PI;
 import static java.lang.Math.atan;
 import static java.lang.Math.cos;
@@ -354,7 +353,7 @@ public class StackAssembler {
     private static double[] calculateNormal(int angleIndex, double deltaRadius, double deltaHeight, int sliceCount) {
         //Calculate the normal of the surface in spherical coordinates.
         final double sliceAngle = toRadians((double) angleIndex * 360d / (double) sliceCount);
-        final double stackAngle = (PI / 2d) - atan(deltaRadius / deltaHeight);
+        final double stackAngle = (PI * 0.5d) - atan(deltaRadius / deltaHeight);
         //And store the results as x, y, z components in an array.
         final double[] normal = new double[COORD_COUNT];
         normal[IND_X] = cos(sliceAngle) * sin(stackAngle);

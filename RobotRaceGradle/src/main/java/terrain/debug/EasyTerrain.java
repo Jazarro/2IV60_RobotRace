@@ -85,7 +85,7 @@ public class EasyTerrain extends Terrain {
      * @return The random coordinate.
      */
     private double getCoord(Random rand) {
-        return (rand.nextDouble() * GROUND_CLUTTER_RANGE) - (GROUND_CLUTTER_RANGE / 2);
+        return (rand.nextDouble() * GROUND_CLUTTER_RANGE) - (GROUND_CLUTTER_RANGE * 0.5d);
     }
 
     @Override

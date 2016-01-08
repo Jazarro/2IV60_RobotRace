@@ -99,8 +99,8 @@ public class TerrainFactory {
         for (int x = 0; x < widthInVertices; x++) {
             for (int y = 0; y < heightInVertices; y++) {
                 final int vertexIndex = (y * widthInVertices) + x;
-                final float xInMeters = x * blockScale - widthInMeters / 2;
-                final float yInMeters = y * blockScale - heightInMeters / 2;
+                final float xInMeters = x * blockScale - widthInMeters * 0.5f;
+                final float yInMeters = y * blockScale - heightInMeters * 0.5f;
                 final float zInMeters = heightMap.heightAt(xInMeters, yInMeters);
                 points[vertexIndex] = new Vector(xInMeters, yInMeters, zInMeters);
             }

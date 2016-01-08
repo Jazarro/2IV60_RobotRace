@@ -27,6 +27,9 @@ public class RobotFactory {
     private final robot.bender.Limb benderLimb;
     private final robot.bender.Torso benderTorso;
 
+    /**
+     * Constructor.
+     */
     public RobotFactory() {
         this.benderLimb = new Limb();
         this.benderTorso = new Torso();
@@ -84,6 +87,11 @@ public class RobotFactory {
         return robot;
     }
 
+    /**
+     * Create a body for bender.
+     *
+     * @return The newly created body of bender.
+     */
     private Bender makeBenderBody() {
         final Leg rightLeg = new Leg(benderLimb, 0F);
         final Leg leftLeg = new Leg(benderLimb, 0.5F);
