@@ -88,7 +88,7 @@ public class Arm {
         for (int i = 0; i < NR_WRIST_JOINTS + 1; i++) {
             gl.glRotated(getPartialWristAngle(animation), 0.1, 0.5 * horizontalTurningAxis.z(), 0);
             if (i == NR_WRIST_JOINTS) {
-                limb.drawHand(gl, glut, stickFigure);
+                limb.drawHand(gl, stickFigure);
             } else {
                 limb.drawSegment(gl, glut, stickFigure);
                 gl.glTranslated(0, 0, Limb.HEIGHT_OUTER_SEGMENT);

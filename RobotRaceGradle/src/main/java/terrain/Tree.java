@@ -6,7 +6,6 @@
  */
 package terrain;
 
-import com.jogamp.opengl.util.gl2.GLUT;
 import javax.media.opengl.GL2;
 import robotrace.Lighting;
 import robotrace.Vector;
@@ -25,21 +24,21 @@ public class Tree {
         this.position = position;
     }
 
-    public void draw(GL2 gl, GLUT glut, Lighting lighting) {
+    public void draw(GL2 gl, Lighting lighting) {
         gl.glPushMatrix();
         gl.glTranslated(position.x(), position.y(), position.z());
         for (int i = 0; i < 10; i++) {
-            drawOne(gl, glut, lighting, i);
+            drawOne(gl, lighting, i);
         }
         gl.glPopMatrix();
     }
 
-    private void drawOne(GL2 gl, GLUT glut, Lighting lighting, int i) {
+    private void drawOne(GL2 gl, Lighting lighting, int i) {
         gl.glPushMatrix();
         gl.glTranslated(0, 0, i);
-        foliage.drawBranch(gl, glut);
+        foliage.drawBranch(gl);
         gl.glTranslated(0, 0, 1);
-        foliage.drawLeaf(gl, glut);
+        foliage.drawLeaf(gl);
         gl.glPopMatrix();
     }
 }

@@ -169,7 +169,7 @@ public class Torso implements SingletonDrawable {
             drawStickFigurePelvis(gl, glut, bodyHeight);
             drawStickFigureShoulders(gl, glut);
         } else {
-            torsoBody.draw(gl, glut);
+            torsoBody.draw(gl);
         }
         drawEyes(gl, glut);
     }

@@ -6,7 +6,6 @@
  */
 package bodies;
 
-import com.jogamp.opengl.util.gl2.GLUT;
 import java.util.HashSet;
 import java.util.Set;
 import javax.media.opengl.GL2;
@@ -33,8 +32,8 @@ public class SimpleBody implements Body {
     }
 
     @Override
-    public void draw(GL2 gl, GLUT glut) {
-        shapes.stream().forEach((shape) -> shape.draw(gl, glut));
+    public void draw(GL2 gl) {
+        shapes.stream().forEach((shape) -> shape.draw(gl));
     }
 
 }

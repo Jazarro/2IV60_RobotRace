@@ -9,7 +9,6 @@ import bodies.Body;
 import bodies.BufferManager;
 import bodies.SingletonDrawable;
 import bodies.StackBuilder;
-import com.jogamp.opengl.util.gl2.GLUT;
 import javax.media.opengl.GL2;
 
 /**
@@ -30,12 +29,12 @@ public class Foliage implements SingletonDrawable {
         this.leaf = new TerrainFactory(1, 1, 1).makeTerrain(bmInitialiser, (x, y) -> 0);
     }
 
-    public void drawLeaf(GL2 gl, GLUT glut) {
-        leaf.draw(gl, glut);
+    public void drawLeaf(GL2 gl) {
+        leaf.draw(gl);
     }
 
-    public void drawBranch(GL2 gl, GLUT glut) {
-        branch.draw(gl, glut);
+    public void drawBranch(GL2 gl) {
+        branch.draw(gl);
     }
 
 }

@@ -13,7 +13,6 @@ import java.util.HashSet;
 import java.util.Set;
 import javafx.scene.shape.Rectangle;
 import javax.media.opengl.GL2;
-import javax.media.opengl.glu.GLU;
 import robotrace.Lighting;
 import robotrace.Material;
 
@@ -47,17 +46,24 @@ public class Terrain {
 
     /**
      * Draws the terrain.
+     *
+     * @param gl       The instance of GL2 responsible for drawing the body.
+     * @param glut     An instance of GLUT that can be optionally used to assist
+     *                 in drawing.
+     * @param lighting The Lighting instance responsible for calculating the
+     *                 lighting in this scene. Can be used to set the colours of
+     *                 bodies before drawing them.
      */
-    public void draw(GL2 gl, GLU glu, GLUT glut, Lighting lighting) {
+    public void draw(GL2 gl, GLUT glut, Lighting lighting) {
         gl.glPushMatrix();
         {
             gl.glTranslated(0, 0, -145);//Ideally make the tracks fit the terrain, rather than the other way around.
             lighting.setMaterial(gl, Material.DIRT);
-            terrainBody.draw(gl, glut);
+            terrainBody.draw(gl);
             lighting.setMaterial(gl, Material.WATER);
-            waterBody.draw(gl, glut);
+            waterBody.draw(gl);
             lighting.setMaterial(gl, Material.GREEN);
-            trees.stream().forEach((tree) -> tree.draw(gl, glut, lighting));
+            trees.stream().forEach((tree) -> tree.draw(gl, lighting));
         }
         gl.glPopMatrix();
     }

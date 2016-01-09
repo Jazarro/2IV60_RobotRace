@@ -211,15 +211,14 @@ public class RobotRace extends Base {
 
         //Draw the robots.
         for (Robot robot : robots) {
-            lighting.setMaterial(gl, robot.getMaterial());
             robot.update(raceTrack, gs.tAnim - tPrevious);
-            robot.draw(gl, glu, glut, gs.showStick, gs.tAnim);
+            robot.draw(gl, glut, gs.showStick, gs.tAnim, lighting);
         }
 
         // Draw the race track.
-        raceTrack.draw(gl, glu, glut);
+        raceTrack.draw(gl);
         // Draw the terrain.
-        terrain.draw(gl, glu, glut, lighting);
+        terrain.draw(gl, glut, lighting);
 
         //End the drawing and finish up.
         bodyManager.endDraw(gl);

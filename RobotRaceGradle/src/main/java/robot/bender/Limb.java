@@ -96,31 +96,31 @@ public class Limb implements SingletonDrawable {
             gl.glScaled(RobotBody.STICK_THICKNESS, RobotBody.STICK_THICKNESS, HEIGHT_OUTER_SEGMENT);
             glut.glutSolidCube(1f);
         } else {
-            outerSegmentBody.draw(gl, glut);
+            outerSegmentBody.draw(gl);
             final double heightDifference = HEIGHT_OUTER_SEGMENT - HEIGHT_INNER_SEGMENT;
             gl.glTranslated(0d, 0d, heightDifference / 2);
-            innerSegmentBody.draw(gl, glut);
+            innerSegmentBody.draw(gl);
         }
         gl.glPopMatrix();
     }
 
-    public void drawHand(GL2 gl, GLUT glut, boolean stickFigure) {
-        handBody.draw(gl, glut);
+    public void drawHand(GL2 gl, boolean stickFigure) {
+        handBody.draw(gl);
         gl.glTranslated(0d, 0d, HEIGHT_HAND);
         for (int j = 0; j < FINGER_COUNT; j++) {
             gl.glPushMatrix();
             gl.glTranslated(FINGER_OFFCENTER * cos(toRadians(j * 360 / FINGER_COUNT)), FINGER_OFFCENTER * sin(toRadians(j * 360 / FINGER_COUNT)), 0d);
-            fingerBody.draw(gl, glut);
+            fingerBody.draw(gl);
             gl.glPopMatrix();
         }
     }
 
-    public void drawFoot(GL2 gl, GLUT glut, boolean stickFigure) {
+    public void drawFoot(GL2 gl, boolean stickFigure) {
         gl.glPushMatrix();
         {
             gl.glTranslated(0, 0, HEIGHT_FOOT);
             gl.glRotated(180, 1, 0, 0);
-            footBody.draw(gl, glut);
+            footBody.draw(gl);
         }
         gl.glPopMatrix();
     }

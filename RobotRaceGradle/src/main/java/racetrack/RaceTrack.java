@@ -11,11 +11,9 @@ import bodies.BufferManager;
 import bodies.SingletonDrawable;
 import bodies.TrackBuilder;
 import bodies.assembly.Vertex;
-import com.jogamp.opengl.util.gl2.GLUT;
 import java.util.ArrayList;
 import java.util.List;
 import javax.media.opengl.GL2;
-import javax.media.opengl.glu.GLU;
 import static racetrack.RaceTrackDefinition.*;
 import robotrace.Vector;
 
@@ -116,8 +114,8 @@ public class RaceTrack implements SingletonDrawable {
     /**
      * Draws this track, based on the control points.
      */
-    public void draw(GL2 gl, GLU glu, GLUT glut) {
-        raceTrackBody.draw(gl, glut);
+    public void draw(GL2 gl) {
+        raceTrackBody.draw(gl);
     }
 
 }

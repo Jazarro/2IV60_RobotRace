@@ -6,7 +6,6 @@
  */
 package bodies;
 
-import com.jogamp.opengl.util.gl2.GLUT;
 import javax.media.opengl.GL2;
 
 /**
@@ -47,7 +46,7 @@ public class Shape implements Body {
     }
 
     @Override
-    public void draw(GL2 gl, GLUT glut) {
+    public void draw(GL2 gl) {
         gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, indexBufferName);
         gl.glDrawElements(shapeMode, indexbufferLength, BufferManager.INDEX_BUFFER_TYPE, BufferManager.INDEX_BUFFER_OFFSET);
     }

@@ -83,7 +83,7 @@ public class Leg {
         for (int i = 0; i < NR_ANKLE_JOINTS + 1; i++) {
             gl.glRotated(getPartialAnkleAngle(animation), -1, 0, 0);
             if (i == NR_ANKLE_JOINTS) {
-                limb.drawFoot(gl, glut, stickFigure);
+                limb.drawFoot(gl, stickFigure);
             } else {
                 limb.drawSegment(gl, glut, stickFigure);
                 gl.glTranslated(0, 0, Limb.HEIGHT_OUTER_SEGMENT);

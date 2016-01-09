@@ -8,8 +8,8 @@ package robot;
 
 import com.jogamp.opengl.util.gl2.GLUT;
 import javax.media.opengl.GL2;
-import javax.media.opengl.glu.GLU;
 import racetrack.RaceTrack;
+import robotrace.Lighting;
 import robotrace.Material;
 import robotrace.Vector;
 
@@ -150,15 +150,17 @@ public class Robot {
      *
      * @param gl          The instance of GL2 responsible for drawing the robot
      *                    on the screen.
-     * @param glu         An instance of GLU to optionally aid in drawing the
-     *                    robot body.
      * @param glut        An instance of GLUT to optionally aid in drawing the
      *                    robot body.
      * @param stickFigure If true, the robot must draw itself as a stick figure
      *                    rather than a solid body.
      * @param tAnim       Time since the start of the animation in seconds.
+     * @param lighting    The Lighting instance responsible for calculating the
+     *                    lighting in this scene. Can be used to set the color
+     *                    of bodies before drawing them.
      */
-    public void draw(GL2 gl, GLU glu, GLUT glut, boolean stickFigure, float tAnim) {
+    public void draw(GL2 gl, GLUT glut, boolean stickFigure, float tAnim, Lighting lighting) {
+        lighting.setMaterial(gl, getMaterial());
         gl.glPushMatrix();
         {
             gl.glTranslated(position.x(), position.y(), position.z());

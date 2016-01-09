@@ -6,7 +6,6 @@
  */
 package bodies;
 
-import com.jogamp.opengl.util.gl2.GLUT;
 import javax.media.opengl.GL2;
 
 /**
@@ -29,9 +28,7 @@ public interface Body {
      * second parameter will likely disappear in a later version.
      *
      * @param gl   The instance of GL2 responsible for drawing the body.
-     * @param glut An instance of GLUT that can be optionally used to assist in
-     *             drawing.
      */
-    void draw(GL2 gl, GLUT glut);
+    void draw(GL2 gl);
 
 }
