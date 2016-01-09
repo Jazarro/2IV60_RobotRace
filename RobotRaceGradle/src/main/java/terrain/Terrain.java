@@ -13,12 +13,11 @@ import java.util.HashSet;
 import java.util.Set;
 import javafx.scene.shape.Rectangle;
 import javax.media.opengl.GL2;
+import robotrace.Camera;
 import robotrace.Lighting;
 import robotrace.Material;
-import robotrace.Vector;
 import terrain.trees.Foliage;
 import terrain.trees.Tree;
-import terrain.trees.TreeGenerator;
 import terrain.trees.TreeSupplier;
 
 /**
@@ -28,10 +27,10 @@ import terrain.trees.TreeSupplier;
  */
 public class Terrain {
 
+    public static final float TERRAIN_LEVEL = 145;
     private static final int WATER_LEVEL = 0;
 
     private final Set<Tree> trees = new HashSet<>();
-    private Tree testTree;
     private Body terrainBody;
     private Body waterBody;
 
@@ -39,12 +38,11 @@ public class Terrain {
         final Foliage foliage = new Foliage();
         foliage.initialize(gl, bmInitialiser);
         final FractalTerrainGenerator heightMap = FractalTerrainGenerator.create();
-        final TreeSupplier treeGenerator = new TreeSupplier(new Rectangle(-500, -500, 1000, 1000), heightMap, foliage);
-        treeGenerator.addForbiddenArea(-40, -40, 80, 80);
-        for (int i = 0; i < 1000; i++) {
-//            trees.add(treeGenerator.get());
+        final TreeSupplier treeSupplier = new TreeSupplier(new Rectangle(-500, -500, 1000, 1000), heightMap, foliage);
+        treeSupplier.addForbiddenArea(-50, -50, 100, 100);
+        for (int i = 0; i < 30; i++) {
+            trees.add(treeSupplier.get());
         }
-        testTree = new Tree(foliage, new Vector(0,0,145), new TreeGenerator().makeTreeTrunk());
         this.terrainBody = new TerrainFactory(1000, 1000, 1F)
                 .makeTerrain(bmInitialiser, heightMap);
         this.waterBody = new TerrainFactory(1000, 1000, 100)
@@ -61,16 +59,14 @@ public class Terrain {
      *                 lighting in this scene. Can be used to set the colours of
      *                 bodies before drawing them.
      */
-    public void draw(GL2 gl, GLUT glut, Lighting lighting) {
+    public void draw(GL2 gl, GLUT glut, Camera camera, Lighting lighting) {
         gl.glPushMatrix();
         {
-            gl.glTranslated(0, 0, -145);//Ideally make the tracks fit the terrain, rather than the other way around.
             lighting.setMaterial(gl, Material.DIRT);
             terrainBody.draw(gl);
             lighting.setMaterial(gl, Material.WATER);
             waterBody.draw(gl);
-            trees.stream().forEach((tree) -> tree.draw(gl, lighting));
-            testTree.draw(gl, lighting);
+            trees.stream().forEach((tree) -> tree.draw(gl,camera, lighting));
         }
         gl.glPopMatrix();
     }

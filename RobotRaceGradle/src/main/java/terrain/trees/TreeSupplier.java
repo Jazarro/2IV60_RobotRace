@@ -6,7 +6,9 @@
  */
 package terrain.trees;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.function.Supplier;
@@ -50,8 +52,11 @@ public class TreeSupplier implements Supplier<Tree> {
      */
     private static final float MAX_DECLINATION = 0.5F;
 
+    private static final int MAX_NR_UNIQUE_TREE_MODELS = 5;
+
     private final Random rand = new Random(RAND_SEED);
     private final TreeGenerator treeGenerator = new TreeGenerator();
+    private final List<Tree.Node> cachedTreeTrunks = new ArrayList<>();
     private final Set<Rectangle> forbiddenAreas = new HashSet<>();
     private final Rectangle bounds;
     private final HeightMap heightMap;
@@ -91,7 +96,17 @@ public class TreeSupplier implements Supplier<Tree> {
                     2 * TREE_CLEARING_RADIUS, 2 * TREE_CLEARING_RADIUS);
             return new Tree(foliage,
                     new Vector(coords.getX(), coords.getY(),
-                            heightMap.heightAt(coords.getX(), coords.getY())), treeGenerator.makeTreeTrunk());
+                            heightMap.heightAt(coords.getX(), coords.getY())), getTreeTrunk());
+        }
+    }
+
+    private Tree.Node getTreeTrunk() {
+        if (cachedTreeTrunks.size() < MAX_NR_UNIQUE_TREE_MODELS) {
+            final Tree.Node trunk = treeGenerator.makeTreeTrunk();
+            cachedTreeTrunks.add(trunk);
+            return trunk;
+        } else {
+            return cachedTreeTrunks.get(rand.nextInt(MAX_NR_UNIQUE_TREE_MODELS));
         }
     }
 

@@ -12,6 +12,7 @@ import racetrack.RaceTrack;
 import robotrace.Lighting;
 import robotrace.Material;
 import robotrace.Vector;
+import terrain.Terrain;
 
 /**
  * Represents a Robot, to be implemented according to the Assignments.
@@ -163,6 +164,7 @@ public class Robot {
         lighting.setMaterial(gl, getMaterial());
         gl.glPushMatrix();
         {
+            gl.glTranslated(0, 0, Terrain.TERRAIN_LEVEL);
             gl.glTranslated(position.x(), position.y(), position.z());
             final double rotationDotY = direction.dot(Vector.Y) / (direction.length() * Vector.Y.length());
             final double rotationDotX = direction.dot(Vector.X) / (direction.length() * Vector.X.length());

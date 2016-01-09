@@ -34,16 +34,16 @@ public class TreeGenerator {
      * The maximum number of leafs that may ever be generated on the same
      * branch.
      */
-    private static final int MAX_NR_LEAFS_ON_BRANCH = 10;
+    private static final int MAX_NR_LEAFS_ON_BRANCH = 12;
     /**
      * The maximum number of child branches that may ever be generated on one
      * branch.
      */
-    private static final int MAX_NR_BRANCHES_ON_BRANCH = 16;
+    private static final int MAX_NR_BRANCHES_ON_BRANCH = 8;
     /**
      * The minimum number of branches that must be on the trunk of a tree.
      */
-    private static final int MIN_NR_BRANCHES_ON_TRUNK = 8;
+    private static final int MIN_NR_BRANCHES_ON_BRANCH = 4;
     /**
      * The minimum scale for trunks. Scale in in the range (0 <= s <= 1) and
      * becomes smaller the deeper one descends into a tree's branches.
@@ -59,7 +59,7 @@ public class TreeGenerator {
      * The maximum trunk radius. Used along with the scale to scale all
      * branches.
      */
-    private static final float MAX_TRUNK_RADIUS = 2.5F;
+    public static final float MAX_TRUNK_RADIUS = 2.5F;
 
     /**
      * The maximum rotation of a node around the Y-axis relative to its parent,
@@ -131,11 +131,11 @@ public class TreeGenerator {
     }
 
     private int getNrBranches(int depth) {
-        return Math.max(rand.nextInt(MAX_NR_BRANCHES_ON_BRANCH), (1 / (depth + 1) * MIN_NR_BRANCHES_ON_TRUNK));
+        return Math.max(rand.nextInt(MAX_NR_BRANCHES_ON_BRANCH), MIN_NR_BRANCHES_ON_BRANCH);
     }
 
     private Tree.Node makeLeaf(float translation, float zRotation, float yRotation, float sidewaysTranslation) {
-        return new Tree.Node(translation, new Vector(0.7F, 0.7F, 1), zRotation, yRotation, sidewaysTranslation);
+        return new Tree.Node(translation, new Vector(3, 3, 1), zRotation, yRotation, sidewaysTranslation);
     }
 
 }

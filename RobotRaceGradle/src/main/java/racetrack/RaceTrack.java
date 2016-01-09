@@ -16,6 +16,7 @@ import java.util.List;
 import javax.media.opengl.GL2;
 import static racetrack.RaceTrackDefinition.*;
 import robotrace.Vector;
+import terrain.Terrain;
 
 /**
  * Implementation of a race track that is made from Bezier segments.
@@ -115,7 +116,10 @@ public class RaceTrack implements SingletonDrawable {
      * Draws this track, based on the control points.
      */
     public void draw(GL2 gl) {
+        gl.glPushMatrix();
+        gl.glTranslated(0, 0, Terrain.TERRAIN_LEVEL);
         raceTrackBody.draw(gl);
+        gl.glPopMatrix();
     }
 
 }

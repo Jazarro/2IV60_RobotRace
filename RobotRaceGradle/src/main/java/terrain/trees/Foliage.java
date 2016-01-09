@@ -22,23 +22,47 @@ import terrain.TerrainFactory;
 public class Foliage implements SingletonDrawable {
 
     private Body leaf;
-    private Body branch;
+    private Body ultraHighDetailBranch;
+    private Body highDetailBranch;
+    private Body midDetailBranch;
+    private Body lowDetailBranch;
 
     @Override
     public void initialize(GL2 gl, BufferManager.Initialiser bmInitialiser) {
-        this.branch = new StackBuilder(bmInitialiser)
-                .setSliceCount(10)
+        this.ultraHighDetailBranch = makeBranch(bmInitialiser, 10);
+        this.highDetailBranch = makeBranch(bmInitialiser, 8);
+        this.midDetailBranch = makeBranch(bmInitialiser, 4);
+        this.lowDetailBranch = makeBranch(bmInitialiser, 3);
+        this.leaf = new TerrainFactory(1, 1, 1).makeTerrain(bmInitialiser, (x, y) -> 0);
+    }
+
+    private Body makeBranch(BufferManager.Initialiser bmInitialiser, int sliceCount) {
+        return new StackBuilder(bmInitialiser)
+                .setSliceCount(sliceCount)
                 .addConicalFrustum(0.5, 0, 0, 1, false, false)
                 .build();
-        this.leaf = new TerrainFactory(1, 1, 1).makeTerrain(bmInitialiser, (x, y) -> 0);
     }
 
     public void drawLeaf(GL2 gl) {
         leaf.draw(gl);
     }
 
-    public void drawBranch(GL2 gl) {
-        branch.draw(gl);
+    public void drawBranch(GL2 gl, int requiredDetailLevel) {
+        switch (requiredDetailLevel) {
+            case 0:
+                lowDetailBranch.draw(gl);
+                break;
+            case 1:
+                midDetailBranch.draw(gl);
+                break;
+            case 2:
+                highDetailBranch.draw(gl);
+                break;
+            case 3:
+            default:
+                ultraHighDetailBranch.draw(gl);
+                break;
+        }
     }
 
 }
