@@ -15,13 +15,13 @@ import java.util.Random;
  */
 public class FractalTerrainGenerator implements HeightMap {
 
-
     /**
      * Random seed that will be used every time to ensure that the terrain
-     * doesn't actually change from one run of the program to the next.
+     * doesn't actually change from one run of the program to the next. This
+     * number has been more or less arbitrarily chosen.
      */
     private static final long RAND_SEED = 12_345_678_422L;
-    
+
     public static FractalTerrainGenerator create() {
         final FractalTerrainGenerator instance = new FractalTerrainGenerator(10, 0.3F);
         instance.initialise();

@@ -45,8 +45,11 @@ public enum Material {
     WATER(new float[]{0.0f, 0.1f, 0.2f, 0.9f},
             new float[]{0.2f, 0.2f, 0.2f, 1f},
             1f),
-    GREEN(new float[]{0.2f, 4f, 0.1f, 1.0f},
-            new float[]{0.6f, 1f, 0.3f, 1.0f},
+    LEAF(new float[]{0.3f, 0.4f, 0.1f, 1.0f},
+            new float[]{0.1f, 0.3f, 0f, 1.0f},
+            20f),
+    BARK(new float[]{0.66f, 0.41f, 0.2f, 1.0f},
+            new float[]{0.33f, 0.205f, 0.05f, 1.0f},
             2f);
 
     /**

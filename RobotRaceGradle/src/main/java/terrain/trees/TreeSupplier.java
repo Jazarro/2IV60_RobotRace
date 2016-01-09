@@ -4,7 +4,7 @@
  * Assignment: RobotRace
  * Students: Arjan Boschman & Robke Geenen
  */
-package terrain;
+package terrain.trees;
 
 import java.util.HashSet;
 import java.util.Random;
@@ -13,16 +13,28 @@ import java.util.function.Supplier;
 import javafx.geometry.Point2D;
 import javafx.scene.shape.Rectangle;
 import robotrace.Vector;
+import terrain.HeightMap;
 
 /**
+ * Can be used to generate trees. This class is NOT actually responsible for
+ * constructing the trees themselves, but rather for choosing a proper location
+ * to grow a tree.
+ *
+ * Valid tree locations must meet the following requirements:
+ *
+ * 1: They're within the bounds of the terrain. 2: They're outside the bounds of
+ * any optionally declarable forbidden zones. 3: They're not too close to
+ * previously generated trees. 4: They're not underwater. 5: They're on
+ * reasonably flat terrain.
  *
  * @author Arjan Boschman
  */
-public class TreeGenerator implements Supplier<Tree> {
+public class TreeSupplier implements Supplier<Tree> {
 
     /**
      * Random seed that will be used every time to ensure that the trees don't
-     * actually change from one run of the program to the next.
+     * actually change from one run of the program to the next. This number has
+     * been more or less arbitrarily chosen.
      */
     private static final long RAND_SEED = 95_873_649_098L;
     /**
@@ -39,17 +51,28 @@ public class TreeGenerator implements Supplier<Tree> {
     private static final float MAX_DECLINATION = 0.5F;
 
     private final Random rand = new Random(RAND_SEED);
+    private final TreeGenerator treeGenerator = new TreeGenerator();
     private final Set<Rectangle> forbiddenAreas = new HashSet<>();
     private final Rectangle bounds;
     private final HeightMap heightMap;
     private final Foliage foliage;
 
-    public TreeGenerator(Rectangle bounds, HeightMap heightMap, Foliage foliage) {
+    public TreeSupplier(Rectangle bounds, HeightMap heightMap, Foliage foliage) {
         this.bounds = bounds;
         this.heightMap = heightMap;
         this.foliage = foliage;
     }
 
+    /**
+     * Adds a forbidden area to this TreeGenerator. No more trees will
+     * henceforth be allowed to spawn within these bounds. This does not affect
+     * trees that have already been generated.
+     *
+     * @param x      The x-coordinate in meters of the bounding box.
+     * @param y      The y-coordinate in meters of the bounding box.
+     * @param width  The width in meters of the bounding box.
+     * @param height The height in meters of the bounding box.
+     */
     public void addForbiddenArea(double x, double y, double width, double height) {
         this.forbiddenAreas.add(new Rectangle(x, y, width, height));
     }
@@ -68,7 +91,7 @@ public class TreeGenerator implements Supplier<Tree> {
                     2 * TREE_CLEARING_RADIUS, 2 * TREE_CLEARING_RADIUS);
             return new Tree(foliage,
                     new Vector(coords.getX(), coords.getY(),
-                            heightMap.heightAt(coords.getX(), coords.getY())));
+                            heightMap.heightAt(coords.getX(), coords.getY())), treeGenerator.makeTreeTrunk());
         }
     }
 

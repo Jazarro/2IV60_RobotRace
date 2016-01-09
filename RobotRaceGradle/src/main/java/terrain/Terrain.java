@@ -15,6 +15,11 @@ import javafx.scene.shape.Rectangle;
 import javax.media.opengl.GL2;
 import robotrace.Lighting;
 import robotrace.Material;
+import robotrace.Vector;
+import terrain.trees.Foliage;
+import terrain.trees.Tree;
+import terrain.trees.TreeGenerator;
+import terrain.trees.TreeSupplier;
 
 /**
  * Implementation of the terrain.
@@ -26,6 +31,7 @@ public class Terrain {
     private static final int WATER_LEVEL = 0;
 
     private final Set<Tree> trees = new HashSet<>();
+    private Tree testTree;
     private Body terrainBody;
     private Body waterBody;
 
@@ -33,11 +39,12 @@ public class Terrain {
         final Foliage foliage = new Foliage();
         foliage.initialize(gl, bmInitialiser);
         final FractalTerrainGenerator heightMap = FractalTerrainGenerator.create();
-        final TreeGenerator treeGenerator = new TreeGenerator(new Rectangle(-500, -500, 1000, 1000), heightMap, foliage);
+        final TreeSupplier treeGenerator = new TreeSupplier(new Rectangle(-500, -500, 1000, 1000), heightMap, foliage);
         treeGenerator.addForbiddenArea(-40, -40, 80, 80);
         for (int i = 0; i < 1000; i++) {
-            trees.add(treeGenerator.get());
+//            trees.add(treeGenerator.get());
         }
+        testTree = new Tree(foliage, new Vector(0,0,145), new TreeGenerator().makeTreeTrunk());
         this.terrainBody = new TerrainFactory(1000, 1000, 1F)
                 .makeTerrain(bmInitialiser, heightMap);
         this.waterBody = new TerrainFactory(1000, 1000, 100)
@@ -62,8 +69,8 @@ public class Terrain {
             terrainBody.draw(gl);
             lighting.setMaterial(gl, Material.WATER);
             waterBody.draw(gl);
-            lighting.setMaterial(gl, Material.GREEN);
             trees.stream().forEach((tree) -> tree.draw(gl, lighting));
+            testTree.draw(gl, lighting);
         }
         gl.glPopMatrix();
     }
