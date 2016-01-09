@@ -31,76 +31,76 @@ public class Torso implements SingletonDrawable {
     /**
      * Radius of the body at the hips.
      */
-    private static final double RADIUS_HIPS = 0.175d;
+    private static final float RADIUS_HIPS = 0.175F;
     /**
      * Radius of the body at the chest.
      */
-    private static final double RADIUS_TORSO = 0.225d;
+    private static final float RADIUS_TORSO = 0.225F;
     /**
      * Radius of the body at the start of the neck.
      */
-    private static final double RADIUS_NECK = 0.125d;
+    private static final float RADIUS_NECK = 0.125F;
     /**
      * Radius of the body at the end of the neck and the head.
      */
-    private static final double RADIUS_HEAD = 0.125d;
+    private static final float RADIUS_HEAD = 0.125F;
     /**
      * Radius of the body at the antenna base.
      */
-    private static final double RADIUS_ANTENNA_BOTTOM = 0.05d;
+    private static final float RADIUS_ANTENNA_BOTTOM = 0.05F;
     /**
      * Radius of the body at the bottom of the antenna, just above the base.
      */
-    private static final double RADIUS_ANTENNA_MIDDLE = 0.03d;
+    private static final float RADIUS_ANTENNA_MIDDLE = 0.03F;
     /**
      * Radius of the body at the top of the antenna, just below the transmitter.
      */
-    private static final double RADIUS_ANTENNA_TOP = 0.01d;
+    private static final float RADIUS_ANTENNA_TOP = 0.01F;
     /**
      * Radius of the body at the center of the transmitter ball.
      */
-    private static final double RADIUS_ANTENNA_BALL_MIDDLE = 0.025d;
+    private static final float RADIUS_ANTENNA_BALL_MIDDLE = 0.025F;
     /**
      * Radius of the body at the top of the transmitter.
      */
-    private static final double RADIUS_ANTENNA_BALL_TOP = 0d;
+    private static final float RADIUS_ANTENNA_BALL_TOP = 0F;
 
     /**
      * Height of the body at the hips.
      */
-    private static final double HEIGHT_PELVIS = 0d;
+    private static final float HEIGHT_PELVIS = 0F;
     /**
      * Height of the body at the chest.
      */
-    private static final double HEIGHT_TORSO = 0.45d;
+    private static final float HEIGHT_TORSO = 0.45F;
     /**
      * Height of the body at the start of the head.
      */
-    private static final double HEIGHT_NECK = 0.55d;
+    private static final float HEIGHT_NECK = 0.55F;
     /**
      * Height of the body at where the head starts to curve inwards.
      */
-    private static final double HEIGHT_HEAD = 0.875d;
+    private static final float HEIGHT_HEAD = 0.875F;
     /**
      * Height of the body at the base of the antenna.
      */
-    private static final double HEIGHT_ANTENNA_BOTTOM = 1d;
+    private static final float HEIGHT_ANTENNA_BOTTOM = 1F;
     /**
      * Height of the body at the top of the antenna base.
      */
-    private static final double HEIGHT_ANTENNA_MIDDLE = 1.025d;
+    private static final float HEIGHT_ANTENNA_MIDDLE = 1.025F;
     /**
      * Height of the body at the top of the antenna, just below the transmitter.
      */
-    private static final double HEIGHT_ANTENNA_TOP = 1.175d;
+    private static final float HEIGHT_ANTENNA_TOP = 1.175F;
     /**
      * Height of the body at the center of the transmitter.
      */
-    private static final double HEIGHT_ANTENNA_BALL_MIDDLE = HEIGHT_ANTENNA_TOP + RADIUS_ANTENNA_BALL_MIDDLE; //1.1875d;
+    private static final float HEIGHT_ANTENNA_BALL_MIDDLE = HEIGHT_ANTENNA_TOP + RADIUS_ANTENNA_BALL_MIDDLE; //1.1875d;
     /**
      * Height of the body at the top of the transmitter.
      */
-    public static final double HEIGHT_ANTENNA_BALL_TOP = HEIGHT_ANTENNA_BALL_MIDDLE + RADIUS_ANTENNA_BALL_MIDDLE; //1.2d;
+    public static final float HEIGHT_ANTENNA_BALL_TOP = HEIGHT_ANTENNA_BALL_MIDDLE + RADIUS_ANTENNA_BALL_MIDDLE; //1.2d;
 
     /**
      * The default number of edges to give the rings of the various shapes.
@@ -115,16 +115,16 @@ public class Torso implements SingletonDrawable {
      * The absolute distance on the x-axis between the central vertical axis and
      * the position of the legs.
      */
-    public static final double LEG_OFFCENTER = 0.1;
+    public static final float LEG_OFFCENTER = 0.1F;
     /**
      * The height of the shoulder relative to the height of the torso.
      */
-    public static final double SHOULDER_HEIGHT = 0.375;
+    public static final float SHOULDER_HEIGHT = 0.375F;
     /**
      * The absolute distance on the x-axis between the central vertical axis and
      * the position of the shoulders.
      */
-    public static final double SHOULDER_OFFCENTER = 0.2;
+    public static final float SHOULDER_OFFCENTER = 0.2F;
 
     private Body torsoBody;
 

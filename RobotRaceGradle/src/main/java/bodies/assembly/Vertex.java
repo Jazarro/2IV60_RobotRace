@@ -39,22 +39,22 @@ public class Vertex {
     /**
      * The position of this Vertex in x, y and z components.
      */
-    private double positionX;
-    private double positionY;
-    private double positionZ;
+    private float positionX;
+    private float positionY;
+    private float positionZ;
     /**
      * The normal of this Vertex (mainly useful when using surfaces) in x, y and
      * z components.
      */
-    private double normalX;
-    private double normalY;
-    private double normalZ;
+    private float normalX;
+    private float normalY;
+    private float normalZ;
 
     /**
      * Constructor.
      */
     public Vertex() {
-        this(0d, 0d, 0d);
+        this(0, 0, 0);
     }
 
     /**
@@ -64,8 +64,8 @@ public class Vertex {
      * @param positionY Component of the position in the Y axis.
      * @param positionZ Component of the position in the Z axis.
      */
-    public Vertex(double positionX, double positionY, double positionZ) {
-        this(positionX, positionY, positionZ, 0d, 0d, 0d);
+    public Vertex(float positionX, float positionY, float positionZ) {
+        this(positionX, positionY, positionZ, 0, 0, 0);
     }
 
     /**
@@ -78,7 +78,7 @@ public class Vertex {
      * @param normalY   Component of the normal in the Y axis.
      * @param normalZ   Component of the normal in the Z axis.
      */
-    public Vertex(double positionX, double positionY, double positionZ, double normalX, double normalY, double normalZ) {
+    public Vertex(float positionX, float positionY, float positionZ, float normalX, float normalY, float normalZ) {
         setPositionC(positionX, positionY, positionZ);
         setNormalC(normalX, normalY, normalZ);
     }
@@ -88,8 +88,8 @@ public class Vertex {
      *
      * @param position The position.
      */
-    public Vertex(double[] position) {
-        this(position, new double[]{0d, 0d, 0d});
+    public Vertex(float[] position) {
+        this(position, new float[]{0, 0, 0});
     }
 
     /**
@@ -98,7 +98,7 @@ public class Vertex {
      * @param position The position.
      * @param normal   The normal.
      */
-    public Vertex(double[] position, double[] normal) {
+    public Vertex(float[] position, float[] normal) {
         this(position[IND_X], position[IND_Y], position[IND_Z], normal[IND_X], normal[IND_Y], normal[IND_Z]);
     }
 
@@ -108,7 +108,7 @@ public class Vertex {
      * @param position The position.
      */
     public Vertex(Vector position) {
-        this(position.x(), position.y(), position.z());
+        this((float) position.x(), (float) position.y(), (float) position.z());
     }
 
     /**
@@ -118,7 +118,7 @@ public class Vertex {
      * @param normal   The normal.
      */
     public Vertex(Vector position, Vector normal) {
-        this(position.x(), position.y(), position.z(), normal.x(), normal.y(), normal.z());
+        this((float) position.x(), (float) position.y(), (float) position.z(), (float) normal.x(), (float) normal.y(), (float) normal.z());
     }
 
     /**
@@ -128,7 +128,7 @@ public class Vertex {
      * @param positionY Component of the new position in the Y axis.
      * @param positionZ Component of the new position in the Z axis.
      */
-    public final void setPositionC(double positionX, double positionY, double positionZ) {
+    public final void setPositionC(float positionX, float positionY, float positionZ) {
         this.positionX = positionX;
         this.positionY = positionY;
         this.positionZ = positionZ;
@@ -139,7 +139,7 @@ public class Vertex {
      *
      * @param position The new position.
      */
-    public final void setPositionA(double[] position) {
+    public final void setPositionA(float[] position) {
         this.setPositionC(position[IND_X], position[IND_Y], position[IND_Z]);
     }
 
@@ -149,7 +149,7 @@ public class Vertex {
      * @param position The new position.
      */
     public final void setPositionV(Vector position) {
-        this.setPositionC(position.x(), position.y(), position.z());
+        this.setPositionC((float) position.x(), (float) position.y(), (float) position.z());
     }
 
     /**
@@ -157,8 +157,8 @@ public class Vertex {
      *
      * @return The position of this Vertex.
      */
-    public final double[] getPositionA() {
-        double[] position = new double[COORD_COUNT];
+    public final float[] getPositionA() {
+        float[] position = new float[COORD_COUNT];
         position[IND_X] = positionX;
         position[IND_Y] = positionY;
         position[IND_Z] = positionZ;
@@ -181,7 +181,7 @@ public class Vertex {
      * @param normalY Component of the new normal in the Y axis.
      * @param normalZ Component of the new normal in the Z axis.
      */
-    public final void setNormalC(double normalX, double normalY, double normalZ) {
+    public final void setNormalC(float normalX, float normalY, float normalZ) {
         this.normalX = normalX;
         this.normalY = normalY;
         this.normalZ = normalZ;
@@ -192,7 +192,7 @@ public class Vertex {
      *
      * @param normal The new normal of this Vertex.
      */
-    public final void setNormalA(double[] normal) {
+    public final void setNormalA(float[] normal) {
         this.setNormalC(normal[IND_X], normal[IND_Y], normal[IND_Z]);
     }
 
@@ -202,7 +202,7 @@ public class Vertex {
      * @param normal The new normal of this Vertex.
      */
     public final void setNormalV(Vector normal) {
-        this.setNormalC(normal.x(), normal.y(), normal.z());
+        this.setNormalC((float) normal.x(), (float) normal.y(), (float) normal.z());
     }
 
     /**
@@ -210,8 +210,8 @@ public class Vertex {
      *
      * @return The normal of this Vertex.
      */
-    public final double[] getNormalA() {
-        double[] normal = new double[COORD_COUNT];
+    public final float[] getNormalA() {
+        float[] normal = new float[COORD_COUNT];
         normal[IND_X] = normalX;
         normal[IND_Y] = normalY;
         normal[IND_Z] = normalZ;

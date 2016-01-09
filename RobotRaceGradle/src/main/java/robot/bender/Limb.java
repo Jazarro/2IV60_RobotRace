@@ -34,20 +34,20 @@ public class Limb implements SingletonDrawable {
      * The number of fingers to use on each hand.
      */
     private static final int FINGER_COUNT = 3;
-    private static final double FINGER_OFFCENTER = 0.03d;
+    private static final float FINGER_OFFCENTER = 0.03F;
 
-    public static final double HEIGHT_OUTER_SEGMENT = 0.5d / RING_COUNT;
-    private static final double HEIGHT_INNER_SEGMENT = HEIGHT_OUTER_SEGMENT * 1.35;
+    public static final float HEIGHT_OUTER_SEGMENT = 0.5F / RING_COUNT;
+    private static final float HEIGHT_INNER_SEGMENT = HEIGHT_OUTER_SEGMENT * 1.35F;
 
-    public static final double HEIGHT_FOOT = 0.1d;
-    private static final double HEIGHT_HAND = 0.07d;
-    private static final double HEIGHT_FINGER = 0.0625d;
+    public static final float HEIGHT_FOOT = 0.1F;
+    private static final float HEIGHT_HAND = 0.07F;
+    private static final float HEIGHT_FINGER = 0.0625F;
 
-    private static final double RADIUS_OUTER_SEGMENT = 0.04d;
-    private static final double RADIUS_INNER_SEGMENT = RADIUS_OUTER_SEGMENT * 0.8;
-    private static final double RADIUS_FOOT = Math.sqrt(Math.pow(HEIGHT_FOOT, 2d) + Math.pow(RADIUS_OUTER_SEGMENT, 2d));
-    private static final double RADIUS_HAND = 0.06d;
-    private static final double RADIUS_FINGER = HEIGHT_FINGER - 0.05d;
+    private static final float RADIUS_OUTER_SEGMENT = 0.04F;
+    private static final float RADIUS_INNER_SEGMENT = RADIUS_OUTER_SEGMENT * 0.8F;
+    private static final float RADIUS_FOOT = (float)Math.sqrt(Math.pow(HEIGHT_FOOT, 2d) + Math.pow(RADIUS_OUTER_SEGMENT, 2d));
+    private static final float RADIUS_HAND = 0.06F;
+    private static final float RADIUS_FINGER = HEIGHT_FINGER - 0.05F;
 
     /**
      * The number of edges to give the rings of the various shapes.
@@ -68,24 +68,24 @@ public class Limb implements SingletonDrawable {
     public void initialize(GL2 gl, BufferManager.Initialiser bmInitialiser) {
         outerSegmentBody = new StackBuilder(bmInitialiser)
                 .setSliceCount(SLICE_COUNT)
-                .addConicalFrustum(RADIUS_OUTER_SEGMENT, RADIUS_OUTER_SEGMENT, 0d, HEIGHT_OUTER_SEGMENT, false, false)
+                .addConicalFrustum(RADIUS_OUTER_SEGMENT, RADIUS_OUTER_SEGMENT, 0F, HEIGHT_OUTER_SEGMENT, false, false)
                 .build();
         innerSegmentBody = new StackBuilder(bmInitialiser)
                 .setSliceCount(SLICE_COUNT)
-                .addConicalFrustum(RADIUS_INNER_SEGMENT, RADIUS_INNER_SEGMENT, 0d, HEIGHT_INNER_SEGMENT, false, false)
+                .addConicalFrustum(RADIUS_INNER_SEGMENT, RADIUS_INNER_SEGMENT, 0F, HEIGHT_INNER_SEGMENT, false, false)
                 .build();
         footBody = new StackBuilder(bmInitialiser)
                 .setSliceCount(SLICE_COUNT)
-                .addPartialTorus(STACK_COUNT, RADIUS_FOOT, 0d, 0d, HEIGHT_FOOT, true, false)
+                .addPartialTorus(STACK_COUNT, RADIUS_FOOT, 0F, 0F, HEIGHT_FOOT, true, false)
                 .build();
         handBody = new StackBuilder(bmInitialiser)
                 .setSliceCount(SLICE_COUNT)
-                .addConicalFrustum(RADIUS_OUTER_SEGMENT, RADIUS_HAND, 0d, HEIGHT_HAND, true, true)
+                .addConicalFrustum(RADIUS_OUTER_SEGMENT, RADIUS_HAND, 0F, HEIGHT_HAND, true, true)
                 .build();
         fingerBody = new StackBuilder(bmInitialiser)
                 .setSliceCount(SLICE_COUNT)
-                .addConicalFrustum(RADIUS_FINGER, RADIUS_FINGER, 0d, HEIGHT_FINGER, false, false)
-                .addPartialTorus(STACK_COUNT, RADIUS_FINGER, 0d, HEIGHT_FINGER, HEIGHT_FINGER + RADIUS_FINGER, false, false)
+                .addConicalFrustum(RADIUS_FINGER, RADIUS_FINGER, 0F, HEIGHT_FINGER, false, false)
+                .addPartialTorus(STACK_COUNT, RADIUS_FINGER, 0F, HEIGHT_FINGER, HEIGHT_FINGER + RADIUS_FINGER, false, false)
                 .build();
     }
 

@@ -12,6 +12,7 @@ import com.jogamp.opengl.util.gl2.GLUT;
 import java.util.HashSet;
 import java.util.Set;
 import javafx.scene.shape.Rectangle;
+import static javax.media.opengl.GL.GL_CULL_FACE;
 import javax.media.opengl.GL2;
 import robotrace.Camera;
 import robotrace.Lighting;
@@ -62,10 +63,12 @@ public class Terrain {
     public void draw(GL2 gl, GLUT glut, Camera camera, Lighting lighting) {
         gl.glPushMatrix();
         {
+            gl.glEnable(GL_CULL_FACE);
             lighting.setMaterial(gl, Material.DIRT);
             terrainBody.draw(gl);
             lighting.setMaterial(gl, Material.WATER);
             waterBody.draw(gl);
+            gl.glDisable(GL_CULL_FACE);
             trees.stream().forEach((tree) -> tree.draw(gl,camera, lighting));
         }
         gl.glPopMatrix();

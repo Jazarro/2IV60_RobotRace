@@ -8,7 +8,7 @@ package bodies;
 
 import bodies.assembly.TrackAssembler;
 import bodies.assembly.Vertex;
-import java.nio.DoubleBuffer;
+import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.List;
 import javax.media.opengl.GL2;
@@ -44,7 +44,7 @@ public class TrackBuilder {
          * The data in in the format: vertexX, vertexY, vertexZ, normalX,
          * normalY, normalZ.
          */
-        final DoubleBuffer dataBuffer = assembler.getDataBuffer();
+        final FloatBuffer dataBuffer = assembler.getDataBuffer();
         /**
          * List of index buffers. Each index buffer belongs to a shape and
          * consists of pointers to vertices in the data buffer.

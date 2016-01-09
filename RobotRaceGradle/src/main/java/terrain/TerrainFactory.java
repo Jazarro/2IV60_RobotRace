@@ -10,7 +10,7 @@ import bodies.Body;
 import bodies.BufferManager;
 import bodies.Shape;
 import bodies.assembly.Vertex;
-import java.nio.DoubleBuffer;
+import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import javax.media.opengl.GL2;
 import robotrace.Vector;
@@ -66,7 +66,7 @@ public class TerrainFactory {
         final IntBuffer indexBuffer = generateIndexBuffer();
         final Vector[] points = generatePoints(heightMap);
         final Vector[] normals = generateNormals(points, indexBuffer);
-        final DoubleBuffer dataBuffer = generateVertices(points, normals);
+        final FloatBuffer dataBuffer = generateVertices(points, normals);
         final int indexBufferName = bmInitialiser.addData(dataBuffer, indexBuffer);
         return new Shape(indexBufferName, indexBuffer.capacity(), GL2.GL_TRIANGLES);
     }
@@ -79,12 +79,12 @@ public class TerrainFactory {
      * @param normals An array of normals, parallel to the points.
      * @return A DoubleBuffer with points and vectors interleaved.
      */
-    private DoubleBuffer generateVertices(Vector[] points, Vector[] normals) {
+    private FloatBuffer generateVertices(Vector[] points, Vector[] normals) {
         final int nrVertices = widthInVertices * heightInVertices;
-        final DoubleBuffer buffer = DoubleBuffer.allocate(Vertex.COORD_COUNT * Vertex.NR_VERTEX_ELEMENTS * nrVertices);
+        final FloatBuffer buffer = FloatBuffer.allocate(Vertex.COORD_COUNT * Vertex.NR_VERTEX_ELEMENTS * nrVertices);
         for (int i = 0; i < nrVertices; i++) {
-            buffer.put(new double[]{points[i].x(), points[i].y(), points[i].z()});
-            buffer.put(new double[]{normals[i].x(), normals[i].y(), normals[i].z()});
+            buffer.put(new float[]{(float) points[i].x(), (float) points[i].y(), (float) points[i].z()});
+            buffer.put(new float[]{(float) normals[i].x(), (float) normals[i].y(), (float) normals[i].z()});
         }
         buffer.position(0);
         return buffer;

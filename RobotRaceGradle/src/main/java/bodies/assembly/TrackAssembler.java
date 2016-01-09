@@ -1,6 +1,6 @@
 package bodies.assembly;
 
-import java.nio.DoubleBuffer;
+import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
@@ -88,7 +88,7 @@ public class TrackAssembler {
      *
      * @return A buffer with all vertices of the SurfaceCompilation.
      */
-    public DoubleBuffer getDataBuffer() {
+    public FloatBuffer getDataBuffer() {
         return surfaceCompilation.getDataBuffer();
     }
 

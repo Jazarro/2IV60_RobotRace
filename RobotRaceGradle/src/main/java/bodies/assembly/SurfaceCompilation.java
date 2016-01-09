@@ -8,7 +8,7 @@ package bodies.assembly;
 
 import static bodies.assembly.Vertex.*;
 import com.jogamp.common.nio.Buffers;
-import java.nio.DoubleBuffer;
+import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
@@ -80,8 +80,8 @@ final class SurfaceCompilation {
      *
      * @return A buffer with all vertices of the SurfaceCompilation.
      */
-    public DoubleBuffer getDataBuffer() {
-        final List<Double> dataList = new ArrayList<>();
+    public FloatBuffer getDataBuffer() {
+        final List<Float> dataList = new ArrayList<>();
         //Iterate over all vertices in the SurfaceCompilation.
         for (IndexedVertex vertex : vertices) {
             //And store all vertices' data in an ArrayList.
@@ -92,13 +92,13 @@ final class SurfaceCompilation {
             dataList.add(vertex.getVertex().getNormalA()[IND_Y]);
             dataList.add(vertex.getVertex().getNormalA()[IND_Z]);
         }
-        final double[] dataArray = new double[dataList.size()];
+        final float[] dataArray = new float[dataList.size()];
         //Convert the ArrayList into an array.
         for (int i = 0; i < dataArray.length; i++) {
             dataArray[i] = dataList.get(i);
         }
         //Deliver it in the form of a buffer.
-        return Buffers.newDirectDoubleBuffer(dataArray);
+        return Buffers.newDirectFloatBuffer(dataArray);
     }
 
     /**

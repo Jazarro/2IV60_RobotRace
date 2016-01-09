@@ -7,7 +7,7 @@
 package bodies;
 
 import bodies.assembly.StackAssembler;
-import java.nio.DoubleBuffer;
+import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.List;
 import javax.media.opengl.GL2;
@@ -53,7 +53,7 @@ public class StackBuilder {
         assembler.compileSurfaceCompilation();
         //Buffer containing all Vertextdata off all previously added shapes.
         //The data in in the format: vertexX, vertexY, vertexZ, normalX, normalY, normalZ.
-        final DoubleBuffer dataBuffer = assembler.getDataBuffer();
+        final FloatBuffer dataBuffer = assembler.getDataBuffer();
         /**
          * List of index buffers. Each index buffer belongs to a shape and
          * consists of pointers to vertices in the data buffer.
@@ -105,7 +105,7 @@ public class StackBuilder {
      *
      * @return This StackBuilder.
      */
-    public StackBuilder addConicalFrustum(double radiusLow, double radiusHigh, double heightLow, double heightHigh, boolean closeBottom, boolean closeTop) {
+    public StackBuilder addConicalFrustum(float radiusLow, float radiusHigh, float heightLow, float heightHigh, boolean closeBottom, boolean closeTop) {
         assembler.addConicalFrustum(sliceCount, radiusLow, radiusHigh, heightLow, heightHigh, closeBottom, closeTop);
         return this;
     }
@@ -128,7 +128,7 @@ public class StackBuilder {
      *
      * @return This StackBuilder.
      */
-    public StackBuilder addPartialTorus(int stackCount, double radiusLow, double radiusHigh, double heightLow, double heightHigh, boolean closeBottom, boolean closeTop) {
+    public StackBuilder addPartialTorus(int stackCount, float radiusLow, float radiusHigh, float heightLow, float heightHigh, boolean closeBottom, boolean closeTop) {
         assembler.addPartialTorus(sliceCount, stackCount, radiusLow, radiusHigh, heightLow, heightHigh, closeBottom, closeTop);
         return this;
     }
