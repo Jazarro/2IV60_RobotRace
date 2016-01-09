@@ -20,7 +20,6 @@ public class FractalTerrainGenerator implements HeightMap {
      * Random seed that will be used every time to ensure that the terrain
      * doesn't actually change from one run of the program to the next.
      */
-//    private static final long RAND_SEED = 12_345_678_754L;
     private static final long RAND_SEED = 12_345_678_422L;
     
     public static FractalTerrainGenerator create() {
@@ -59,7 +58,7 @@ public class FractalTerrainGenerator implements HeightMap {
      * will calculate the heights of all grid points in advance.
      */
     public void initialise() {
-        final float initialValue = -70;
+        final float initialValue = -50;
         map[0][0] = initialValue;
         map[max][0] = initialValue;
         map[0][max] = initialValue;
@@ -130,20 +129,10 @@ public class FractalTerrainGenerator implements HeightMap {
     }
 
     @Override
-    public float heightAt(float x, float y) {
+    public float heightAt(double x, double y) {
         final int gridX = (int) x + globalSize / 2;
         final int gridY = (int) y + globalSize / 2;
         return map[Math.floorMod(gridX, globalSize)][Math.floorMod(gridY, globalSize)];
-        
-//        final float topLeft = map[Math.floorMod(gridX, gloabalSize)][Math.floorMod(gridY, gloabalSize)];
-//        final float topRight = map[Math.floorMod(gridX + 1, gloabalSize)][Math.floorMod(gridY, gloabalSize)];
-//        final float bottomLeft = map[Math.floorMod(gridX, gloabalSize)][Math.floorMod(gridY + 1, gloabalSize)];
-//        final float bottomRight = map[Math.floorMod(gridX + 1, gloabalSize)][Math.floorMod(gridY + 1, gloabalSize)];
-//        final float xFraction = x - (int) x;
-//        final float yFraction = y - (int) y;
-//       final float interpolated = 
-//               (topLeft * xFraction
-//               )/4;
     }
 
 }

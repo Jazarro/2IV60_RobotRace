@@ -20,5 +20,5 @@ public interface HeightMap {
      * @param y The y-coordinate in meters.
      * @return The z-coordinate of the terrain at (x, y) in meters.
      */
-    float heightAt(float x, float y);
+    float heightAt(double x, double y);
 }

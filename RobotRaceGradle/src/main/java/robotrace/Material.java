@@ -44,7 +44,10 @@ public enum Material {
             0f),
     WATER(new float[]{0.0f, 0.1f, 0.2f, 0.9f},
             new float[]{0.2f, 0.2f, 0.2f, 1f},
-            1f);
+            1f),
+    GREEN(new float[]{0.2f, 4f, 0.1f, 1.0f},
+            new float[]{0.6f, 1f, 0.3f, 1.0f},
+            2f);
 
     /**
      * The ambient RGBA reflectance of the material.
