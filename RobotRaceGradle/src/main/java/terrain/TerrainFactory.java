@@ -85,6 +85,7 @@ public class TerrainFactory {
         for (int i = 0; i < nrVertices; i++) {
             buffer.put(new float[]{(float) points[i].x(), (float) points[i].y(), (float) points[i].z()});
             buffer.put(new float[]{(float) normals[i].x(), (float) normals[i].y(), (float) normals[i].z()});
+            buffer.put(new float[]{0,0,0});
         }
         buffer.position(0);
         return buffer;

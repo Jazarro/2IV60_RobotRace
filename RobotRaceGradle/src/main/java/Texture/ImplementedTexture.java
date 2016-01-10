@@ -3,7 +3,11 @@ package Texture;
 import com.jogamp.opengl.util.texture.Texture;
 import com.jogamp.opengl.util.texture.TextureIO;
 import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.media.opengl.GL2;
+import javax.media.opengl.GLException;
 
 public class ImplementedTexture {
 
@@ -24,7 +28,8 @@ public class ImplementedTexture {
             texture.setTexParameteri(gl, GL2.GL_TEXTURE_WRAP_S, (mirror) ? (GL2.GL_MIRRORED_REPEAT) : (GL2.GL_REPEAT));
             texture.setTexParameteri(gl, GL2.GL_TEXTURE_WRAP_T, (mirror) ? (GL2.GL_MIRRORED_REPEAT) : (GL2.GL_REPEAT));
             texture.disable(gl);
-        } catch (Exception ex) {
+        } catch (IOException | GLException ex) {
+            Logger.getLogger(ImplementedTexture.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
