@@ -6,6 +6,7 @@
  */
 package robot;
 
+import Texture.ImplementedTexture;
 import bodies.BufferManager;
 import javax.media.opengl.GL2;
 import robot.bender.Arm;
@@ -52,8 +53,8 @@ public class RobotFactory {
     /**
      * Constructs a new instance of Robot using the given material.
      *
-     * @param material The material this robot consists of, used for lighting
-     *                 calculations.
+     * @param material    The material this robot consists of, used for lighting
+     *                    calculations.
      *
      * @return A newly created instance of Robot.
      */

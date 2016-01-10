@@ -6,9 +6,11 @@
  */
 package robot;
 
+import Texture.ImplementedTexture;
 import com.jogamp.opengl.util.gl2.GLUT;
 import javax.media.opengl.GL2;
 import racetrack.RaceTrack;
+import robot.bender.Bender;
 import robotrace.Lighting;
 import robotrace.Material;
 import robotrace.Vector;
@@ -47,8 +49,8 @@ public class Robot {
     /**
      * Constructs a new instance of robot.
      *
-     * @param material  The material that the robot is to be made of.
-     * @param robotBody The aesthetics of the body used by this robot.
+     * @param material    The material that the robot is to be made of.
+     * @param robotBody   The aesthetics of the body used by this robot.
      */
     public Robot(Material material, RobotBody robotBody) {
         this.material = material;
@@ -159,8 +161,9 @@ public class Robot {
      * @param lighting    The Lighting instance responsible for calculating the
      *                    lighting in this scene. Can be used to set the color
      *                    of bodies before drawing them.
+     * @param backTexture The texture for the back number of the robot.
      */
-    public void draw(GL2 gl, GLUT glut, boolean stickFigure, float tAnim, Lighting lighting) {
+    public void draw(GL2 gl, GLUT glut, boolean stickFigure, float tAnim, Lighting lighting, ImplementedTexture backTexture) {
         lighting.setMaterial(gl, getMaterial());
         gl.glPushMatrix();
         {
@@ -173,7 +176,7 @@ public class Robot {
             final double elevationDot = direction.dot(Vector.Z) / (direction.length() * Vector.Z.length());
             final double elevationAngle = Math.toDegrees(Math.asin(elevationDot));
             gl.glRotated(elevationAngle, Vector.X.x(), Vector.X.y(), Vector.X.z());
-            robotBody.draw(gl, glut, stickFigure, tAnim);
+            ((Bender)(robotBody)).draw(gl, glut, stickFigure, tAnim, backTexture);
         }
         gl.glPopMatrix();
     }

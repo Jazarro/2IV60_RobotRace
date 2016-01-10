@@ -6,6 +6,7 @@
  */
 package bodies.assembly;
 
+import Texture.ImplementedTexture;
 import static bodies.assembly.Vertex.COORD_COUNT;
 import static bodies.assembly.Vertex.IND_X;
 import static bodies.assembly.Vertex.IND_Y;
@@ -21,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import robotrace.Vector;
 
 /**
  *
@@ -38,6 +40,8 @@ public class StackAssembler {
      * compileSurfaceCompilation.
      */
     private final SurfaceCompilation surfaceCompilation = new SurfaceCompilation();
+    private final List<ImplementedTexture> textureList = new ArrayList<>();
+    private float stackHeight = 0;
 
     /**
      * Add a conical frustum (cone with top cut off) to the assembly.
@@ -54,8 +58,8 @@ public class StackAssembler {
      * @param closeLow   If the lower ring should be a closed surface.
      * @param closeHigh  If the higher ring should be a closed surface.
      */
-    public void addConicalFrustum(int sliceCount, float radiusLow, float radiusHigh, float heightLow, float heightHigh, boolean closeLow, boolean closeHigh) {
-        addPartialTorus(sliceCount, 1, radiusLow, radiusHigh, heightLow, heightHigh, closeLow, closeHigh);
+    public void addConicalFrustum(int sliceCount, float radiusLow, float radiusHigh, float heightLow, float heightHigh, boolean closeLow, boolean closeHigh, ImplementedTexture textureTop, ImplementedTexture textureBottom, ImplementedTexture textureSide) {
+        addPartialTorus(sliceCount, 1, radiusLow, radiusHigh, heightLow, heightHigh, closeLow, closeHigh, textureTop, textureBottom, textureSide);
     }
 
     /**
@@ -76,12 +80,11 @@ public class StackAssembler {
      * @param closeLow   If the lower ring should be a closed surface.
      * @param closeHigh  If the higher ring should be a closed surface.
      */
-    public void addPartialTorus(int sliceCount, int stackCount, float radiusLow,
-            float radiusHigh, float heightLow, float heightHigh, boolean closeLow, boolean closeHigh) {
+    public void addPartialTorus(int sliceCount, int stackCount, float radiusLow, float radiusHigh, float heightLow, float heightHigh, boolean closeLow, boolean closeHigh, ImplementedTexture textureTop, ImplementedTexture textureBottom, ImplementedTexture textureSide) {
         //Make a new ring if the previous one can not be reused.
         if (((rings.isEmpty()) || (sliceCount != rings.get(rings.size() - 1).getSliceCount())) /*&& rings.get(rings.size() - 1).getRadius() == radiusLow
            && rings.get(rings.size() - 1).getHeight() == heightLow*/) {
-            rings.add(makeRing(radiusLow, heightLow, sliceCount, true, closeLow));
+            rings.add(makeRing(radiusLow, heightLow, sliceCount, true, closeLow, stackHeight, textureBottom, textureSide));
         }
         //Switch the radii and heights if the torus has a smaller upper radius.
         final float radiusFrom, radiusTo, heightFrom, heightTo;
@@ -98,12 +101,13 @@ public class StackAssembler {
         }
         //Interpolate the radii and heights stackCount times, as to generate enough rings to get a smooth surface.
         for (int i = 1; i < stackCount; i++) {
-            final float radiusInterpolated = radiusFrom + (float) (radiusTo * cos(toRadians((double) i * 90F / stackCount)));
-            final float heightInterpolated = heightFrom + (float) (heightTo * sin(toRadians((double) i * 90F / stackCount)));
-            rings.add(makeRing(radiusInterpolated, heightInterpolated, sliceCount, false, false));
+            final float radiusInterpolated = radiusFrom + (float) (radiusTo * cos(toRadians((double) i * 90f / stackCount)));
+            final float heightInterpolated = heightFrom + (float) (heightTo * sin(toRadians((double) i * 90f / stackCount)));
+            rings.add(makeRing(radiusInterpolated, heightInterpolated, sliceCount, false, false, stackCount + (i / stackCount), textureBottom, textureSide));
         }
         //Add the last ring reperately, because it needs to be sharp and can be closed.
-        rings.add(makeRing(radiusHigh, heightHigh, sliceCount, true, closeHigh));
+        rings.add(makeRing(radiusHigh, heightHigh, sliceCount, true, closeHigh, stackHeight + 1f, textureTop, textureSide));
+        stackHeight += 1f;
     }
 
     /**
@@ -117,11 +121,13 @@ public class StackAssembler {
                 //If the ring represents a closed surface, create a polygon Surface to close the Ring.
                 final Surface surface = makeSurfacePolygon(rings.get(i));
                 surfaceCompilation.addSurface(surface);
+                textureList.add(rings.get(i).getTexturePolygon());
             }
             if (i != 0) {
                 //From the second Ring onwards create Surfaces between two consecutive Rings.
                 final Surface surface = makeSurfaceQuadStrip((i < 2) ? null : rings.get(i - 2), rings.get(i - 1), rings.get(i), ((i + 1) >= rings.size()) ? null : rings.get(i + 1), (i == 1) ? null : knownVertices);
                 knownVertices = surfaceCompilation.addSurface(surface);
+                textureList.add(rings.get(i).getTextureSide());
             }
         }
     }
@@ -155,6 +161,15 @@ public class StackAssembler {
     }
 
     /**
+     * Get a list of textures.
+     *
+     * @return A list of textures.
+     */
+    public List<ImplementedTexture> getTextureList() {
+        return textureList;
+    }
+
+    /**
      * Create a polygon surface from a Ring representing a closed surface.
      *
      * @param ring The Ring representing the closed surface.
@@ -168,6 +183,8 @@ public class StackAssembler {
         for (Vertex vertex : vertices) {
             //Calculate the normal of the polygon vertex.
             vertex.setNormalA(calculatePolygonNormal());
+            final Vector textureCoord = vertex.getPositionV().normalized();
+            vertex.setTextureC((float) textureCoord.x(), (float) textureCoord.y(), 0f);
             indexedVertices.add(IndexedVertex.makeIndexedVertex(vertex));
         }
         //Create a new surface from all calculated vertices.
@@ -210,6 +227,7 @@ public class StackAssembler {
             //And interleave them into indexedVertices, so that it becomes a proper quad strip.
             if (vertices1.hasNext() && (ring1 != null)) {
                 final Vertex vertex = vertices1.next();
+                final float textureX = (float) ring1.getVertices().indexOf(vertex) / (float) ring1.getVertices().size();
                 final IndexedVertex newVertex;
                 //If a vertex can be shared, do so.
                 if (sharedVertices.hasNext()) {
@@ -217,6 +235,7 @@ public class StackAssembler {
                 } //Else calculate the normal of the unknown vertex and use the vertex with it's normal.
                 else {
                     vertex.setNormalA(calculateQuadStripNormal(ring1.getVertices().indexOf(vertex), ring0, ring1, ring2));
+                    vertex.setTextureC(textureX, ring1.getTextureSmear(), 0f);
                     newVertex = IndexedVertex.makeIndexedVertex(vertex);
                 }
                 //And store the vertex.
@@ -225,9 +244,11 @@ public class StackAssembler {
             //Again, interleaving, it means first vertex 1, then vertex 2, so here is vertex 2.
             if (vertices2.hasNext() && (ring2 != null)) {
                 final Vertex vertex = vertices2.next();
+                final float textureX = (float) ring2.getVertices().indexOf(vertex) / (float) ring2.getVertices().size();
                 //The second ring is not calculated (yet), and can therefore not (yet) be reused.
                 //So calculate the normal.
                 vertex.setNormalA(calculateQuadStripNormal(ring2.getVertices().indexOf(vertex), ring1, ring2, ring3));
+                vertex.setTextureC(textureX, ring2.getTextureSmear(), 0f);
                 //And store it.
                 indexedVertices.add(IndexedVertex.makeIndexedVertex(vertex));
             }
@@ -303,14 +324,14 @@ public class StackAssembler {
      *
      * @return The new Ring.
      */
-    private Ring makeRing(float radius, float height, int sliceCount, boolean isSharp, boolean isClosed) {
+    private Ring makeRing(float radius, float height, int sliceCount, boolean isSharp, boolean isClosed, float textureSmear, ImplementedTexture texturePolygon, ImplementedTexture textureSide) {
         final List<Vertex> vertices = new ArrayList<>();
         //Iterate over all slices in the new Ring and calculate their position.
         for (int i = 0; i < sliceCount + 1; i++) {
             vertices.add(new Vertex(calculatePosition(i, radius, height, sliceCount)));
         }
         //And then return the new Ring with all vertices.
-        return new Ring(vertices, isSharp, isClosed, radius, height, sliceCount);
+        return new Ring(vertices, isSharp, isClosed, radius, height, sliceCount, textureSmear, texturePolygon, textureSide);
     }
 
     /**
@@ -382,6 +403,10 @@ public class StackAssembler {
         private final float height;
         private final float sliceCount;
 
+        private final float textureSmear;
+        private final ImplementedTexture texturePolygon;
+        private final ImplementedTexture textureSide;
+
         /**
          * Constructor taking all properties of this Ring.
          *
@@ -393,7 +418,7 @@ public class StackAssembler {
          * @param sliceCount The original number of slices that specified this
          *                   Ring.
          */
-        private Ring(List<Vertex> vertices, boolean sharp, boolean closed, float radius, float height, float sliceCount) {
+        private Ring(List<Vertex> vertices, boolean sharp, boolean closed, float radius, float height, float sliceCount, float textureSmear, ImplementedTexture texturePolygon, ImplementedTexture textureSide) {
             this.vertices = vertices;
             this.sharp = sharp;
             this.closed = closed;
@@ -405,6 +430,9 @@ public class StackAssembler {
             this.radius = radius;
             this.height = height;
             this.sliceCount = sliceCount;
+            this.textureSmear = textureSmear;
+            this.texturePolygon = texturePolygon;
+            this.textureSide = textureSide;
         }
 
         /**
@@ -494,6 +522,18 @@ public class StackAssembler {
          */
         public float getSliceCount() {
             return sliceCount;
+        }
+
+        public float getTextureSmear() {
+            return textureSmear;
+        }
+
+        public ImplementedTexture getTexturePolygon() {
+            return texturePolygon;
+        }
+
+        public ImplementedTexture getTextureSide() {
+            return textureSide;
         }
 
     }

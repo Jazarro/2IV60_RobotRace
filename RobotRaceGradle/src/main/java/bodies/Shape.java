@@ -52,6 +52,10 @@ public class Shape implements Body {
         return this;
     }
 
+    public ImplementedTexture getTexture() {
+        return texture;
+    }
+
     @Override
     public void draw(GL2 gl) {
         if (texture != null) {

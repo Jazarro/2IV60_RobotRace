@@ -6,6 +6,7 @@
  */
 package robotrace;
 
+import Texture.ImplementedTexture;
 import bodies.BufferManager;
 import java.util.Arrays;
 import javax.media.opengl.GL;
@@ -85,6 +86,8 @@ public class RobotRace extends Base {
     private final Robot[] robots;
     private final RaceTrack[] raceTracks;
 
+    private ImplementedTexture[] robotTextures;
+
     private double tPrevious = 0d;
 
     /**
@@ -155,6 +158,13 @@ public class RobotRace extends Base {
         terrain.initialize(gl, bmInitialiser);
         camera.initialize(Arrays.asList(robots));
 
+        robotTextures = new ImplementedTexture[]{
+            new ImplementedTexture(gl, "number1.png", true, false),
+            new ImplementedTexture(gl, "number2.png", true, false),
+            new ImplementedTexture(gl, "number3.png", true, false),
+            new ImplementedTexture(gl, "number4.png", true, false)
+        };
+
         bmInitialiser.finish();
     }
 
@@ -207,9 +217,10 @@ public class RobotRace extends Base {
         }
 
         //Draw the robots.
-        for (Robot robot : robots) {
+        for (int i = 0; i < robots.length; i++) {
+            Robot robot = robots[i];
             robot.update(raceTrack, gs.tAnim - tPrevious);
-            robot.draw(gl, glut, gs.showStick, gs.tAnim, lighting);
+            robot.draw(gl, glut, gs.showStick, gs.tAnim, lighting, robotTextures[i]);
         }
 
         // Draw the race track.

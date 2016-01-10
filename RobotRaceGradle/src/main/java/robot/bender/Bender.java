@@ -6,6 +6,7 @@
  */
 package robot.bender;
 
+import Texture.ImplementedTexture;
 import com.jogamp.opengl.util.gl2.GLUT;
 import javax.media.opengl.GL2;
 import robot.Animation;
@@ -43,6 +44,8 @@ public class Bender implements RobotBody {
     private final Arm rightArm;
     private final Arm leftArm;
 
+    private static ImplementedTexture defaultTexture;
+
     //TODO: docs
     public Bender(Animation animation, Torso torso, Leg rightLeg, Leg leftLeg, Arm rightArm, Arm leftArm) {
         this.animation = animation;
@@ -55,13 +58,18 @@ public class Bender implements RobotBody {
 
     @Override
     public void draw(GL2 gl, GLUT glut, boolean stickFigure, float tAnim) {
+        defaultTexture = new ImplementedTexture(gl, "number1.png", true, false);
+        draw(gl, glut, stickFigure, tAnim, defaultTexture);
+    }
+
+    public void draw(GL2 gl, GLUT glut, boolean stickFigure, float tAnim, ImplementedTexture backTexture) {
         animation.update(tAnim);
         gl.glPushMatrix();
         {
             final double legHeight = Limb.HEIGHT_OUTER_SEGMENT * Limb.RING_COUNT + Limb.HEIGHT_FOOT;
             gl.glTranslated(0d, 0d, legHeight);
 
-            torso.draw(gl, glut, stickFigure, animation);
+            torso.draw(gl, glut, stickFigure, animation, backTexture);
 
             gl.glPushMatrix();
             {

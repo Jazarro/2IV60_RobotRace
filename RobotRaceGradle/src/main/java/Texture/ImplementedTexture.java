@@ -16,8 +16,10 @@ public class ImplementedTexture {
     private double scaleHeight = 1d;
     private boolean stretchWidth = false;
     private boolean stretchHeight = false;
+    private String originalFilename;
 
     public ImplementedTexture(GL2 gl, String filename, boolean interpolate, boolean mirror) {
+        originalFilename = filename;
         final File file = new File("src/textures/" + filename);
         try {
             texture = TextureIO.newTexture(file, true);
@@ -75,6 +77,10 @@ public class ImplementedTexture {
 
     public float getImageHeight() {
         return (float) (texture.getImageHeight() * scaleHeight);
+    }
+
+    public String getOriginalFilename() {
+        return originalFilename;
     }
 
     public void drawStart(GL2 gl) {

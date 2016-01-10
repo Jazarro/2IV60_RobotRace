@@ -6,8 +6,10 @@
  */
 package robot.bender;
 
+import Texture.ImplementedTexture;
 import bodies.Body;
 import bodies.BufferManager;
+import bodies.SimpleBody;
 import bodies.SingletonDrawable;
 import bodies.StackBuilder;
 import com.jogamp.opengl.util.gl2.GLUT;
@@ -127,12 +129,16 @@ public class Torso implements SingletonDrawable {
     public static final float SHOULDER_OFFCENTER = 0.2F;
 
     private Body torsoBody;
+    private static ImplementedTexture defaultTexture;
 
     @Override
     public void initialize(GL2 gl, BufferManager.Initialiser bmInitialiser) {
+        defaultTexture = new ImplementedTexture(gl, "number1.png", true, false);
         torsoBody = new StackBuilder(bmInitialiser)
                 .setSliceCount(SLICE_COUNT)
+                .setTextures(null, null, defaultTexture)
                 .addConicalFrustum(RADIUS_HIPS, RADIUS_TORSO, HEIGHT_PELVIS, HEIGHT_TORSO, true, false)
+                .setTextures(null, null, null)
                 .addConicalFrustum(RADIUS_TORSO, RADIUS_NECK, HEIGHT_TORSO, HEIGHT_NECK, false, false)
                 .addConicalFrustum(RADIUS_NECK, RADIUS_HEAD, HEIGHT_NECK, HEIGHT_HEAD, false, false)
                 .addPartialTorus(STACK_COUNT, RADIUS_HEAD, RADIUS_ANTENNA_BOTTOM, HEIGHT_HEAD, HEIGHT_ANTENNA_BOTTOM, false, false)
@@ -154,8 +160,9 @@ public class Torso implements SingletonDrawable {
      *                    rather than a solid body.
      * @param animation   An instance of animation, containing information about
      *                    at what point in the animation period the torso is at.
+     * @param backTexture The texture of the robot.
      */
-    public void draw(GL2 gl, GLUT glut, boolean stickFigure, Animation animation) {
+    public void draw(GL2 gl, GLUT glut, boolean stickFigure, Animation animation, ImplementedTexture backTexture) {
         switch (animation.getCurrentAnimationType()) {
             case RUNNING:
                 applyRunningTransformation(gl, animation);
@@ -169,6 +176,8 @@ public class Torso implements SingletonDrawable {
             drawStickFigurePelvis(gl, glut, bodyHeight);
             drawStickFigureShoulders(gl, glut);
         } else {
+            ((SimpleBody) (torsoBody)).changeTexture(defaultTexture, backTexture);
+            defaultTexture = backTexture;
             torsoBody.draw(gl);
         }
         drawEyes(gl, glut);

@@ -39,10 +39,13 @@ public class Terrain {
         final Foliage foliage = new Foliage();
         foliage.initialize(gl, bmInitialiser);
         final FractalTerrainGenerator heightMap = FractalTerrainGenerator.create();
-        final TreeSupplier treeSupplier = new TreeSupplier(new Rectangle(-500, -500, 1000, 1000), heightMap, foliage);
-        treeSupplier.addForbiddenArea(-50, -50, 100, 100);
-        for (int i = 0; i < 30; i++) {
-            trees.add(treeSupplier.get());
+        final TreeSupplier treeSupplierClose = new TreeSupplier(new Rectangle(-150, -150, 300, 300), heightMap, foliage);
+        treeSupplierClose.addForbiddenArea(-25, -25, 50, 50);
+        final TreeSupplier treeSupplierFar = new TreeSupplier(new Rectangle(-500, -500, 1000, 1000), heightMap, foliage);
+        treeSupplierFar.addForbiddenArea(-50, -50, 100, 100);
+        for (int i = 0; i < 15; i++) {
+            trees.add(treeSupplierClose.get());
+            trees.add(treeSupplierFar.get());
         }
         this.terrainBody = new TerrainFactory(1000, 1000, 1F)
                 .makeTerrain(bmInitialiser, heightMap);
