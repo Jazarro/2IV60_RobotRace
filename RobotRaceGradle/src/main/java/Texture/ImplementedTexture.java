@@ -64,12 +64,12 @@ public class ImplementedTexture {
         return stretchHeight;
     }
 
-    public double getImageWidth() {
-        return texture.getImageWidth() * scaleWidth;
+    public float getImageWidth() {
+        return (float) (texture.getImageWidth() * scaleWidth);
     }
 
-    public double getImageHeight() {
-        return texture.getImageHeight() * scaleHeight;
+    public float getImageHeight() {
+        return (float) (texture.getImageHeight() * scaleHeight);
     }
 
     public void drawStart(GL2 gl) {

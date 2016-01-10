@@ -15,7 +15,7 @@ import static java.lang.Math.atan;
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 import static java.lang.Math.toRadians;
-import java.nio.DoubleBuffer;
+import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -54,7 +54,7 @@ public class StackAssembler {
      * @param closeLow   If the lower ring should be a closed surface.
      * @param closeHigh  If the higher ring should be a closed surface.
      */
-    public void addConicalFrustum(int sliceCount, double radiusLow, double radiusHigh, double heightLow, double heightHigh, boolean closeLow, boolean closeHigh) {
+    public void addConicalFrustum(int sliceCount, float radiusLow, float radiusHigh, float heightLow, float heightHigh, boolean closeLow, boolean closeHigh) {
         addPartialTorus(sliceCount, 1, radiusLow, radiusHigh, heightLow, heightHigh, closeLow, closeHigh);
     }
 
@@ -76,15 +76,15 @@ public class StackAssembler {
      * @param closeLow   If the lower ring should be a closed surface.
      * @param closeHigh  If the higher ring should be a closed surface.
      */
-    public void addPartialTorus(int sliceCount, int stackCount, double radiusLow,
-            double radiusHigh, double heightLow, double heightHigh, boolean closeLow, boolean closeHigh) {
+    public void addPartialTorus(int sliceCount, int stackCount, float radiusLow,
+            float radiusHigh, float heightLow, float heightHigh, boolean closeLow, boolean closeHigh) {
         //Make a new ring if the previous one can not be reused.
         if (((rings.isEmpty()) || (sliceCount != rings.get(rings.size() - 1).getSliceCount())) /*&& rings.get(rings.size() - 1).getRadius() == radiusLow
            && rings.get(rings.size() - 1).getHeight() == heightLow*/) {
             rings.add(makeRing(radiusLow, heightLow, sliceCount, true, closeLow));
         }
         //Switch the radii and heights if the torus has a smaller upper radius.
-        final double radiusFrom, radiusTo, heightFrom, heightTo;
+        final float radiusFrom, radiusTo, heightFrom, heightTo;
         if (radiusHigh > radiusLow) {
             radiusFrom = radiusLow;
             radiusTo = radiusHigh - radiusLow;
@@ -98,8 +98,8 @@ public class StackAssembler {
         }
         //Interpolate the radii and heights stackCount times, as to generate enough rings to get a smooth surface.
         for (int i = 1; i < stackCount; i++) {
-            final double radiusInterpolated = radiusFrom + (radiusTo * cos(toRadians((double) i * 90d / (double) stackCount)));
-            final double heightInterpolated = heightFrom + (heightTo * sin(toRadians((double) i * 90d / (double) stackCount)));
+            final float radiusInterpolated = radiusFrom + (float) (radiusTo * cos(toRadians((double) i * 90F / stackCount)));
+            final float heightInterpolated = heightFrom + (float) (heightTo * sin(toRadians((double) i * 90F / stackCount)));
             rings.add(makeRing(radiusInterpolated, heightInterpolated, sliceCount, false, false));
         }
         //Add the last ring reperately, because it needs to be sharp and can be closed.
@@ -131,7 +131,7 @@ public class StackAssembler {
      *
      * @return A buffer with all vertices of the SurfaceCompilation.
      */
-    public DoubleBuffer getDataBuffer() {
+    public FloatBuffer getDataBuffer() {
         return surfaceCompilation.getDataBuffer();
     }
 
@@ -179,12 +179,12 @@ public class StackAssembler {
      *
      * @return The normal of a polygon surface.
      */
-    private double[] calculatePolygonNormal() {
+    private float[] calculatePolygonNormal() {
         //The normal of a horizontal polygon surface always is in the negative z direction.
-        final double[] normal = new double[COORD_COUNT];
-        normal[IND_X] = 0d;
-        normal[IND_Y] = 0d;
-        normal[IND_Z] = -1d; //todo: check if this normal is correct
+        final float[] normal = new float[COORD_COUNT];
+        normal[IND_X] = 0;
+        normal[IND_Y] = 0;
+        normal[IND_Z] = -1; //todo: check if this normal is correct
         return normal;
     }
 
@@ -246,21 +246,19 @@ public class StackAssembler {
      *
      * @return The normal of the specified vertex.
      */
-    private double[] calculateQuadStripNormal(int index, Ring ring0, Ring ring1, Ring ring2) {
-        final double[] vertexNormal;
+    private float[] calculateQuadStripNormal(int index, Ring ring0, Ring ring1, Ring ring2) {
+        final float[] vertexNormal;
         //If the normal is already calculated, it does not need to be calculated again.
         if (ring1.isVertexNormalCalculated(index)) {
             vertexNormal = ring1.getVertices().get(index).getNormalA();
         } else //If this is the only ring (it has no neighboring rings) then no surface is defined, and also no normal.
-        {
-            if ((ring2 == null) && (ring0 == null)) {
-                vertexNormal = new double[COORD_COUNT];
-                vertexNormal[IND_X] = 0d;
-                vertexNormal[IND_Y] = 0d;
-                vertexNormal[IND_Z] = 0d;
+         if ((ring2 == null) && (ring0 == null)) {
+                vertexNormal = new float[COORD_COUNT];
+                vertexNormal[IND_X] = 0;
+                vertexNormal[IND_Y] = 0;
+                vertexNormal[IND_Z] = 0;
             } else //If this is the last ring, then the normal is equal for both the first and second ring of the surface.
-            {
-                if (ring2 == null) {
+             if (ring2 == null) {
                     vertexNormal = ring0.getVertices().get(index).getNormalA();
                 } //Else the normal will be calculated.
                 else {
@@ -271,8 +269,6 @@ public class StackAssembler {
                     ring1.setVertex(vertex, index);
                     ring1.setVertexNormalCalculated(index);
                 }
-            }
-        }
         if ((!ring1.isSharp()) && (ring0 != null)) {
             //If the ring represents a smooth edge, the normal will be averaged with the normal below it.
             for (int i = 0; i < COORD_COUNT; i++) {
@@ -307,7 +303,7 @@ public class StackAssembler {
      *
      * @return The new Ring.
      */
-    private Ring makeRing(double radius, double height, int sliceCount, boolean isSharp, boolean isClosed) {
+    private Ring makeRing(float radius, float height, int sliceCount, boolean isSharp, boolean isClosed) {
         final List<Vertex> vertices = new ArrayList<>();
         //Iterate over all slices in the new Ring and calculate their position.
         for (int i = 0; i < sliceCount + 1; i++) {
@@ -327,13 +323,13 @@ public class StackAssembler {
      *
      * @return The position.
      */
-    private static double[] calculatePosition(int angleIndex, double radius, double height, int sliceCount) {
+    private static float[] calculatePosition(int angleIndex, float radius, float height, int sliceCount) {
         //Calculate the normal of the surface in circular coordinates.
-        final double sliceAngle = toRadians((double) angleIndex * 360d / (double) sliceCount);
+        final float sliceAngle = (float) toRadians((double) angleIndex * 360F / sliceCount);
         //And store the results as x, y, z components in an array.
-        final double[] position = new double[COORD_COUNT];
-        position[IND_X] = radius * cos(sliceAngle);
-        position[IND_Y] = radius * sin(sliceAngle);
+        final float[] position = new float[COORD_COUNT];
+        position[IND_X] = radius * (float) cos(sliceAngle);
+        position[IND_Y] = radius * (float) sin(sliceAngle);
         position[IND_Z] = height;
         return position;
     }
@@ -350,15 +346,15 @@ public class StackAssembler {
      *
      * @return The normal.
      */
-    private static double[] calculateNormal(int angleIndex, double deltaRadius, double deltaHeight, int sliceCount) {
+    private static float[] calculateNormal(int angleIndex, float deltaRadius, float deltaHeight, int sliceCount) {
         //Calculate the normal of the surface in spherical coordinates.
-        final double sliceAngle = toRadians((double) angleIndex * 360d / (double) sliceCount);
-        final double stackAngle = (PI * 0.5d) - atan(deltaRadius / deltaHeight);
+        final float sliceAngle = (float) toRadians(angleIndex * 360F / sliceCount);
+        final float stackAngle = (float) ((PI * 0.5d) - atan(deltaRadius / deltaHeight));
         //And store the results as x, y, z components in an array.
-        final double[] normal = new double[COORD_COUNT];
-        normal[IND_X] = cos(sliceAngle) * sin(stackAngle);
-        normal[IND_Y] = sin(sliceAngle) * sin(stackAngle);
-        normal[IND_Z] = cos(stackAngle);
+        final float[] normal = new float[COORD_COUNT];
+        normal[IND_X] = (float) (cos(sliceAngle) * sin(stackAngle));
+        normal[IND_Y] = (float) (sin(sliceAngle) * sin(stackAngle));
+        normal[IND_Z] = (float) cos(stackAngle);
         return normal;
     }
 
@@ -382,9 +378,9 @@ public class StackAssembler {
         /**
          * The original properties that specified this Ring.
          */
-        private final double radius;
-        private final double height;
-        private final double sliceCount;
+        private final float radius;
+        private final float height;
+        private final float sliceCount;
 
         /**
          * Constructor taking all properties of this Ring.
@@ -397,7 +393,7 @@ public class StackAssembler {
          * @param sliceCount The original number of slices that specified this
          *                   Ring.
          */
-        private Ring(List<Vertex> vertices, boolean sharp, boolean closed, double radius, double height, double sliceCount) {
+        private Ring(List<Vertex> vertices, boolean sharp, boolean closed, float radius, float height, float sliceCount) {
             this.vertices = vertices;
             this.sharp = sharp;
             this.closed = closed;
@@ -478,7 +474,7 @@ public class StackAssembler {
          *
          * @return The original radius that specified this Ring.
          */
-        private double getRadius() {
+        private float getRadius() {
             return radius;
         }
 
@@ -487,7 +483,7 @@ public class StackAssembler {
          *
          * @return The original height that specified this Ring.
          */
-        private double getHeight() {
+        private float getHeight() {
             return height;
         }
 
@@ -496,7 +492,7 @@ public class StackAssembler {
          *
          * @return The original number of slices that specified this Ring.
          */
-        public double getSliceCount() {
+        public float getSliceCount() {
             return sliceCount;
         }
 

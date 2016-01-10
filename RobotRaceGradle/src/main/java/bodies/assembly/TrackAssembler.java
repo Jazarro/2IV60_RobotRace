@@ -1,7 +1,7 @@
 package bodies.assembly;
 
 import Texture.ImplementedTexture;
-import java.nio.DoubleBuffer;
+import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +9,7 @@ import robotrace.Vector;
 
 public class TrackAssembler {
 
-    private static final double TEXTURE_SCALE = 100d;
+    private static final float TEXTURE_SCALE = 100f;
 
     private final SurfaceCompilation surfaceCompilation = new SurfaceCompilation();
     private final List<ImplementedTexture> textureList = new ArrayList<>();
@@ -26,15 +26,15 @@ public class TrackAssembler {
      * @param textureBottom    The texture for the bottom of the track.
      * @param textureSide      The texture for the side of the track.
      */
-    public void calculateTrack(List<Vertex> trackDescription, double laneWidth, int laneCount, double trackHeight, boolean closedTrack, ImplementedTexture textureTop, ImplementedTexture textureBottom, ImplementedTexture textureSide) {
+    public void calculateTrack(List<Vertex> trackDescription, float laneWidth, int laneCount, float trackHeight, boolean closedTrack, ImplementedTexture textureTop, ImplementedTexture textureBottom, ImplementedTexture textureSide) {
         final List<TrackSlice> slices = new ArrayList<>();
         /**
          * Select appropriate previous and next vertices (interpolate if at end
          * of list and open track)
          */
-        final double trackWidth = laneWidth * laneCount;
-        final double widthDistance = TEXTURE_SCALE * trackWidth;
-        final double heightDistance = TEXTURE_SCALE * trackHeight;
+        final float trackWidth = laneWidth * laneCount;
+        final float widthDistance = TEXTURE_SCALE * trackWidth;
+        final float heightDistance = TEXTURE_SCALE * trackHeight;
         TrackSlice previousSlice = null;
         for (Vertex vertex : trackDescription) {
             Vertex previous, next;
@@ -56,7 +56,7 @@ public class TrackAssembler {
                 previous = trackDescription.get(trackDescription.indexOf(vertex) - 1);
                 next = trackDescription.get(trackDescription.indexOf(vertex) + 1);
             }
-            final TrackSlice newSlice = new TrackSlice(previous, vertex, next, previousSlice, trackWidth, trackHeight, (textureTop.getStretchWidth()) ? (1d) : (widthDistance / textureTop.getImageWidth()), (textureBottom.getStretchWidth()) ? (1d) : (widthDistance / textureBottom.getImageWidth()), (textureSide.getStretchHeight()) ? (1d) : (heightDistance / textureSide.getImageHeight()), textureTop.getImageHeight(), textureBottom.getImageHeight(), textureSide.getImageWidth());
+            final TrackSlice newSlice = new TrackSlice(previous, vertex, next, previousSlice, trackWidth, trackHeight, (textureTop.getStretchWidth()) ? (1f) : (widthDistance / textureTop.getImageWidth()), (textureBottom.getStretchWidth()) ? (1f) : (widthDistance / textureBottom.getImageWidth()), (textureSide.getStretchHeight()) ? (1f) : (heightDistance / textureSide.getImageHeight()), textureTop.getImageHeight(), textureBottom.getImageHeight(), textureSide.getImageWidth());
             slices.add(newSlice);
             previousSlice = newSlice;
         }
@@ -67,7 +67,7 @@ public class TrackAssembler {
             final Vertex previous = trackDescription.get(trackDescription.size() - 1);
             final Vertex vertex = trackDescription.get(0);
             final Vertex next = trackDescription.get(1);
-            slices.add(new TrackSlice(previous, vertex, next, previousSlice, trackWidth, trackHeight, (textureTop.getStretchWidth()) ? (1d) : (widthDistance / textureTop.getImageWidth()), (textureBottom.getStretchWidth()) ? (1d) : (widthDistance / textureBottom.getImageWidth()), (textureSide.getStretchHeight()) ? (1d) : (heightDistance / textureSide.getImageHeight()), textureTop.getImageHeight(), textureBottom.getImageHeight(), textureSide.getImageWidth()));
+            slices.add(new TrackSlice(previous, vertex, next, previousSlice, trackWidth, trackHeight, (textureTop.getStretchWidth()) ? (1f) : (widthDistance / textureTop.getImageWidth()), (textureBottom.getStretchWidth()) ? (1f) : (widthDistance / textureBottom.getImageWidth()), (textureSide.getStretchHeight()) ? (1f) : (heightDistance / textureSide.getImageHeight()), textureTop.getImageHeight(), textureBottom.getImageHeight(), textureSide.getImageWidth()));
         }
         /**
          * And create a SurfaceCompilation of the track.
@@ -98,9 +98,9 @@ public class TrackAssembler {
          * With end caps if it is an open track.
          */
         if (!closedTrack) {
-            surfaceCompilation.addSurface(slices.get(0).getStartEndPlate(true, widthDistance / textureSide.getImageWidth(), (textureSide.getStretchHeight()) ? (1d) : (heightDistance / textureSide.getImageHeight())));
+            surfaceCompilation.addSurface(slices.get(0).getStartEndPlate(true, widthDistance / textureSide.getImageWidth(), (textureSide.getStretchHeight()) ? (1f) : (heightDistance / textureSide.getImageHeight())));
             textureList.add(textureSide);
-            surfaceCompilation.addSurface(slices.get(slices.size() - 1).getStartEndPlate(false, widthDistance / textureSide.getImageWidth(), (textureSide.getStretchHeight()) ? (1d) : (heightDistance / textureSide.getImageHeight())));
+            surfaceCompilation.addSurface(slices.get(slices.size() - 1).getStartEndPlate(false, widthDistance / textureSide.getImageWidth(), (textureSide.getStretchHeight()) ? (1f) : (heightDistance / textureSide.getImageHeight())));
             textureList.add(textureSide);
         }
     }
@@ -110,7 +110,7 @@ public class TrackAssembler {
      *
      * @return A buffer with all vertices of the SurfaceCompilation.
      */
-    public DoubleBuffer getDataBuffer() {
+    public FloatBuffer getDataBuffer() {
         return surfaceCompilation.getDataBuffer();
     }
 
@@ -145,7 +145,7 @@ public class TrackAssembler {
     private static final class TrackSlice {
 
         private final TrackSliceSide top, bottom, inner, outer;
-        double outerTopDistance, outerBottomDistance, centerTopDistance, centerBottomDistance, innerTopDistance, innerBottomDistance;
+        float outerTopDistance, outerBottomDistance, centerTopDistance, centerBottomDistance, innerTopDistance, innerBottomDistance;
 
         /**
          * Constructor.
@@ -157,7 +157,7 @@ public class TrackAssembler {
          * @param laneCount   The number of lanes per track.
          * @param trackHeight The height of the track.
          */
-        private TrackSlice(Vertex previous, Vertex current, Vertex next, TrackSlice previousSlice, double trackWidth, double trackHeight, double widthDistanceTop, double widthDistanceBottom, double heightDistance, double textureTopHeight, double textureBottomHeight, double textureSideWidth) {
+        private TrackSlice(Vertex previous, Vertex current, Vertex next, TrackSlice previousSlice, float trackWidth, float trackHeight, float widthDistanceTop, float widthDistanceBottom, float heightDistance, float textureTopHeight, float textureBottomHeight, float textureSideWidth) {
             /**
              * Calculate all four corners of the slice of the track. And
              * calculate two normals per corner.
@@ -180,26 +180,26 @@ public class TrackAssembler {
             if (previousSlice != null) {
                 final Vector previousTopCenter = previousSlice.getTop().getVertex1().getPositionV().add(previousSlice.getTop().getVertex2().getPositionV()).scale(0.5d);
                 final Vector previousBottomCenter = previousSlice.getBottom().getVertex1().getPositionV().add(previousSlice.getBottom().getVertex2().getPositionV()).scale(0.5d);
-                outerTopDistance = TEXTURE_SCALE * topOuter.subtract(previousSlice.getTop().getVertex1().getPositionV()).length()
+                outerTopDistance = TEXTURE_SCALE * (float) topOuter.subtract(previousSlice.getTop().getVertex1().getPositionV()).length()
                         + previousSlice.getOuterTopDistance();
-                outerBottomDistance = TEXTURE_SCALE * bottomOuter.subtract(previousSlice.getBottom().getVertex1().getPositionV()).length()
+                outerBottomDistance = TEXTURE_SCALE * (float) bottomOuter.subtract(previousSlice.getBottom().getVertex1().getPositionV()).length()
                         + previousSlice.getOuterBottomDistance();
-                centerTopDistance = TEXTURE_SCALE * original.subtract(previousTopCenter).length()
+                centerTopDistance = TEXTURE_SCALE * (float) original.subtract(previousTopCenter).length()
                         + previousSlice.getCenterTopDistance();
-                centerBottomDistance = TEXTURE_SCALE * lower.subtract(previousBottomCenter).length()
+                centerBottomDistance = TEXTURE_SCALE * (float) lower.subtract(previousBottomCenter).length()
                         + previousSlice.getCenterBottomDistance();
-                innerTopDistance = TEXTURE_SCALE * topInner.subtract(previousSlice.getTop().getVertex2().getPositionV()).length()
+                innerTopDistance = TEXTURE_SCALE * (float) topInner.subtract(previousSlice.getTop().getVertex2().getPositionV()).length()
                         + previousSlice.getInnerTopDistance();
-                innerBottomDistance = TEXTURE_SCALE * bottomInner.subtract(previousSlice.getBottom().getVertex2().getPositionV()).length()
+                innerBottomDistance = TEXTURE_SCALE * (float) bottomInner.subtract(previousSlice.getBottom().getVertex2().getPositionV()).length()
                         + previousSlice.getInnerBottomDistance();
 
             } else {
-                outerTopDistance = 0d;
-                outerBottomDistance = 0d;
-                centerTopDistance = 0d;
-                centerBottomDistance = 0d;
-                innerTopDistance = 0d;
-                innerBottomDistance = 0d;
+                outerTopDistance = 0f;
+                outerBottomDistance = 0f;
+                centerTopDistance = 0f;
+                centerBottomDistance = 0f;
+                innerTopDistance = 0f;
+                innerBottomDistance = 0f;
             }
             /**
              * Store them, two corners per face.
@@ -263,7 +263,7 @@ public class TrackAssembler {
          *
          * @return The outer top distance face.
          */
-        public double getOuterTopDistance() {
+        public float getOuterTopDistance() {
             return outerTopDistance;
         }
 
@@ -272,7 +272,7 @@ public class TrackAssembler {
          *
          * @return The outer bottom distance face.
          */
-        public double getOuterBottomDistance() {
+        public float getOuterBottomDistance() {
             return outerBottomDistance;
         }
 
@@ -281,7 +281,7 @@ public class TrackAssembler {
          *
          * @return The center top distance face.
          */
-        public double getCenterTopDistance() {
+        public float getCenterTopDistance() {
             return centerTopDistance;
         }
 
@@ -290,7 +290,7 @@ public class TrackAssembler {
          *
          * @return The center bottom distance face.
          */
-        public double getCenterBottomDistance() {
+        public float getCenterBottomDistance() {
             return centerBottomDistance;
         }
 
@@ -299,7 +299,7 @@ public class TrackAssembler {
          *
          * @return The inner top distance face.
          */
-        public double getInnerTopDistance() {
+        public float getInnerTopDistance() {
             return innerTopDistance;
         }
 
@@ -308,7 +308,7 @@ public class TrackAssembler {
          *
          * @return The inner bottom distance face.
          */
-        public double getInnerBottomDistance() {
+        public float getInnerBottomDistance() {
             return innerBottomDistance;
         }
 
@@ -319,16 +319,16 @@ public class TrackAssembler {
          *                   180 degrees.
          * @return The Surface of the end cap.
          */
-        private Surface getStartEndPlate(boolean flipNormal, double widthDistance, double heightDistance) {
+        private Surface getStartEndPlate(boolean flipNormal, float widthDistance, float heightDistance) {
             final List<IndexedVertex> vertices = new ArrayList<>();
             final Vertex topInner = Vertex.crossNormal(top.getVertex2(), inner.getVertex1(), flipNormal);
             final Vertex topOuter = Vertex.crossNormal(outer.getVertex1(), top.getVertex1(), flipNormal);
             final Vertex bottomInner = Vertex.crossNormal(inner.getVertex2(), bottom.getVertex2(), flipNormal);
             final Vertex bottomOuter = Vertex.crossNormal(bottom.getVertex1(), outer.getVertex2(), flipNormal);
-            topInner.setTextureC(0d, heightDistance, 0d);
-            topOuter.setTextureC(widthDistance, heightDistance, 0d);
-            bottomInner.setTextureC(0d, 0d, 0d);
-            bottomOuter.setTextureC(widthDistance, 0d, 0d);
+            topInner.setTextureC(0f, heightDistance, 0f);
+            topOuter.setTextureC(widthDistance, heightDistance, 0f);
+            bottomInner.setTextureC(0f, 0f, 0f);
+            bottomOuter.setTextureC(widthDistance, 0f, 0f);
             vertices.add(IndexedVertex.makeIndexedVertex(topInner));
             vertices.add(IndexedVertex.makeIndexedVertex(topOuter));
             vertices.add(IndexedVertex.makeIndexedVertex(bottomOuter));

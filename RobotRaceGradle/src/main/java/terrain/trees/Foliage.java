@@ -39,7 +39,7 @@ public class Foliage implements SingletonDrawable {
     private Body makeBranch(BufferManager.Initialiser bmInitialiser, int sliceCount) {
         return new StackBuilder(bmInitialiser)
                 .setSliceCount(sliceCount)
-                .addConicalFrustum(0.5, 0, 0, 1, false, false)
+                .addConicalFrustum(0.5F, 0, 0, 1, false, false)
                 .build();
     }
 

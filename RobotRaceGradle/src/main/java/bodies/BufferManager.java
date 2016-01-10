@@ -7,7 +7,7 @@
 package bodies;
 
 import bodies.assembly.Vertex;
-import java.nio.DoubleBuffer;
+import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,25 +50,25 @@ public class BufferManager {
         gl.glEnableClientState(GL2.GL_TEXTURE_COORD_ARRAY);
         //Use the name under which the data buffer was stored to bind it.
         gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, dataBufferName);
-        final int stride = Vertex.NR_VERTEX_ELEMENTS * Vertex.COORD_COUNT * Double.BYTES;
+        final int stride = Vertex.NR_VERTEX_ELEMENTS * Vertex.COORD_COUNT * Float.BYTES;
         /**
          * Tell OpenGL what formats and what stride length to expect when
          * extracting vertex coordinate information from the data buffer.
          */
-        final int positionPointerOffset = 0 * Vertex.COORD_COUNT * Double.BYTES;
-        gl.glVertexPointer(Vertex.COORD_COUNT, GL2.GL_DOUBLE, stride, positionPointerOffset);
+        final int positionPointerOffset = 0 * Vertex.COORD_COUNT * Float.BYTES;
+        gl.glVertexPointer(Vertex.COORD_COUNT, GL2.GL_FLOAT, stride, positionPointerOffset);
         /**
          * Tell OpenGL what formats, stride length and offset to expect when
          * extracting normal information from the data buffer.
          */
-        final int normalPointerOffset = 1 * Vertex.COORD_COUNT * Double.BYTES;
-        gl.glNormalPointer(GL2.GL_DOUBLE, stride, normalPointerOffset);
+        final int normalPointerOffset = 1 * Vertex.COORD_COUNT * Float.BYTES;
+        gl.glNormalPointer(GL2.GL_FLOAT, stride, normalPointerOffset);
         /**
          * Tell OpenGL what formats, stride length and offset to expect when
          * extracting texture information from the data buffer.
          */
-        final int texturePointerOffset = 2 * Vertex.COORD_COUNT * Double.BYTES;
-        gl.glTexCoordPointer(Vertex.COORD_COUNT, GL2.GL_DOUBLE, stride, texturePointerOffset);
+        final int texturePointerOffset = 2 * Vertex.COORD_COUNT * Float.BYTES;
+        gl.glTexCoordPointer(Vertex.COORD_COUNT, GL2.GL_FLOAT, stride, texturePointerOffset);
     }
 
     /**
@@ -92,7 +92,7 @@ public class BufferManager {
          * The data buffer; contains all vertices and normals given to this
          * object through {@link #addData}.
          */
-        private DoubleBuffer dataBuffer = DoubleBuffer.allocate(0);
+        private FloatBuffer dataBuffer = FloatBuffer.allocate(0);
 
         private Initialiser(GL2 gl) {
             this.gl = gl;
@@ -113,7 +113,7 @@ public class BufferManager {
             BufferManager.this.dataBufferName = singleBufferName[0];
             //Push the data buffer to OpenGL.
             gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, BufferManager.this.dataBufferName);
-            gl.glBufferData(GL2.GL_ARRAY_BUFFER, dataBuffer.capacity() * Double.BYTES, dataBuffer, GL2.GL_STATIC_DRAW);
+            gl.glBufferData(GL2.GL_ARRAY_BUFFER, dataBuffer.capacity() * Float.BYTES, dataBuffer, GL2.GL_STATIC_DRAW);
             //Erase buffer data so nothing will stay in memory or silently fail if people abuse this class.
             dataBuffer = null;
         }
@@ -132,7 +132,7 @@ public class BufferManager {
          * @return The index buffer name that was used to register the given
          *         indexBuffer with OpenGL.
          */
-        public int addData(DoubleBuffer data, IntBuffer indexBuffer) {
+        public int addData(FloatBuffer data, IntBuffer indexBuffer) {
             final List<IntBuffer> list = new ArrayList<>();
             list.add(indexBuffer);
             return addData(data, list)[0];
@@ -153,7 +153,7 @@ public class BufferManager {
          *         index buffers. These are the names that each of the index
          *         buffers is registered under with OpenGL.
          */
-        public int[] addData(DoubleBuffer data, List<IntBuffer> indexBuffers) {
+        public int[] addData(FloatBuffer data, List<IntBuffer> indexBuffers) {
             //Append databuffer to the one already stored in here.
             final int coordLength = Vertex.NR_VERTEX_ELEMENTS * Vertex.COORD_COUNT;
             final int oldLength = appendToDataBuffer(data) / coordLength;
@@ -171,9 +171,9 @@ public class BufferManager {
          * @param addition The buffer to append.
          * @return The length of the old buffer.
          */
-        private int appendToDataBuffer(DoubleBuffer addition) {
+        private int appendToDataBuffer(FloatBuffer addition) {
             final int oldLength = dataBuffer.capacity();
-            final DoubleBuffer newData = DoubleBuffer.allocate(oldLength + addition.capacity());
+            final FloatBuffer newData = FloatBuffer.allocate(oldLength + addition.capacity());
             newData.put(dataBuffer);
             newData.position(oldLength);
             newData.put(addition);

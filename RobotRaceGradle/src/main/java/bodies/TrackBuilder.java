@@ -9,7 +9,7 @@ package bodies;
 import Texture.ImplementedTexture;
 import bodies.assembly.TrackAssembler;
 import bodies.assembly.Vertex;
-import java.nio.DoubleBuffer;
+import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.List;
 import javax.media.opengl.GL2;
@@ -22,9 +22,9 @@ public class TrackBuilder {
 
     private final BufferManager.Initialiser bmInitialiser;
     private final TrackAssembler assembler;
-    private double laneWidth = 1.22d;
+    private float laneWidth = 1.22f;
     private int laneCount = 4;
-    private double trackHeight = 1d;
+    private float trackHeight = 1f;
     private boolean closedTrack = true;
     private ImplementedTexture textureTop;
     private ImplementedTexture textureBottom;
@@ -48,7 +48,7 @@ public class TrackBuilder {
          * The data in in the format: vertexX, vertexY, vertexZ, normalX,
          * normalY, normalZ.
          */
-        final DoubleBuffer dataBuffer = assembler.getDataBuffer();
+        final FloatBuffer dataBuffer = assembler.getDataBuffer();
         /**
          * List of index buffers. Each index buffer belongs to a shape and
          * consists of pointers to vertices in the data buffer.
@@ -82,7 +82,7 @@ public class TrackBuilder {
      * @param closedTrack If the track is closed.
      * @return The updated TrackBuilder object.
      */
-    public TrackBuilder setTrackProperties(double laneWidth, int laneCount, double trackHeight, boolean closedTrack) {
+    public TrackBuilder setTrackProperties(float laneWidth, int laneCount, float trackHeight, boolean closedTrack) {
         this.laneWidth = laneWidth;
         this.laneCount = laneCount;
         this.trackHeight = trackHeight;

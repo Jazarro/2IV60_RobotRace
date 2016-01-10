@@ -26,9 +26,9 @@ import terrain.Terrain;
  */
 public class RaceTrack implements SingletonDrawable {
 
-    public static final double LANE_WIDTH = 1.22d;
+    public static final float LANE_WIDTH = 1.22f;
     public static final int LANE_COUNT = 4;
-    public static final double TRACK_HEIGHT = 2d;
+    public static final float TRACK_HEIGHT = 2f;
 
     private Body raceTrackBody;
     private int trackType = RTD_TEST;
