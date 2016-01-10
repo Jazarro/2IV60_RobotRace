@@ -18,7 +18,7 @@ import robotrace.Vector;
  *
  * @author Arjan Boschman
  */
-public class Tree {
+public class Tree {//TODO: Clean up, document.
 
     private final Foliage foliage;
     private final Vector position;
@@ -41,7 +41,7 @@ public class Tree {
 
     private int getRequiredDetailLevel(Camera camera) {
         final float distanceToEye = (float) Math.abs(camera.getEye().subtract(position).length());
-        if (distanceToEye > 1000) {
+        if (distanceToEye > 1500) {
             return 0;
         } else if (distanceToEye > 300) {
             return 1;

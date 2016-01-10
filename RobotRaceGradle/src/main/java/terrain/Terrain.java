@@ -56,6 +56,7 @@ public class Terrain {
      * @param gl       The instance of GL2 responsible for drawing the body.
      * @param glut     An instance of GLUT that can be optionally used to assist
      *                 in drawing.
+     * @param camera   The camera that is used to view the terrain.
      * @param lighting The Lighting instance responsible for calculating the
      *                 lighting in this scene. Can be used to set the colours of
      *                 bodies before drawing them.
@@ -69,7 +70,7 @@ public class Terrain {
             lighting.setMaterial(gl, Material.WATER);
             waterBody.draw(gl);
             gl.glDisable(GL_CULL_FACE);
-            trees.stream().forEach((tree) -> tree.draw(gl,camera, lighting));
+            trees.stream().forEach((tree) -> tree.draw(gl, camera, lighting));
         }
         gl.glPopMatrix();
     }
