@@ -16,6 +16,7 @@ import javax.media.opengl.GL2;
 import robotrace.Camera;
 import robotrace.Lighting;
 import robotrace.Material;
+import terrain.trees.Foliage;
 import terrain.trees.Tree;
 import terrain.trees.TreeSupplier;
 
@@ -34,8 +35,8 @@ public class Terrain {
     private Body waterBody;
 
     public void initialize(GL2 gl, BufferManager.Initialiser bmInitialiser) {
-        /*final Foliage foliage = new Foliage();
-        foliage.initialize(gl, bmInitialiser);*/
+        final Foliage foliage = new Foliage();
+        foliage.initialize(gl, bmInitialiser);
         final FractalTerrainGenerator heightMap = FractalTerrainGenerator.create();
         final TreeSupplier treeSupplier = new TreeSupplier(new Rectangle(-500, -500, 1000, 1000), heightMap, foliage);
         treeSupplier.addForbiddenArea(-50, -50, 100, 100);
