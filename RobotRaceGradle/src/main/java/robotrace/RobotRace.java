@@ -196,7 +196,7 @@ public class RobotRace extends Base {
         lighting.drawScene(gl);
 
         // Background color.
-        gl.glClearColor(1f, 1f, 1f, 0f);
+        gl.glClearColor((1.0f / 255) * 135, (1.0f / 255) * 206, (1.0f / 255) * 250, 0f);
         // Clear background and depth buffer.
         gl.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         gl.glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);

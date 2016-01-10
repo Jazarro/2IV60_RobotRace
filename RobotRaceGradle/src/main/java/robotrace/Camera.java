@@ -240,7 +240,7 @@ public class Camera {
         }
         final double dist = center.subtract(eye).length();
         planeNear = 0.1f * (float) dist;
-        planeFar = 10f * (float) dist;
+        planeFar = (float) Math.max(500, 10f * dist);
     }
 
     private Vector addRelative(Vector position, Vector direction, Vector vector) {
