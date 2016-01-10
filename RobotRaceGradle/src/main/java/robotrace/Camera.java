@@ -9,6 +9,7 @@ package robotrace;
 import java.util.List;
 import javax.media.opengl.glu.GLU;
 import robot.Robot;
+import terrain.Terrain;
 import static utility.GsUtils.getAzimuth;
 import static utility.GsUtils.getInclination;
 
@@ -18,7 +19,7 @@ import static utility.GsUtils.getInclination;
  * @author Arjan Boschman
  * @author Robke Geenen
  */
-class Camera {
+public class Camera {
 
     /**
      * The position of the camera.
@@ -59,6 +60,14 @@ class Camera {
     private Robot focusFirstPerson;
     private int modeAuto = 0;
 
+    public Vector getEye() {
+        return eye.add(new Vector(0, 0, Terrain.TERRAIN_LEVEL));
+    }
+
+    public Vector getCenter() {
+        return center.add(new Vector(0, 0, Terrain.TERRAIN_LEVEL));
+    }
+
     public void initialize(List<Robot> robots) {
         focusAuto = robots.get(0);
         focusHelicopter = robots.get(0);
@@ -73,8 +82,8 @@ class Camera {
      * @param glu The GLU instance that will be adjusted.
      */
     public void setLookAt(GLU glu) {
-        glu.gluLookAt(eye.x(), eye.y(), eye.z(),
-                center.x(), center.y(), center.z(),
+        glu.gluLookAt(getEye().x(), getEye().y(), getEye().z(),
+                getCenter().x(), getCenter().y(), getCenter().z(),
                 up.x(), up.y(), up.z());
     }
 
