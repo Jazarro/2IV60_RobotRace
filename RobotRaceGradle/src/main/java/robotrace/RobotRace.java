@@ -6,8 +6,18 @@
  */
 package robotrace;
 
+import Texture.ImplementedTexture;
 import bodies.BufferManager;
+import bodies.Shape;
+import bodies.SimpleBody;
+import com.jogamp.opengl.util.texture.Texture;
+import com.jogamp.opengl.util.texture.TextureIO;
+import java.io.File;
+import java.nio.DoubleBuffer;
+import java.nio.IntBuffer;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import javax.media.opengl.GL;
 import static javax.media.opengl.GL.GL_COLOR_BUFFER_BIT;
 import static javax.media.opengl.GL.GL_DEPTH_BUFFER_BIT;
@@ -16,6 +26,8 @@ import static javax.media.opengl.GL.GL_FRONT_AND_BACK;
 import static javax.media.opengl.GL.GL_LESS;
 import static javax.media.opengl.GL.GL_NICEST;
 import static javax.media.opengl.GL.GL_TEXTURE_2D;
+import javax.media.opengl.GL2;
+import static javax.media.opengl.GL2.GL_QUAD_STRIP;
 import static javax.media.opengl.GL2ES1.GL_PERSPECTIVE_CORRECTION_HINT;
 import static javax.media.opengl.GL2GL3.GL_FILL;
 import static javax.media.opengl.fixedfunc.GLLightingFunc.GL_NORMALIZE;
@@ -147,17 +159,14 @@ public class RobotRace extends Base {
         gl.glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
         gl.glBindTexture(GL_TEXTURE_2D, 0);
 
+        raceTrackFactory.initialize(gl, bmInitialiser);
+
         //Initialize factories and terrain.
         robotFactory.initialize(gl, bmInitialiser);
-        raceTrackFactory.initialize(gl, bmInitialiser);
+
         terrain.initialize(gl, bmInitialiser);
         camera.initialize(Arrays.asList(robots));
 
-        // Try to load four textures, add more if you like.
-        track = loadTexture("track.jpg");
-        brick = loadTexture("brick.jpg");
-        head = loadTexture("head.jpg");
-        torso = loadTexture("torso.jpg");
         bmInitialiser.finish();
     }
 
@@ -216,12 +225,13 @@ public class RobotRace extends Base {
         }
 
         // Draw the race track.
-        raceTrack.draw(gl);
-        // Draw the terrain.
-        terrain.draw(gl, glut, lighting);
+        raceTrack.draw(gl, lighting);
 
+        // Draw the terrain.
+        //terrain.draw(gl, glut, lighting);
         //End the drawing and finish up.
         bodyManager.endDraw(gl);
+        gl.glFlush();
         tPrevious = gs.tAnim;
     }
 
@@ -286,4 +296,5 @@ public class RobotRace extends Base {
         //Restore the original matrix.
         gl.glPopMatrix();
     }
+
 }

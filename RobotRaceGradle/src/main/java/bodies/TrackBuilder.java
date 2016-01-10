@@ -6,6 +6,7 @@
  */
 package bodies;
 
+import Texture.ImplementedTexture;
 import bodies.assembly.TrackAssembler;
 import bodies.assembly.Vertex;
 import java.nio.DoubleBuffer;
@@ -14,7 +15,7 @@ import java.util.List;
 import javax.media.opengl.GL2;
 
 /**
- * 
+ *
  * @author Robke Geenen
  */
 public class TrackBuilder {
@@ -25,6 +26,9 @@ public class TrackBuilder {
     private int laneCount = 4;
     private double trackHeight = 1d;
     private boolean closedTrack = true;
+    private ImplementedTexture textureTop;
+    private ImplementedTexture textureBottom;
+    private ImplementedTexture textureSide;
 
     /**
      * The constructor.
@@ -38,9 +42,9 @@ public class TrackBuilder {
     }
 
     public SimpleBody build(List<Vertex> trackDescription) {
-        assembler.calculateTrack(trackDescription, laneWidth, laneCount, trackHeight, closedTrack);
+        assembler.calculateTrack(trackDescription, laneWidth, laneCount, trackHeight, closedTrack, textureTop, textureBottom, textureSide);
         /**
-         * Buffer containing all Vertextdata off all previously added shapes.
+         * Buffer containing all vertex data from all previously added shapes.
          * The data in in the format: vertexX, vertexY, vertexZ, normalX,
          * normalY, normalZ.
          */
@@ -55,6 +59,7 @@ public class TrackBuilder {
          * true if the shape is a polygon, false if it's a QuadStrip.
          */
         final List<Boolean> surfaceTypeList = assembler.getSurfaceTypeList();
+        final List<ImplementedTexture> textureList = assembler.getTextureList();
         final int[] indexBufferNames = bmInitialiser.addData(dataBuffer, indicesBufferList);
         /**
          * Create the SimpleBody that represents this RaceTrack.
@@ -62,7 +67,8 @@ public class TrackBuilder {
         final SimpleBody simpleBody = new SimpleBody();
         for (int i = 0; i < indexBufferNames.length; i++) {
             final int shapeMode = surfaceTypeList.get(i) ? GL2.GL_POLYGON : GL2.GL_QUAD_STRIP;
-            simpleBody.addShape(new Shape(indexBufferNames[i], indicesBufferList.get(i).capacity(), shapeMode));
+            final ImplementedTexture texture = textureList.get(i);
+            simpleBody.addShape(new Shape(indexBufferNames[i], indicesBufferList.get(i).capacity(), shapeMode).setTexture(texture));
         }
         return simpleBody;
     }
@@ -81,6 +87,21 @@ public class TrackBuilder {
         this.laneCount = laneCount;
         this.trackHeight = trackHeight;
         this.closedTrack = closedTrack;
+        return this;
+    }
+
+    /**
+     * Set all the texture properties of the RaceTrack.
+     *
+     * @param textureTop    The texture for the top of the RaceTrack.
+     * @param textureBottom The texture for the bottom of the RaceTrack.
+     * @param textureSide   The texture for the sides of the RaceTrack.
+     * @return
+     */
+    public TrackBuilder setTextures(ImplementedTexture textureTop, ImplementedTexture textureBottom, ImplementedTexture textureSide) {
+        this.textureTop = textureTop;
+        this.textureBottom = textureBottom;
+        this.textureSide = textureSide;
         return this;
     }
 

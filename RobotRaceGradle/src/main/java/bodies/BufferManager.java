@@ -47,6 +47,7 @@ public class BufferManager {
     public void startDraw(GL2 gl) {
         gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
         gl.glEnableClientState(GL2.GL_NORMAL_ARRAY);
+        gl.glEnableClientState(GL2.GL_TEXTURE_COORD_ARRAY);
         //Use the name under which the data buffer was stored to bind it.
         gl.glBindBuffer(GL2.GL_ARRAY_BUFFER, dataBufferName);
         final int stride = Vertex.NR_VERTEX_ELEMENTS * Vertex.COORD_COUNT * Double.BYTES;
@@ -54,13 +55,20 @@ public class BufferManager {
          * Tell OpenGL what formats and what stride length to expect when
          * extracting vertex coordinate information from the data buffer.
          */
-        gl.glVertexPointer(Vertex.COORD_COUNT, GL2.GL_DOUBLE, stride, 0);
+        final int positionPointerOffset = 0 * Vertex.COORD_COUNT * Double.BYTES;
+        gl.glVertexPointer(Vertex.COORD_COUNT, GL2.GL_DOUBLE, stride, positionPointerOffset);
         /**
          * Tell OpenGL what formats, stride length and offset to expect when
          * extracting normal information from the data buffer.
          */
-        final int normalPointerOffset = Vertex.COORD_COUNT * Double.BYTES;
+        final int normalPointerOffset = 1 * Vertex.COORD_COUNT * Double.BYTES;
         gl.glNormalPointer(GL2.GL_DOUBLE, stride, normalPointerOffset);
+        /**
+         * Tell OpenGL what formats, stride length and offset to expect when
+         * extracting texture information from the data buffer.
+         */
+        final int texturePointerOffset = 2 * Vertex.COORD_COUNT * Double.BYTES;
+        gl.glTexCoordPointer(Vertex.COORD_COUNT, GL2.GL_DOUBLE, stride, texturePointerOffset);
     }
 
     /**
@@ -71,6 +79,7 @@ public class BufferManager {
      * @see #startDraw Must be called in conjunction with this method.
      */
     public void endDraw(GL2 gl) {
+        gl.glDisableClientState(GL2.GL_TEXTURE_COORD_ARRAY);
         gl.glDisableClientState(GL2.GL_NORMAL_ARRAY);
         gl.glDisableClientState(GL2.GL_VERTEX_ARRAY);
     }

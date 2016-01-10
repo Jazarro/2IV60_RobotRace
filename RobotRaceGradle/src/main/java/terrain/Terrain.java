@@ -30,14 +30,14 @@ public class Terrain {
     private Body waterBody;
 
     public void initialize(GL2 gl, BufferManager.Initialiser bmInitialiser) {
-        final Foliage foliage = new Foliage();
-        foliage.initialize(gl, bmInitialiser);
+        /*final Foliage foliage = new Foliage();
+        foliage.initialize(gl, bmInitialiser);*/
         final FractalTerrainGenerator heightMap = FractalTerrainGenerator.create();
-        final TreeGenerator treeGenerator = new TreeGenerator(new Rectangle(-500, -500, 1000, 1000), heightMap, foliage);
+        /*final TreeGenerator treeGenerator = new TreeGenerator(new Rectangle(-500, -500, 1000, 1000), heightMap, foliage);
         treeGenerator.addForbiddenArea(-40, -40, 80, 80);
         for (int i = 0; i < 1000; i++) {
             trees.add(treeGenerator.get());
-        }
+        }*/
         this.terrainBody = new TerrainFactory(1000, 1000, 1F)
                 .makeTerrain(bmInitialiser, heightMap);
         this.waterBody = new TerrainFactory(1000, 1000, 100)

@@ -6,6 +6,7 @@
  */
 package bodies;
 
+import Texture.ImplementedTexture;
 import javax.media.opengl.GL2;
 
 /**
@@ -23,6 +24,7 @@ public class Shape implements Body {
     private final int indexBufferName;
     private final int indexbufferLength;
     private final int shapeMode;
+    private ImplementedTexture texture = null;
 
     /**
      * @param indexBufferName   The name of the index buffer used by this shape.
@@ -45,10 +47,21 @@ public class Shape implements Body {
         this.shapeMode = shapeMode;
     }
 
+    public Shape setTexture(ImplementedTexture texture) {
+        this.texture = texture;
+        return this;
+    }
+
     @Override
     public void draw(GL2 gl) {
+        if (texture != null) {
+            texture.drawStart(gl);
+        }
         gl.glBindBuffer(GL2.GL_ELEMENT_ARRAY_BUFFER, indexBufferName);
         gl.glDrawElements(shapeMode, indexbufferLength, BufferManager.INDEX_BUFFER_TYPE, BufferManager.INDEX_BUFFER_OFFSET);
+        if (texture != null) {
+            texture.drawEnd(gl);
+        }
     }
 
 }

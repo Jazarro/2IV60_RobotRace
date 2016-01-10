@@ -27,7 +27,7 @@ public class Vertex {
      * This value, along with {@link #COORD_COUNT}, are needed to calculate the
      * stride.
      */
-    public static final int NR_VERTEX_ELEMENTS = 2;
+    public static final int NR_VERTEX_ELEMENTS = 3;
     /**
      * The indices in the position and normal arrays that signify the x, y, and
      * z components.
@@ -49,6 +49,13 @@ public class Vertex {
     private double normalX;
     private double normalY;
     private double normalZ;
+    /**
+     * The texture coordinates of this Vertex (mainly useful when using
+     * surfaces) in x, y and z components.
+     */
+    private double textureX;
+    private double textureY;
+    private double textureZ;
 
     /**
      * Constructor.
@@ -79,8 +86,26 @@ public class Vertex {
      * @param normalZ   Component of the normal in the Z axis.
      */
     public Vertex(double positionX, double positionY, double positionZ, double normalX, double normalY, double normalZ) {
+        this(positionX, positionY, positionZ, 0d, 0d, 0d, 0d, 0d, 0d);
+    }
+
+    /**
+     * Constructor specifying the position and normal and texture of the Vertex.
+     *
+     * @param positionX Component of the position in the X axis.
+     * @param positionY Component of the position in the Y axis.
+     * @param positionZ Component of the position in the Z axis.
+     * @param normalX   Component of the normal in the X axis.
+     * @param normalY   Component of the normal in the Y axis.
+     * @param normalZ   Component of the normal in the Z axis.
+     * @param textureX  Component of the texture in the X axis.
+     * @param textureY  Component of the texture in the Y axis.
+     * @param textureZ  Component of the texture in the Z axis.
+     */
+    public Vertex(double positionX, double positionY, double positionZ, double normalX, double normalY, double normalZ, double textureX, double textureY, double textureZ) {
         setPositionC(positionX, positionY, positionZ);
         setNormalC(normalX, normalY, normalZ);
+        setTextureC(textureX, textureY, textureZ);
     }
 
     /**
@@ -89,7 +114,7 @@ public class Vertex {
      * @param position The position.
      */
     public Vertex(double[] position) {
-        this(position, new double[]{0d, 0d, 0d});
+        this(position, new double[]{0d, 0d, 0d}, new double[]{0d, 0d, 0d});
     }
 
     /**
@@ -99,7 +124,18 @@ public class Vertex {
      * @param normal   The normal.
      */
     public Vertex(double[] position, double[] normal) {
-        this(position[IND_X], position[IND_Y], position[IND_Z], normal[IND_X], normal[IND_Y], normal[IND_Z]);
+        this(position, normal, new double[]{0d, 0d, 0d});
+    }
+
+    /**
+     * Constructor specifying the position and normal and texture of the Vertex.
+     *
+     * @param position The position.
+     * @param normal   The normal.
+     * @param texture  The texture.
+     */
+    public Vertex(double[] position, double[] normal, double[] texture) {
+        this(position[IND_X], position[IND_Y], position[IND_Z], normal[IND_X], normal[IND_Y], normal[IND_Z], texture[IND_X], texture[IND_Y], texture[IND_Z]);
     }
 
     /**
@@ -119,6 +155,17 @@ public class Vertex {
      */
     public Vertex(Vector position, Vector normal) {
         this(position.x(), position.y(), position.z(), normal.x(), normal.y(), normal.z());
+    }
+
+    /**
+     * Constructor specifying the position and normal and texture of the Vertex.
+     *
+     * @param position The position.
+     * @param normal   The normal.
+     * @param texture  The texture.
+     */
+    public Vertex(Vector position, Vector normal, Vector texture) {
+        this(position.x(), position.y(), position.z(), normal.x(), normal.y(), normal.z(), texture.x(), texture.y(), texture.z());
     }
 
     /**
@@ -225,6 +272,59 @@ public class Vertex {
      */
     public final Vector getNormalV() {
         return new Vector(normalX, normalY, normalZ);
+    }
+
+    /**
+     * Set the texture of this Vertex.
+     *
+     * @param textureX Component of the new texture in the X axis.
+     * @param textureY Component of the new texture in the Y axis.
+     * @param textureZ Component of the new texture in the Z axis.
+     */
+    public final void setTextureC(double textureX, double textureY, double textureZ) {
+        this.textureX = textureX;
+        this.textureY = textureY;
+        this.textureZ = textureZ;
+    }
+
+    /**
+     * Set the texture of this Vertex.
+     *
+     * @param texture The new texture of this Vertex.
+     */
+    public final void setTextureA(double[] texture) {
+        this.setTextureC(texture[IND_X], texture[IND_Y], texture[IND_Z]);
+    }
+
+    /**
+     * Set the texture of this Vertex.
+     *
+     * @param texture The new texture of this Vertex.
+     */
+    public final void setTextureV(Vector texture) {
+        this.setTextureC(texture.x(), texture.y(), texture.z());
+    }
+
+    /**
+     * Get the texture of this Vertex.
+     *
+     * @return The texture of this Vertex.
+     */
+    public final double[] getTextureA() {
+        double[] texture = new double[COORD_COUNT];
+        texture[IND_X] = textureX;
+        texture[IND_Y] = textureY;
+        texture[IND_Z] = textureZ;
+        return texture;
+    }
+
+    /**
+     * Get the texture of this Vertex.
+     *
+     * @return The texture of this Vertex.
+     */
+    public final Vector getTextureV() {
+        return new Vector(textureX, textureY, textureZ);
     }
 
     /**
