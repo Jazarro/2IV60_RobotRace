@@ -1,7 +1,9 @@
 package racetrack;
 
+import Texture.ImplementedTexture;
 import java.util.Arrays;
 import java.util.List;
+import javax.media.opengl.GL2;
 import robotrace.Vector;
 
 public class RaceTrackDefinition {
@@ -99,6 +101,48 @@ public class RaceTrackDefinition {
                 return 500;
             default:
                 return 50;
+        }
+    }
+
+    protected static ImplementedTexture getTopTexture(int trackType, GL2 gl) {
+        switch (trackType) {
+            case RTD_TEST:
+            case RTD_TEST_ELEVATED:
+            case RTD_TEST_BEZ:
+            case RTD_O:
+            case RTD_L:
+            case RTD_C:
+            case RTD_CUSTOM:
+            default:
+                return new ImplementedTexture(gl, "track.png", false, false).setScale(1d, 20d).setStretch(true, false);
+        }
+    }
+
+    protected static ImplementedTexture getBottomTexture(int trackType, GL2 gl) {
+        switch (trackType) {
+            case RTD_TEST:
+            case RTD_TEST_ELEVATED:
+            case RTD_TEST_BEZ:
+            case RTD_O:
+            case RTD_L:
+            case RTD_C:
+            case RTD_CUSTOM:
+            default:
+                return new ImplementedTexture(gl, "bottom.png", true, false).setScale(1d, 20d).setStretch(false, false);
+        }
+    }
+
+    protected static ImplementedTexture getSideTexture(int trackType, GL2 gl) {
+        switch (trackType) {
+            case RTD_TEST:
+            case RTD_TEST_ELEVATED:
+            case RTD_TEST_BEZ:
+            case RTD_O:
+            case RTD_L:
+            case RTD_C:
+            case RTD_CUSTOM:
+            default:
+                return new ImplementedTexture(gl, "tileable_stone_wall.jpg", true, true).setScale(0.2d).setStretch(false, false);
         }
     }
 

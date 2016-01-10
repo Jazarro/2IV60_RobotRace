@@ -27,7 +27,7 @@ public class Vertex {
      * This value, along with {@link #COORD_COUNT}, are needed to calculate the
      * stride.
      */
-    public static final int NR_VERTEX_ELEMENTS = 2;
+    public static final int NR_VERTEX_ELEMENTS = 3;
     /**
      * The indices in the position and normal arrays that signify the x, y, and
      * z components.
@@ -49,12 +49,19 @@ public class Vertex {
     private float normalX;
     private float normalY;
     private float normalZ;
+    /**
+     * The texture coordinates of this Vertex (mainly useful when using
+     * surfaces) in x, y and z components.
+     */
+    private float textureX;
+    private float textureY;
+    private float textureZ;
 
     /**
      * Constructor.
      */
     public Vertex() {
-        this(0, 0, 0);
+        this(0f, 0f, 0f);
     }
 
     /**
@@ -65,7 +72,7 @@ public class Vertex {
      * @param positionZ Component of the position in the Z axis.
      */
     public Vertex(float positionX, float positionY, float positionZ) {
-        this(positionX, positionY, positionZ, 0, 0, 0);
+        this(positionX, positionY, positionZ, 0f, 0f, 0f);
     }
 
     /**
@@ -79,8 +86,26 @@ public class Vertex {
      * @param normalZ   Component of the normal in the Z axis.
      */
     public Vertex(float positionX, float positionY, float positionZ, float normalX, float normalY, float normalZ) {
+        this(positionX, positionY, positionZ, 0f, 0f, 0f, 0f, 0f, 0f);
+    }
+
+    /**
+     * Constructor specifying the position and normal and texture of the Vertex.
+     *
+     * @param positionX Component of the position in the X axis.
+     * @param positionY Component of the position in the Y axis.
+     * @param positionZ Component of the position in the Z axis.
+     * @param normalX   Component of the normal in the X axis.
+     * @param normalY   Component of the normal in the Y axis.
+     * @param normalZ   Component of the normal in the Z axis.
+     * @param textureX  Component of the texture in the X axis.
+     * @param textureY  Component of the texture in the Y axis.
+     * @param textureZ  Component of the texture in the Z axis.
+     */
+    public Vertex(float positionX, float positionY, float positionZ, float normalX, float normalY, float normalZ, float textureX, float textureY, float textureZ) {
         setPositionC(positionX, positionY, positionZ);
         setNormalC(normalX, normalY, normalZ);
+        setTextureC(textureX, textureY, textureZ);
     }
 
     /**
@@ -89,7 +114,7 @@ public class Vertex {
      * @param position The position.
      */
     public Vertex(float[] position) {
-        this(position, new float[]{0, 0, 0});
+        this(position, new float[]{0f, 0f, 0f}, new float[]{0f,0f,0f});
     }
 
     /**
@@ -99,7 +124,18 @@ public class Vertex {
      * @param normal   The normal.
      */
     public Vertex(float[] position, float[] normal) {
-        this(position[IND_X], position[IND_Y], position[IND_Z], normal[IND_X], normal[IND_Y], normal[IND_Z]);
+        this(position, normal, new float[]{0f, 0f, 0f});
+    }
+
+    /**
+     * Constructor specifying the position and normal and texture of the Vertex.
+     *
+     * @param position The position.
+     * @param normal   The normal.
+     * @param texture  The texture.
+     */
+    public Vertex(float[] position, float[] normal, float[] texture) {
+        this(position[IND_X], position[IND_Y], position[IND_Z], normal[IND_X], normal[IND_Y], normal[IND_Z], texture[IND_X], texture[IND_Y], texture[IND_Z]);
     }
 
     /**
@@ -119,6 +155,17 @@ public class Vertex {
      */
     public Vertex(Vector position, Vector normal) {
         this((float) position.x(), (float) position.y(), (float) position.z(), (float) normal.x(), (float) normal.y(), (float) normal.z());
+    }
+
+    /**
+     * Constructor specifying the position and normal and texture of the Vertex.
+     *
+     * @param position The position.
+     * @param normal   The normal.
+     * @param texture  The texture.
+     */
+    public Vertex(Vector position, Vector normal, Vector texture) {
+        this((float) position.x(), (float) position.y(), (float) position.z(), (float) normal.x(),(float)  normal.y(), (float) normal.z(), (float) texture.x(), (float) texture.y(), (float) texture.z());
     }
 
     /**
@@ -225,6 +272,59 @@ public class Vertex {
      */
     public final Vector getNormalV() {
         return new Vector(normalX, normalY, normalZ);
+    }
+
+    /**
+     * Set the texture of this Vertex.
+     *
+     * @param textureX Component of the new texture in the X axis.
+     * @param textureY Component of the new texture in the Y axis.
+     * @param textureZ Component of the new texture in the Z axis.
+     */
+    public final void setTextureC(float textureX, float textureY, float textureZ) {
+        this.textureX = textureX;
+        this.textureY = textureY;
+        this.textureZ = textureZ;
+    }
+
+    /**
+     * Set the texture of this Vertex.
+     *
+     * @param texture The new texture of this Vertex.
+     */
+    public final void setTextureA(float[] texture) {
+        this.setTextureC(texture[IND_X], texture[IND_Y], texture[IND_Z]);
+    }
+
+    /**
+     * Set the texture of this Vertex.
+     *
+     * @param texture The new texture of this Vertex.
+     */
+    public final void setTextureV(Vector texture) {
+        this.setTextureC((float) texture.x(), (float) texture.y(), (float) texture.z());
+    }
+
+    /**
+     * Get the texture of this Vertex.
+     *
+     * @return The texture of this Vertex.
+     */
+    public final float[] getTextureA() {
+        float[] texture = new float[COORD_COUNT];
+        texture[IND_X] = textureX;
+        texture[IND_Y] = textureY;
+        texture[IND_Z] = textureZ;
+        return texture;
+    }
+
+    /**
+     * Get the texture of this Vertex.
+     *
+     * @return The texture of this Vertex.
+     */
+    public final Vector getTextureV() {
+        return new Vector(textureX, textureY, textureZ);
     }
 
     /**

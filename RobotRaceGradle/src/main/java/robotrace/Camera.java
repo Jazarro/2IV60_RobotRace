@@ -47,7 +47,7 @@ public class Camera {
     private static final Vector FIRSTPERSON_EYE = new Vector(0d, 0d, 2d);
     private static final Vector FIRSTPERSON_LOOKAT = new Vector(0d, 0d, 1d);
 
-    private static final double SWITCH_TIME = 5d;
+    private static final double SWITCH_TIME = 10d;
 
     private double tPrevious = 0d;
     private double tAutoSwitch = 0d;

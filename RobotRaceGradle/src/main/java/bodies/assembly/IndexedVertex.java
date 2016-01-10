@@ -60,8 +60,7 @@ final class IndexedVertex {
      * @return The new IndexedVertex.
      */
     protected static IndexedVertex makeIndexedVertex(Vertex vertex, boolean shared, int index) {
-        final Vertex clone = new Vertex(vertex.getPositionA(), vertex.getNormalA());
-        return new IndexedVertex(clone, shared, index);
+        return new IndexedVertex(vertex, shared, index);
     }
 
     /**
@@ -116,21 +115,6 @@ final class IndexedVertex {
      */
     protected final void setIndex(int index) {
         this.index = index;
-    }
-
-    /**
-     * Cross the normals of two IndexedVertices, average the positions.
-     *
-     * @param vertex1    The first vertex.
-     * @param vertex2    The second vertex.
-     * @param flipNormal If the calculated normal should be flipped 180 degrees.
-     * @return The vertex with crossed normals.
-     */
-    protected static IndexedVertex crossNormal(IndexedVertex vertex1, IndexedVertex vertex2, boolean flipNormal) {
-        final Vertex vertex = Vertex.crossNormal(vertex1.getVertex(), vertex2.getVertex(), flipNormal);
-        final boolean shared = vertex1.isShared() && vertex2.isShared();
-        final int index = (vertex1.getIndex() == vertex2.getIndex()) ? (vertex1.getIndex()) : (0);
-        return new IndexedVertex(vertex, shared, index);
     }
 
 }

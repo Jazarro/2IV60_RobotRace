@@ -147,17 +147,14 @@ public class RobotRace extends Base {
         gl.glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
         gl.glBindTexture(GL_TEXTURE_2D, 0);
 
+        raceTrackFactory.initialize(gl, bmInitialiser);
+
         //Initialize factories and terrain.
         robotFactory.initialize(gl, bmInitialiser);
-        raceTrackFactory.initialize(gl, bmInitialiser);
+
         terrain.initialize(gl, bmInitialiser);
         camera.initialize(Arrays.asList(robots));
 
-        // Try to load four textures, add more if you like.
-        track = loadTexture("track.jpg");
-        brick = loadTexture("brick.jpg");
-        head = loadTexture("head.jpg");
-        torso = loadTexture("torso.jpg");
         bmInitialiser.finish();
     }
 
@@ -166,6 +163,7 @@ public class RobotRace extends Base {
      */
     @Override
     public void setView() {
+        lighting.setView(gl);
         // Update the view according to the camera mode and robot of interest.
         // For camera modes 1 to 4, determine which robot to focus on.
         camera.update(gs, Arrays.asList(robots));
@@ -177,7 +175,6 @@ public class RobotRace extends Base {
         gl.glMatrixMode(GL_PROJECTION);
         //Load the identity matrix.
         gl.glLoadIdentity();
-        lighting.setView(gl);
 
         camera.setPerspective(glu, gs);
 
@@ -216,12 +213,14 @@ public class RobotRace extends Base {
         }
 
         // Draw the race track.
-        raceTrack.draw(gl);
+        raceTrack.draw(gl, lighting);
+
         // Draw the terrain.
         terrain.draw(gl, glut, camera, lighting);
 
         //End the drawing and finish up.
         bodyManager.endDraw(gl);
+        gl.glFlush();
         tPrevious = gs.tAnim;
     }
 
@@ -286,4 +285,5 @@ public class RobotRace extends Base {
         //Restore the original matrix.
         gl.glPopMatrix();
     }
+
 }

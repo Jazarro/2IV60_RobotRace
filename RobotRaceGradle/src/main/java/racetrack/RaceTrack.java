@@ -6,6 +6,7 @@
  */
 package racetrack;
 
+import Texture.ImplementedTexture;
 import bodies.Body;
 import bodies.BufferManager;
 import bodies.SingletonDrawable;
@@ -15,6 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.media.opengl.GL2;
 import static racetrack.RaceTrackDefinition.*;
+import robotrace.Lighting;
+import robotrace.Material;
 import robotrace.Vector;
 import terrain.Terrain;
 
@@ -23,14 +26,17 @@ import terrain.Terrain;
  */
 public class RaceTrack implements SingletonDrawable {
 
-    public static final double LANE_WIDTH = 1.22d;
+    public static final float LANE_WIDTH = 1.22f;
     public static final int LANE_COUNT = 4;
-    public static final double TRACK_HEIGHT = 2d;
+    public static final float TRACK_HEIGHT = 2f;
 
     private Body raceTrackBody;
     private int trackType = RTD_TEST;
     private final RaceTrackDistances trackDistances = new RaceTrackDistances();
     private final List<RaceTrackDistances> laneDistances = new ArrayList<>();
+    private ImplementedTexture textureTop;
+    private ImplementedTexture textureBottom;
+    private ImplementedTexture textureSide;
 
     public void setTrackType(int trackType) {
         this.trackType = trackType;
@@ -59,8 +65,12 @@ public class RaceTrack implements SingletonDrawable {
             }
             tPrevious = t;
         }
+        textureTop = getTopTexture(trackType, gl);
+        textureBottom = getBottomTexture(trackType, gl);
+        textureSide = getSideTexture(trackType, gl);
         raceTrackBody = new TrackBuilder(bmInitialiser)
                 .setTrackProperties(LANE_WIDTH, LANE_COUNT, TRACK_HEIGHT, getClosedTrack())
+                .setTextures(textureTop, textureBottom, textureSide)
                 .build(trackDescription);
     }
 
@@ -115,7 +125,9 @@ public class RaceTrack implements SingletonDrawable {
     /**
      * Draws this track, based on the control points.
      */
-    public void draw(GL2 gl) {
+    public void draw(GL2 gl, Lighting lighting) {
+        lighting.setMaterial(gl, Material.NONE);
+        lighting.setColor(gl, 1f, 1f, 1f, 1f);
         gl.glPushMatrix();
         gl.glTranslated(0, 0, Terrain.TERRAIN_LEVEL);
         raceTrackBody.draw(gl);

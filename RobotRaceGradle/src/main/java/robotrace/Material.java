@@ -16,6 +16,9 @@ package robotrace;
  */
 public enum Material {
 
+    NONE(new float[]{0f, 0f, 0f, 0f},
+            new float[]{0f, 0f, 0f, 0f},
+            0f),
     GOLD(new float[]{0.24725f, 0.1995f, 0.0745f, 1.0f},
             new float[]{0.75164f, 0.60648f, 0.22648f, 1.0f},
             new float[]{0.628281f, 0.555802f, 0.555802f, 1.0f},

@@ -91,6 +91,9 @@ final class SurfaceCompilation {
             dataList.add(vertex.getVertex().getNormalA()[IND_X]);
             dataList.add(vertex.getVertex().getNormalA()[IND_Y]);
             dataList.add(vertex.getVertex().getNormalA()[IND_Z]);
+            dataList.add(vertex.getVertex().getTextureA()[IND_X]);
+            dataList.add(vertex.getVertex().getTextureA()[IND_Y]);
+            dataList.add(vertex.getVertex().getTextureA()[IND_Z]);
         }
         final float[] dataArray = new float[dataList.size()];
         //Convert the ArrayList into an array.
