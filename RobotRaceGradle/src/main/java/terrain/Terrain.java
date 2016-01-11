@@ -14,7 +14,6 @@ import java.util.Set;
 import javafx.scene.shape.Rectangle;
 import static javax.media.opengl.GL.GL_CULL_FACE;
 import javax.media.opengl.GL2;
-import Camera.Camera;
 import robotrace.Lighting;
 import robotrace.Material;
 import robotrace.Vector;
@@ -29,8 +28,8 @@ import terrain.trees.TreeSupplier;
  */
 public class Terrain {
 
-    private static final float TERRAIN_LEVEL = 145f;
-    private static final float WATER_LEVEL = 0f;
+    public static final Vector TERRAIN_LEVEL = new Vector(0, 0, -145);
+    public static final float WATER_LEVEL = 0f;
 
     private final Set<Tree> trees = new HashSet<>();
     private Body terrainBody;
@@ -60,7 +59,7 @@ public class Terrain {
      * @param gl       The instance of GL2 responsible for drawing the body.
      * @param glut     An instance of GLUT that can be optionally used to assist
      *                 in drawing.
-     * @param camera   The camera that is used to view the terrain.
+     * @param camPos   The position of the camera in world coordinates.
      * @param lighting The Lighting instance responsible for calculating the
      *                 lighting in this scene. Can be used to set the colours of
      *                 bodies before drawing them.
@@ -68,24 +67,17 @@ public class Terrain {
     public void draw(GL2 gl, GLUT glut, Vector camPos, Lighting lighting) {
         gl.glPushMatrix();
         {
-            gl.glTranslated(0d, 0d, -TERRAIN_LEVEL);
+            gl.glTranslated(TERRAIN_LEVEL.x(), TERRAIN_LEVEL.y(), TERRAIN_LEVEL.z());
             gl.glEnable(GL_CULL_FACE);
             lighting.setMaterial(gl, Material.DIRT);
             terrainBody.draw(gl);
             lighting.setMaterial(gl, Material.WATER);
             waterBody.draw(gl);
             gl.glDisable(GL_CULL_FACE);
-            trees.stream().forEach((tree) -> tree.draw(gl, camPos, lighting));
+            final Vector camPosRelativeToTerrain = camPos.subtract(TERRAIN_LEVEL);
+            trees.stream().forEach((tree) -> tree.draw(gl, camPosRelativeToTerrain, lighting));
         }
         gl.glPopMatrix();
-    }
-
-    public float getTerrainLevel() {
-        return TERRAIN_LEVEL;
-    }
-
-    public float getWaterLevel() {
-        return WATER_LEVEL;
     }
 
 }

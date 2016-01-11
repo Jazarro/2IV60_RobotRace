@@ -29,6 +29,15 @@ public class Tree {//TODO: Clean up, document.
         this.trunk = trunk;
     }
 
+    /**
+     * Draws the tree.
+     *
+     * @param gl       The instance of GL2 responsible for drawing the body.
+     * @param camPos   The position of the camera in terrain coordinates.
+     * @param lighting The Lighting instance responsible for calculating the
+     *                 lighting in this scene. Can be used to set the colours of
+     *                 bodies before drawing them.
+     */
     public void draw(GL2 gl, Vector camPos, Lighting lighting) {
         gl.glPushMatrix();
         gl.glTranslated(position.x(), position.y(), position.z());
@@ -38,6 +47,18 @@ public class Tree {//TODO: Clean up, document.
         gl.glPopMatrix();
     }
 
+    /**
+     * Check how far away the camera eye point is from the tree and calculate a
+     * required detail level based on that. The further away it is, the less
+     * detail is required in drawing the tree.
+     *
+     * @param camPos The position of the camera relative to the terrain in
+     *               meters. Because the trees are defined in the same frame of
+     *               reference, this value can be safely compared to the tree's
+     *               position.
+     * @return An arbitrarily defined integer value between 0 <= x <= 3. The
+     *         greater this value, the more detail is required.
+     */
     private int getRequiredDetailLevel(Vector camPos) {
         final float distanceToEye = (float) Math.abs(camPos.subtract(position).length());
         if (distanceToEye > 1500) {
