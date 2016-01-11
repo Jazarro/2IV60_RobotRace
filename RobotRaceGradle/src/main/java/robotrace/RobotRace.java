@@ -6,6 +6,7 @@
  */
 package robotrace;
 
+import Camera.Camera;
 import Texture.ImplementedTexture;
 import bodies.BufferManager;
 import java.util.Arrays;
@@ -156,7 +157,7 @@ public class RobotRace extends Base {
         robotFactory.initialize(gl, bmInitialiser);
 
         terrain.initialize(gl, bmInitialiser);
-        camera.initialize(Arrays.asList(robots));
+        camera.initialize(gs, Arrays.asList(robots));
 
         robotTextures = new ImplementedTexture[]{
             new ImplementedTexture(gl, "number1.png", true, false),
@@ -176,24 +177,7 @@ public class RobotRace extends Base {
         lighting.setView(gl);
         // Update the view according to the camera mode and robot of interest.
         // For camera modes 1 to 4, determine which robot to focus on.
-        camera.update(gs, Arrays.asList(robots));
-
-        // Select part of window.
-        gl.glViewport(0, 0, gs.w, gs.h);
-
-        // Set projection matrix.
-        gl.glMatrixMode(GL_PROJECTION);
-        //Load the identity matrix.
-        gl.glLoadIdentity();
-
-        camera.setPerspective(glu, gs);
-
-        // Set camera.
-        gl.glMatrixMode(GL_MODELVIEW);
-        //Load the identity matrix.
-        gl.glLoadIdentity();
-
-        camera.setLookAt(glu);
+        camera.update(gl, glu, gs, Arrays.asList(robots));
     }
 
     /**
@@ -203,6 +187,8 @@ public class RobotRace extends Base {
     public void drawScene() {
         final RaceTrack raceTrack = raceTracks[gs.trackNr];
         bodyManager.startDraw(gl);
+
+
         lighting.drawScene(gl);
 
         // Background color.
@@ -227,7 +213,7 @@ public class RobotRace extends Base {
         raceTrack.draw(gl, lighting);
 
         // Draw the terrain.
-        terrain.draw(gl, glut, camera, lighting);
+        terrain.draw(gl, glut, camera.getCamPos(), lighting);
 
         //End the drawing and finish up.
         bodyManager.endDraw(gl);

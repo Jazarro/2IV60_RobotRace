@@ -14,9 +14,10 @@ import java.util.Set;
 import javafx.scene.shape.Rectangle;
 import static javax.media.opengl.GL.GL_CULL_FACE;
 import javax.media.opengl.GL2;
-import robotrace.Camera;
+import Camera.Camera;
 import robotrace.Lighting;
 import robotrace.Material;
+import robotrace.Vector;
 import terrain.trees.Foliage;
 import terrain.trees.Tree;
 import terrain.trees.TreeSupplier;
@@ -28,8 +29,8 @@ import terrain.trees.TreeSupplier;
  */
 public class Terrain {
 
-    public static final float TERRAIN_LEVEL = 145;
-    private static final int WATER_LEVEL = 0;
+    private static final float TERRAIN_LEVEL = 145f;
+    private static final float WATER_LEVEL = 0f;
 
     private final Set<Tree> trees = new HashSet<>();
     private Body terrainBody;
@@ -64,18 +65,27 @@ public class Terrain {
      *                 lighting in this scene. Can be used to set the colours of
      *                 bodies before drawing them.
      */
-    public void draw(GL2 gl, GLUT glut, Camera camera, Lighting lighting) {
+    public void draw(GL2 gl, GLUT glut, Vector camPos, Lighting lighting) {
         gl.glPushMatrix();
         {
+            gl.glTranslated(0d, 0d, -TERRAIN_LEVEL);
             gl.glEnable(GL_CULL_FACE);
             lighting.setMaterial(gl, Material.DIRT);
             terrainBody.draw(gl);
             lighting.setMaterial(gl, Material.WATER);
             waterBody.draw(gl);
             gl.glDisable(GL_CULL_FACE);
-            trees.stream().forEach((tree) -> tree.draw(gl, camera, lighting));
+            trees.stream().forEach((tree) -> tree.draw(gl, camPos, lighting));
         }
         gl.glPopMatrix();
+    }
+
+    public float getTerrainLevel() {
+        return TERRAIN_LEVEL;
+    }
+
+    public float getWaterLevel() {
+        return WATER_LEVEL;
     }
 
 }

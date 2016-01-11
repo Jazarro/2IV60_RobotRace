@@ -11,7 +11,7 @@ import com.jogamp.opengl.util.gl2.GLUT;
 import java.util.ArrayList;
 import java.util.List;
 import javax.media.opengl.GL2;
-import robotrace.Camera;
+import Camera.Camera;
 import robotrace.Lighting;
 import robotrace.Material;
 import robotrace.Vector;
@@ -59,7 +59,7 @@ public class TestingTerrain extends Terrain {
     }
 
     @Override
-    public void draw(GL2 gl, GLUT glut, Camera camera, Lighting lighting) {
+    public void draw(GL2 gl, GLUT glut, Vector camPos, Lighting lighting) {
         shapes.stream().forEach((shape) -> {
             gl.glPushMatrix();
             gl.glTranslated(shape.translation.x(), shape.translation.y(), shape.translation.z());

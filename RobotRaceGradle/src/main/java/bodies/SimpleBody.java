@@ -35,7 +35,6 @@ public class SimpleBody implements Body {
     public void changeTexture(ImplementedTexture textureOld, ImplementedTexture textureNew) {
         for (Shape shape : shapes) {
             if (shape.getTexture() != null) {
-                System.out.println(shape.getTexture().getOriginalFilename());
                 if (shape.getTexture().getOriginalFilename() == null ? textureOld.getOriginalFilename() == null : shape.getTexture().getOriginalFilename().equals(textureOld.getOriginalFilename())) {
                     shape.setTexture(textureNew);
                 }
