@@ -12,7 +12,7 @@ public class CameraView {
     private static final Vector HELICOPTER_EYE = new Vector(0d, 0d, 30d);
     private static final Vector HELICOPTER_LOOKAT = new Vector(0d, 0d, 0d);
 
-    private static final Vector MOTORCYCLE_EYE = new Vector(7d, 0d, 1d);
+    private static final Vector MOTORCYCLE_EYE = new Vector(5.5d, 0d, 1d);
     private static final Vector MOTORCYCLE_LOOKAT = new Vector(0d, 0d, 1d);
 
     private static final Vector FIRSTPERSON_EYE = new Vector(0d, 0d, 2d);
