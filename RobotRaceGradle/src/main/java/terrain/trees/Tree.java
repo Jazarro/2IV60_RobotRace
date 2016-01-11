@@ -9,7 +9,6 @@ package terrain.trees;
 import java.util.HashSet;
 import java.util.Set;
 import javax.media.opengl.GL2;
-import robotrace.Camera;
 import robotrace.Lighting;
 import robotrace.Material;
 import robotrace.Vector;
@@ -30,17 +29,17 @@ public class Tree {//TODO: Clean up, document.
         this.trunk = trunk;
     }
 
-    public void draw(GL2 gl, Camera camera, Lighting lighting) {
+    public void draw(GL2 gl, Vector camPos, Lighting lighting) {
         gl.glPushMatrix();
         gl.glTranslated(position.x(), position.y(), position.z());
         lighting.setMaterial(gl, Material.BARK);
-        final int requiredDetailLevel = getRequiredDetailLevel(camera);
+        final int requiredDetailLevel = getRequiredDetailLevel(camPos);
         trunk.draw(gl, lighting, foliage, requiredDetailLevel, 0);
         gl.glPopMatrix();
     }
 
-    private int getRequiredDetailLevel(Camera camera) {
-        final float distanceToEye = (float) Math.abs(camera.getEye().subtract(position).length());
+    private int getRequiredDetailLevel(Vector camPos) {
+        final float distanceToEye = (float) Math.abs(camPos.subtract(position).length());
         if (distanceToEye > 1500) {
             return 0;
         } else if (distanceToEye > 300) {

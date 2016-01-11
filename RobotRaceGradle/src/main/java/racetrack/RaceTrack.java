@@ -129,7 +129,6 @@ public class RaceTrack implements SingletonDrawable {
         lighting.setMaterial(gl, Material.NONE);
         lighting.setColor(gl, 1f, 1f, 1f, 1f);
         gl.glPushMatrix();
-        gl.glTranslated(0, 0, Terrain.TERRAIN_LEVEL);
         raceTrackBody.draw(gl);
         gl.glPopMatrix();
     }

@@ -6,6 +6,7 @@
  */
 package robotrace;
 
+import Camera.Camera;
 import bodies.BufferManager;
 import java.util.Arrays;
 import javax.media.opengl.GL;
@@ -19,8 +20,6 @@ import static javax.media.opengl.GL.GL_TEXTURE_2D;
 import static javax.media.opengl.GL2ES1.GL_PERSPECTIVE_CORRECTION_HINT;
 import static javax.media.opengl.GL2GL3.GL_FILL;
 import static javax.media.opengl.fixedfunc.GLLightingFunc.GL_NORMALIZE;
-import static javax.media.opengl.fixedfunc.GLMatrixFunc.GL_MODELVIEW;
-import static javax.media.opengl.fixedfunc.GLMatrixFunc.GL_PROJECTION;
 import racetrack.RaceTrack;
 import racetrack.RaceTrackDefinition;
 import racetrack.RaceTrackFactory;
@@ -153,7 +152,7 @@ public class RobotRace extends Base {
         robotFactory.initialize(gl, bmInitialiser);
 
         terrain.initialize(gl, bmInitialiser);
-        camera.initialize(Arrays.asList(robots));
+        camera.initialize(gs, Arrays.asList(robots));
 
         bmInitialiser.finish();
     }
@@ -163,27 +162,8 @@ public class RobotRace extends Base {
      */
     @Override
     public void setView() {
-        // Update the view according to the camera mode and robot of interest.
-        // For camera modes 1 to 4, determine which robot to focus on.
-        camera.update(gs, Arrays.asList(robots));
-
-        // Select part of window.
-        gl.glViewport(0, 0, gs.w, gs.h);
-
-        // Set projection matrix.
-        gl.glMatrixMode(GL_PROJECTION);
-        //Load the identity matrix.
-        gl.glLoadIdentity();
-
-        camera.setPerspective(glu, gs);
-
-        // Set camera.
-        gl.glMatrixMode(GL_MODELVIEW);
-        //Load the identity matrix.
-        gl.glLoadIdentity();
+        camera.update(gl, glu, gs, Arrays.asList(robots));
         lighting.setView(gl);
-
-        camera.setLookAt(glu);
     }
 
     /**
@@ -217,7 +197,7 @@ public class RobotRace extends Base {
         raceTrack.draw(gl, lighting);
 
         // Draw the terrain.
-        terrain.draw(gl, glut, camera, lighting);
+        terrain.draw(gl, glut, camera.getCamPos(), lighting);
 
         //End the drawing and finish up.
         bodyManager.endDraw(gl);

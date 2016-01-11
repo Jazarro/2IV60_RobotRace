@@ -12,7 +12,6 @@ import racetrack.RaceTrack;
 import robotrace.Lighting;
 import robotrace.Material;
 import robotrace.Vector;
-import terrain.Terrain;
 
 /**
  * Represents a Robot, to be implemented according to the Assignments.
@@ -25,10 +24,12 @@ public class Robot {
      * The position of the robot.
      */
     private Vector position = Vector.O;
+    private Vector positionTrack = Vector.O;
     /**
      * The direction in which the robot is facing.
      */
     private Vector direction = Vector.Y;
+    private Vector directionTrack = Vector.Y;
 
     private double speed = 1d;
     private double trackT = 0d;
@@ -47,8 +48,8 @@ public class Robot {
     /**
      * Constructs a new instance of robot.
      *
-     * @param material    The material that the robot is to be made of.
-     * @param robotBody   The aesthetics of the body used by this robot.
+     * @param material  The material that the robot is to be made of.
+     * @param robotBody The aesthetics of the body used by this robot.
      */
     public Robot(Material material, RobotBody robotBody) {
         this.material = material;
@@ -59,24 +60,48 @@ public class Robot {
         this.position = position;
     }
 
-    public void setPositionOnTrack(RaceTrack raceTrack) {
+    public void setPositionTrack(Vector positionTrack) {
+        this.positionTrack = positionTrack;
+    }
+
+    public void setPositionOnLane(RaceTrack raceTrack) {
         this.position = raceTrack.getLanePoint(trackT, laneNumber);
+    }
+
+    public void setPositionOnTrack(RaceTrack raceTrack) {
+        this.positionTrack = raceTrack.getTrackPoint(trackT);
     }
 
     public Vector getPosition() {
         return position;
     }
 
+    public Vector getPositionTrack() {
+        return positionTrack;
+    }
+
     public void setDirection(Vector direction) {
         this.direction = direction;
     }
 
-    public void setDirectionOnTrack(RaceTrack raceTrack) {
+    public void setDirectionTrack(Vector directionTrack) {
+        this.directionTrack = directionTrack;
+    }
+
+    public void setDirectionOnLane(RaceTrack raceTrack) {
         this.direction = raceTrack.getLaneTangent(trackT, laneNumber);
+    }
+
+    public void setDirectionOnTrack(RaceTrack raceTrack) {
+        this.directionTrack = raceTrack.getTrackTangent(trackT);
     }
 
     public Vector getDirection() {
         return direction;
+    }
+
+    public Vector getDirectionTrack() {
+        return directionTrack;
     }
 
     public void setSpeed(double speed) {
@@ -142,6 +167,8 @@ public class Robot {
 
     public void update(RaceTrack raceTrack, double deltaTime) {
         moveDistance(raceTrack, deltaTime);
+        setPositionOnLane(raceTrack);
+        setDirectionOnLane(raceTrack);
         setPositionOnTrack(raceTrack);
         setDirectionOnTrack(raceTrack);
     }
@@ -164,7 +191,7 @@ public class Robot {
         lighting.setMaterial(gl, getMaterial());
         gl.glPushMatrix();
         {
-            gl.glTranslated(position.x(), position.y(), position.z() + Terrain.TERRAIN_LEVEL);
+            gl.glTranslated(position.x(), position.y(), position.z());
             final double rotationDotY = direction.dot(Vector.Y) / (direction.length() * Vector.Y.length());
             final double rotationDotX = direction.dot(Vector.X) / (direction.length() * Vector.X.length());
             final double rotationAngle = Math.toDegrees(Math.acos(rotationDotY));
