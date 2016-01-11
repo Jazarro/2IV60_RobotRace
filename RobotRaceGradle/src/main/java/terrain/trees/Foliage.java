@@ -33,7 +33,7 @@ public class Foliage implements SingletonDrawable {
         this.highDetailBranch = makeBranch(bmInitialiser, 8);
         this.midDetailBranch = makeBranch(bmInitialiser, 4);
         this.lowDetailBranch = makeBranch(bmInitialiser, 3);
-        this.leaf = new TerrainFactory(1, 1, 1).makeTerrain(bmInitialiser, (x, y) -> 0);
+        this.leaf = new TerrainFactory(1, 1, 1).makeTerrain(bmInitialiser, (x, y) -> 0, null);
     }
 
     private Body makeBranch(BufferManager.Initialiser bmInitialiser, int sliceCount) {

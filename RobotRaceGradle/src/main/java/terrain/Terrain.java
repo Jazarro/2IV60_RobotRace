@@ -6,6 +6,7 @@
  */
 package terrain;
 
+import Texture.ImplementedTexture;
 import bodies.Body;
 import bodies.BufferManager;
 import com.jogamp.opengl.util.gl2.GLUT;
@@ -28,8 +29,9 @@ import terrain.trees.TreeSupplier;
  */
 public class Terrain {
 
-    public static final Vector TERRAIN_LEVEL = new Vector(0, 0, -145);
-    public static final float WATER_LEVEL = 0f;
+    private static final Vector TERRAIN_LEVEL = new Vector(0, 0, -145);
+    private static final float WATER_LEVEL = 0f;
+    private static final String TERRAIN_TEXTURE_FILENAME = "terrain.png";
 
     private final Set<Tree> trees = new HashSet<>();
     private Body terrainBody;
@@ -47,10 +49,11 @@ public class Terrain {
             trees.add(treeSupplierClose.get());
             trees.add(treeSupplierFar.get());
         }
+        final ImplementedTexture terrainTexture = new ImplementedTexture(gl, TERRAIN_TEXTURE_FILENAME, true, false);
         this.terrainBody = new TerrainFactory(1000, 1000, 1F)
-                .makeTerrain(bmInitialiser, heightMap);
+                .makeTerrain(bmInitialiser, heightMap, terrainTexture);
         this.waterBody = new TerrainFactory(1000, 1000, 100)
-                .makeTerrain(bmInitialiser, (x, y) -> WATER_LEVEL);
+                .makeTerrain(bmInitialiser, (x, y) -> WATER_LEVEL, null);
     }
 
     /**
@@ -69,7 +72,8 @@ public class Terrain {
         {
             gl.glTranslated(TERRAIN_LEVEL.x(), TERRAIN_LEVEL.y(), TERRAIN_LEVEL.z());
             gl.glEnable(GL_CULL_FACE);
-            lighting.setMaterial(gl, Material.DIRT);
+            lighting.setMaterial(gl, Material.NONE);
+            lighting.setColor(gl, 1f, 1f, 1f, 1f);
             terrainBody.draw(gl);
             lighting.setMaterial(gl, Material.WATER);
             waterBody.draw(gl);

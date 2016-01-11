@@ -114,7 +114,7 @@ public class RaceTrackDefinition {
             case RTD_C:
             case RTD_CUSTOM:
             default:
-                return new ImplementedTexture(gl, "track.png", false, false).setScale(1d, 20d).setStretch(true, false);
+                return new ImplementedTexture(gl, "trackTop.png", false, false).setScale(1d, 20d).setStretch(true, false);
         }
     }
 
@@ -128,7 +128,7 @@ public class RaceTrackDefinition {
             case RTD_C:
             case RTD_CUSTOM:
             default:
-                return new ImplementedTexture(gl, "bottom.png", true, false).setScale(1d, 20d).setStretch(false, false);
+                return new ImplementedTexture(gl, "trackBottom.png", true, false).setScale(1d, 20d).setStretch(false, false);
         }
     }
 
@@ -142,7 +142,7 @@ public class RaceTrackDefinition {
             case RTD_C:
             case RTD_CUSTOM:
             default:
-                return new ImplementedTexture(gl, "tileable_stone_wall.jpg", true, true).setScale(0.2d).setStretch(false, false);
+                return new ImplementedTexture(gl, "trackSide.jpg", true, true).setScale(0.2d).setStretch(false, false);
         }
     }
 

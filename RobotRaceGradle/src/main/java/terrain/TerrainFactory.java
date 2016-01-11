@@ -6,6 +6,7 @@
  */
 package terrain;
 
+import Texture.ImplementedTexture;
 import bodies.Body;
 import bodies.BufferManager;
 import bodies.Shape;
@@ -62,13 +63,14 @@ public class TerrainFactory {
      * @return A Body, which can be used during the draw phase to easily draw
      *         the entire terrain.
      */
-    public Body makeTerrain(BufferManager.Initialiser bmInitialiser, HeightMap heightMap) {
+    public Body makeTerrain(BufferManager.Initialiser bmInitialiser, HeightMap heightMap, ImplementedTexture texture) {
         final IntBuffer indexBuffer = generateIndexBuffer();
         final Vector[] points = generatePoints(heightMap);
         final Vector[] normals = generateNormals(points, indexBuffer);
-        final FloatBuffer dataBuffer = generateVertices(points, normals);
+        final Vector[] textures = generateTextures(points);
+        final FloatBuffer dataBuffer = generateVertices(points, normals, textures);
         final int indexBufferName = bmInitialiser.addData(dataBuffer, indexBuffer);
-        return new Shape(indexBufferName, indexBuffer.capacity(), GL2.GL_TRIANGLES);
+        return new Shape(indexBufferName, indexBuffer.capacity(), GL2.GL_TRIANGLES).setTexture(texture);
     }
 
     /**
@@ -79,13 +81,13 @@ public class TerrainFactory {
      * @param normals An array of normals, parallel to the points.
      * @return A DoubleBuffer with points and vectors interleaved.
      */
-    private FloatBuffer generateVertices(Vector[] points, Vector[] normals) {
+    private FloatBuffer generateVertices(Vector[] points, Vector[] normals, Vector[] textures) {
         final int nrVertices = widthInVertices * heightInVertices;
         final FloatBuffer buffer = FloatBuffer.allocate(Vertex.COORD_COUNT * Vertex.NR_VERTEX_ELEMENTS * nrVertices);
         for (int i = 0; i < nrVertices; i++) {
             buffer.put(new float[]{(float) points[i].x(), (float) points[i].y(), (float) points[i].z()});
             buffer.put(new float[]{(float) normals[i].x(), (float) normals[i].y(), (float) normals[i].z()});
-            buffer.put(new float[]{0,0,0});
+            buffer.put(new float[]{(float) textures[i].x(), (float) textures[i].y(), (float) textures[i].z()});
         }
         buffer.position(0);
         return buffer;
@@ -154,8 +156,7 @@ public class TerrainFactory {
      *         array.
      */
     private Vector[] generateNormals(Vector[] points, IntBuffer indexBuffer) {
-        final int nrVertices = widthInVertices * heightInVertices;
-        final Vector[] normals = new Vector[nrVertices];
+        final Vector[] normals = new Vector[points.length];
         //Loop through the triangles, calculate face normals and add them to the corresponding vertices.
         for (int i = 0; i < indexBuffer.capacity(); i += 3) {
             final Vector point0 = points[indexBuffer.get(i + 0)];
@@ -171,6 +172,25 @@ public class TerrainFactory {
             normals[i] = normals[i].normalized();
         }
         return normals;
+    }
+
+    private Vector[] generateTextures(Vector[] points) {
+        float min = Float.MAX_VALUE;
+        float max = Float.MIN_VALUE;
+        for (Vector vector : points) {
+            if ((float) vector.z() > max) {
+                max = (float) vector.z();
+            }
+            if ((float) vector.z() < min) {
+                min = (float) vector.z();
+            }
+        }
+        final Vector[] textures = new Vector[points.length];
+        for (int i = 0; i < points.length; i++) {
+            final float zTexture = ((float) points[i].z() - min) / (max - min);
+            textures[i] = new Vector(zTexture, 0d, 0d);
+        }
+        return textures;
     }
 
     /**
