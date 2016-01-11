@@ -27,6 +27,12 @@ import robotrace.Vector;
  */
 public class TerrainFactory {
 
+    /**
+     * The minimum elevation difference in meters that can occur in a 1 meter
+     * radius around a spot in order for that spot to be considered a cliff.
+     */
+    private static final float CLIFF_DECLINATION = 1f;
+
     private final float widthInMeters;
     private final float heightInMeters;
     private final float blockScale;
@@ -175,6 +181,28 @@ public class TerrainFactory {
         return normals;
     }
 
+    /**
+     * Checks if a certain point is steep enough to be considered a cliff, for
+     * the purposes of texturing the terrain.
+     *
+     * @param heightMap The HeightMap describing the terrain.
+     * @param point     The point to be considered.
+     * @return True if the point should be painted as a cliff.
+     * @deprecated This method isn't actually used.
+     */
+    @Deprecated
+    private boolean isCliff(HeightMap heightMap, Vector point) {
+        final float center = heightMap.heightAt(point.x(), point.y());
+        final float north = heightMap.heightAt(point.x(), point.y() - 1d);
+        final float south = heightMap.heightAt(point.x(), point.y() + 1d);
+        final float west = heightMap.heightAt(point.x() - 1d, point.y());
+        final float east = heightMap.heightAt(point.x() + 1d, point.y());
+        return Math.abs(center - north) > CLIFF_DECLINATION
+                || Math.abs(center - south) > CLIFF_DECLINATION
+                || Math.abs(center - west) > CLIFF_DECLINATION
+                || Math.abs(center - east) > CLIFF_DECLINATION;
+    }
+
     private Vector[] generateTextures(Vector[] points) {
         float min = Float.MAX_VALUE;
         float max = Float.MIN_VALUE;
@@ -188,7 +216,7 @@ public class TerrainFactory {
         }
         final Vector[] textures = new Vector[points.length];
         for (int i = 0; i < points.length; i++) {
-            final float zTexture = ((float) points[i].z() - min) / (max - min);
+            final float zTexture = Math.min(0.9F, ((float) points[i].z() - min) / (max - min));
             textures[i] = new Vector(zTexture, 0d, 0d);
         }
         return textures;

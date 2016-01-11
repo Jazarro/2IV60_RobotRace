@@ -52,6 +52,11 @@ public class TreeSupplier implements Supplier<Tree> {
      */
     private static final float MAX_DECLINATION = 0.5f;
 
+    /**
+     * The maximum elevation on which to place trees.
+     */
+    private static final float MAX_TREE_ELEVATION = 145F;
+
     private static final int MAX_NR_UNIQUE_TREE_MODELS = 5;
 
     private final Random rand = new Random(RAND_SEED);
@@ -88,7 +93,10 @@ public class TreeSupplier implements Supplier<Tree> {
             final Point2D coords = new Point2D(
                     rand.nextDouble() * bounds.getWidth() + bounds.getX(),
                     rand.nextDouble() * bounds.getHeight() + bounds.getY());
-            if (checkForbidden(coords) || checkAreaIsTooSteep(coords) || checkAreaIsUnderWater(coords)) {
+            if (checkForbidden(coords)
+                    || checkAreaIsTooSteep(coords)
+                    || checkAreaIsUnderWater(coords)
+                    || checkAreaIsAboveTreeLine(coords)) {
                 continue;
             }
             addForbiddenArea(coords.getX() - TREE_CLEARING_RADIUS,
@@ -128,6 +136,10 @@ public class TreeSupplier implements Supplier<Tree> {
 
     private boolean checkAreaIsUnderWater(final Point2D coords) {
         return heightMap.heightAt(coords.getX(), coords.getY()) < 0f;
+    }
+
+    private boolean checkAreaIsAboveTreeLine(final Point2D coords) {
+        return heightMap.heightAt(coords.getX(), coords.getY()) > MAX_TREE_ELEVATION;
     }
 
 }
