@@ -6,7 +6,6 @@
  */
 package robot;
 
-import Texture.ImplementedTexture;
 import bodies.BufferManager;
 import javax.media.opengl.GL2;
 import robot.bender.Arm;
@@ -28,9 +27,6 @@ public class RobotFactory {
     private final robot.bender.Limb benderLimb;
     private final robot.bender.Torso benderTorso;
 
-    /**
-     * Constructor.
-     */
     public RobotFactory() {
         this.benderLimb = new Limb();
         this.benderTorso = new Torso();
@@ -53,13 +49,18 @@ public class RobotFactory {
     /**
      * Constructs a new instance of Robot using the given material.
      *
-     * @param material    The material this robot consists of, used for lighting
-     *                    calculations.
+     * @param backNumber The robot's runner number. These don't have to be
+     *                   unique, though that'd certainly make more sense. This
+     *                   number determines the texture on the robot body's back.
+     *                   If no such texture exists, no texture will be used for
+     *                   this robot.
+     * @param material   The material this robot consists of, used for lighting
+     *                   calculations.
      *
      * @return A newly created instance of Robot.
      */
-    public Robot makeBender(Material material) {
-        return new Robot(material, makeBenderBody());
+    public Robot makeBender(int backNumber, Material material) {
+        return new Robot(material, makeBenderBody(backNumber));
     }
 
     /**
@@ -70,19 +71,24 @@ public class RobotFactory {
      * overwritten every game tick. For regular use, consider using
      * {@link #makeBender(robotrace.Material)}.
      *
-     * @param material  The material this robot consists of, used for lighting
-     *                  calculations.
-     * @param position  The initial position of this robot relative to the
-     *                  world.
-     * @param direction The initial direction of this robot, IE which way it's
-     *                  facing. This is relative to the global axis system.
+     * @param backNumber The robot's runner number. These don't have to be
+     *                   unique, though that'd certainly make more sense. This
+     *                   number determines the texture on the robot body's back.
+     *                   If no such texture exists, no texture will be used for
+     *                   this robot.
+     * @param material   The material this robot consists of, used for lighting
+     *                   calculations.
+     * @param position   The initial position of this robot relative to the
+     *                   world.
+     * @param direction  The initial direction of this robot, IE which way it's
+     *                   facing. This is relative to the global axis system.
      *
      * @return A newly created instance of Robot.
      *
      * @see #makeBender(Material)
      */
-    public Robot makeBenderAt(Material material, Vector position, Vector direction) {
-        final Robot robot = new Robot(material, RobotFactory.this.makeBenderBody());
+    public Robot makeBenderAt(int backNumber, Material material, Vector position, Vector direction) {
+        final Robot robot = new Robot(material, RobotFactory.this.makeBenderBody(backNumber));
         robot.setPosition(position);
         robot.setDirection(direction);
         return robot;
@@ -91,9 +97,14 @@ public class RobotFactory {
     /**
      * Create a body for bender.
      *
+     * @param backNumber The robot's runner number. These don't have to be
+     *                   unique, though that'd certainly make more sense. This
+     *                   number determines the texture on the robot body's back.
+     *                   If no such texture exists, no texture will be used for
+     *                   this robot.
      * @return The newly created body of bender.
      */
-    private Bender makeBenderBody() {
+    private Bender makeBenderBody(int backNumber) {
         final Leg rightLeg = new Leg(benderLimb, 0F);
         final Leg leftLeg = new Leg(benderLimb, 0.5F);
         final Arm rightArm = new Arm(benderLimb, 0.5F, Vector.Y, Vector.Z.scale(-1));
@@ -101,7 +112,7 @@ public class RobotFactory {
         final Animation animation = new Animation();
         animation.addAnimationType(AnimationType.RUNNING, Bender.ANIM_RUNNING_CONSTANT / 1.5F);
         animation.setDefaultAnimation(AnimationType.RUNNING);
-        return new Bender(animation, benderTorso, rightLeg, leftLeg, rightArm, leftArm);
+        return new Bender(animation, benderTorso, rightLeg, leftLeg, rightArm, leftArm, backNumber);
     }
 
 }

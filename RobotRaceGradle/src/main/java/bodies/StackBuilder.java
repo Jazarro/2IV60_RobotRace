@@ -10,6 +10,7 @@ import Texture.ImplementedTexture;
 import bodies.assembly.StackAssembler;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.util.ArrayList;
 import java.util.List;
 import javax.media.opengl.GL2;
 
@@ -30,6 +31,7 @@ public class StackBuilder {
     private ImplementedTexture textureTop = null;
     private ImplementedTexture textureBottom = null;
     private ImplementedTexture textureSide = null;
+    private List<Shape> texturedShapes = new ArrayList<>();
 
     /**
      * Construct a new SimpleBody.StackBuilder. This builder can be used to
@@ -42,6 +44,18 @@ public class StackBuilder {
     public StackBuilder(BufferManager.Initialiser bmInitialiser) {
         this.bmInitialiser = bmInitialiser;
         this.assembler = new StackAssembler();
+    }
+
+    /**
+     * During the {@link #build()} call, the Shapes that have textures in them
+     * will be stored. This getter retrieves those shapes. You can use these
+     * handles to for instance swap out textures.
+     *
+     * @return A list of all Shapes in the constructed SimpleBody that have an
+     *         ImplementedTexture.
+     */
+    public List<Shape> getTexturedShapes() {
+        return texturedShapes;
     }
 
     /**
@@ -74,7 +88,11 @@ public class StackBuilder {
         for (int i = 0; i < indexBufferNames.length; i++) {
             final int shapeMode = surfaceTypeList.get(i) ? GL2.GL_POLYGON : GL2.GL_QUAD_STRIP;
             final ImplementedTexture texture = textureList.get(i);
-            simpleBody.addShape(new Shape(indexBufferNames[i], indicesBufferList.get(i).capacity(), shapeMode).setTexture(texture));
+            final Shape shape = new Shape(indexBufferNames[i], indicesBufferList.get(i).capacity(), shapeMode).setTexture(texture);
+            if (texture != null) {
+                texturedShapes.add(shape);
+            }
+            simpleBody.addShape(shape);
         }
         return simpleBody;
     }

@@ -7,12 +7,14 @@
 package robot.bender;
 
 import Texture.ImplementedTexture;
-import bodies.Body;
 import bodies.BufferManager;
+import bodies.Shape;
 import bodies.SimpleBody;
 import bodies.SingletonDrawable;
 import bodies.StackBuilder;
 import com.jogamp.opengl.util.gl2.GLUT;
+import java.util.ArrayList;
+import java.util.List;
 import javax.media.opengl.GL2;
 import robot.Animation;
 import robot.RobotBody;
@@ -128,15 +130,26 @@ public class Torso implements SingletonDrawable {
      */
     public static final float SHOULDER_OFFCENTER = 0.2F;
 
-    private Body torsoBody;
-    private static ImplementedTexture defaultTexture;
+    /**
+     * One or more textures that will be printed on the robots' backs. These
+     * must correspond to their back numbers. At least one texture must be
+     * given, or an exception will occur during initialisation. Additionally;
+     * the textures must be given in order of back-number. The texture at index
+     * zero will be used for the zero'th robot, etc.
+     */
+    private final List<ImplementedTexture> backTextures = new ArrayList<>();
+    private SimpleBody torsoBody;
+    private Shape back;
 
     @Override
     public void initialize(GL2 gl, BufferManager.Initialiser bmInitialiser) {
-        defaultTexture = new ImplementedTexture(gl, "number1.png", true, false);
-        torsoBody = new StackBuilder(bmInitialiser)
+        backTextures.add(new ImplementedTexture(gl, "number1.png", true, false));
+        backTextures.add(new ImplementedTexture(gl, "number2.png", true, false));
+        backTextures.add(new ImplementedTexture(gl, "number3.png", true, false));
+        backTextures.add(new ImplementedTexture(gl, "number4.png", true, false));
+        final StackBuilder builder = new StackBuilder(bmInitialiser)
                 .setSliceCount(SLICE_COUNT)
-                .setTextures(null, null, defaultTexture)
+                .setTextures(null, null, backTextures.get(0))
                 .addConicalFrustum(RADIUS_HIPS, RADIUS_TORSO, HEIGHT_PELVIS, HEIGHT_TORSO, true, false)
                 .setTextures(null, null, null)
                 .addConicalFrustum(RADIUS_TORSO, RADIUS_NECK, HEIGHT_TORSO, HEIGHT_NECK, false, false)
@@ -145,8 +158,9 @@ public class Torso implements SingletonDrawable {
                 .addPartialTorus(STACK_COUNT, RADIUS_ANTENNA_BOTTOM, RADIUS_ANTENNA_MIDDLE, HEIGHT_ANTENNA_BOTTOM, HEIGHT_ANTENNA_MIDDLE, false, false)
                 .addConicalFrustum(RADIUS_ANTENNA_MIDDLE, RADIUS_ANTENNA_TOP, HEIGHT_ANTENNA_MIDDLE, HEIGHT_ANTENNA_TOP, false, false)
                 .addPartialTorus(STACK_COUNT, RADIUS_ANTENNA_TOP, RADIUS_ANTENNA_BALL_MIDDLE, HEIGHT_ANTENNA_TOP, HEIGHT_ANTENNA_BALL_MIDDLE, false, false)
-                .addPartialTorus(STACK_COUNT, RADIUS_ANTENNA_BALL_MIDDLE, RADIUS_ANTENNA_BALL_TOP, HEIGHT_ANTENNA_BALL_MIDDLE, HEIGHT_ANTENNA_BALL_TOP, false, false)
-                .build();
+                .addPartialTorus(STACK_COUNT, RADIUS_ANTENNA_BALL_MIDDLE, RADIUS_ANTENNA_BALL_TOP, HEIGHT_ANTENNA_BALL_MIDDLE, HEIGHT_ANTENNA_BALL_TOP, false, false);
+        this.torsoBody = builder.build();
+        this.back = builder.getTexturedShapes().get(0);
     }
 
     /**
@@ -160,9 +174,13 @@ public class Torso implements SingletonDrawable {
      *                    rather than a solid body.
      * @param animation   An instance of animation, containing information about
      *                    at what point in the animation period the torso is at.
-     * @param backTexture The texture of the robot.
+     * @param backNumber  The robot's runner number. These don't have to be
+     *                    unique, though that'd certainly make more sense. This
+     *                    number determines the texture on the robot body's
+     *                    back. If no such texture exists, no texture will be
+     *                    used for this robot.
      */
-    public void draw(GL2 gl, GLUT glut, boolean stickFigure, Animation animation, ImplementedTexture backTexture) {
+    public void draw(GL2 gl, GLUT glut, boolean stickFigure, Animation animation, int backNumber) {
         switch (animation.getCurrentAnimationType()) {
             case RUNNING:
                 applyRunningTransformation(gl, animation);
@@ -176,11 +194,25 @@ public class Torso implements SingletonDrawable {
             drawStickFigurePelvis(gl, glut, bodyHeight);
             drawStickFigureShoulders(gl, glut);
         } else {
-            ((SimpleBody) (torsoBody)).changeTexture(defaultTexture, backTexture);
-            defaultTexture = backTexture;
+            back.setTexture(getCurrentTexture(backNumber));
             torsoBody.draw(gl);
         }
         drawEyes(gl, glut);
+    }
+
+    /**
+     * Gets the currently relevant back texture based on the back number. If the
+     * texture for that number doesn't exist, this returns null.
+     *
+     * @param backNumber The back number for which to find a texture.
+     * @return The texture that should be printed on this Torso's back.
+     */
+    private ImplementedTexture getCurrentTexture(int backNumber) {
+        if (backNumber >= 0 && backNumber < backTextures.size()) {
+            return backTextures.get(backNumber);
+        } else {
+            return null;
+        }
     }
 
     private void applyRunningTransformation(GL2 gl, Animation animation) {

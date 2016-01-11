@@ -6,7 +6,6 @@
  */
 package robot.bender;
 
-import Texture.ImplementedTexture;
 import com.jogamp.opengl.util.gl2.GLUT;
 import javax.media.opengl.GL2;
 import robot.Animation;
@@ -43,33 +42,28 @@ public class Bender implements RobotBody {
     private final Leg leftLeg;
     private final Arm rightArm;
     private final Arm leftArm;
-
-    private static ImplementedTexture defaultTexture;
+    private final int backNumber;
 
     //TODO: docs
-    public Bender(Animation animation, Torso torso, Leg rightLeg, Leg leftLeg, Arm rightArm, Arm leftArm) {
+    public Bender(Animation animation, Torso torso, Leg rightLeg, Leg leftLeg, Arm rightArm, Arm leftArm, int backNumber) {
         this.animation = animation;
         this.torso = torso;
         this.rightLeg = rightLeg;
         this.leftLeg = leftLeg;
         this.rightArm = rightArm;
         this.leftArm = leftArm;
+        this.backNumber = backNumber;
     }
 
     @Override
     public void draw(GL2 gl, GLUT glut, boolean stickFigure, float tAnim) {
-        defaultTexture = new ImplementedTexture(gl, "number1.png", true, false);
-        draw(gl, glut, stickFigure, tAnim, defaultTexture);
-    }
-
-    public void draw(GL2 gl, GLUT glut, boolean stickFigure, float tAnim, ImplementedTexture backTexture) {
         animation.update(tAnim);
         gl.glPushMatrix();
         {
             final double legHeight = Limb.HEIGHT_OUTER_SEGMENT * Limb.RING_COUNT + Limb.HEIGHT_FOOT;
             gl.glTranslated(0d, 0d, legHeight);
 
-            torso.draw(gl, glut, stickFigure, animation, backTexture);
+            torso.draw(gl, glut, stickFigure, animation, backNumber);
 
             gl.glPushMatrix();
             {

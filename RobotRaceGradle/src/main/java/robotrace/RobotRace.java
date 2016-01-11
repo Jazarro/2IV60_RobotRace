@@ -6,7 +6,6 @@
  */
 package robotrace;
 
-import Texture.ImplementedTexture;
 import bodies.BufferManager;
 import java.util.Arrays;
 import javax.media.opengl.GL;
@@ -86,8 +85,6 @@ public class RobotRace extends Base {
     private final Robot[] robots;
     private final RaceTrack[] raceTracks;
 
-    private ImplementedTexture[] robotTextures;
-
     private double tPrevious = 0d;
 
     /**
@@ -102,10 +99,10 @@ public class RobotRace extends Base {
 
     private void setupObjects() {
 
-        robots[0] = robotFactory.makeBender(Material.GOLD);
-        robots[1] = robotFactory.makeBender(Material.SILVER);
-        robots[2] = robotFactory.makeBender(Material.WOOD);
-        robots[3] = robotFactory.makeBender(Material.PLASTIC_ORANGE);
+        robots[0] = robotFactory.makeBender(0, Material.GOLD);
+        robots[1] = robotFactory.makeBender(1, Material.SILVER);
+        robots[2] = robotFactory.makeBender(2, Material.WOOD);
+        robots[3] = robotFactory.makeBender(3, Material.PLASTIC_ORANGE);
 
         robots[0].setSpeed(3d);
         robots[1].setSpeed(3d);
@@ -158,13 +155,6 @@ public class RobotRace extends Base {
         terrain.initialize(gl, bmInitialiser);
         camera.initialize(Arrays.asList(robots));
 
-        robotTextures = new ImplementedTexture[]{
-            new ImplementedTexture(gl, "number1.png", true, false),
-            new ImplementedTexture(gl, "number2.png", true, false),
-            new ImplementedTexture(gl, "number3.png", true, false),
-            new ImplementedTexture(gl, "number4.png", true, false)
-        };
-
         bmInitialiser.finish();
     }
 
@@ -173,7 +163,6 @@ public class RobotRace extends Base {
      */
     @Override
     public void setView() {
-        lighting.setView(gl);
         // Update the view according to the camera mode and robot of interest.
         // For camera modes 1 to 4, determine which robot to focus on.
         camera.update(gs, Arrays.asList(robots));
@@ -192,6 +181,7 @@ public class RobotRace extends Base {
         gl.glMatrixMode(GL_MODELVIEW);
         //Load the identity matrix.
         gl.glLoadIdentity();
+        lighting.setView(gl);
 
         camera.setLookAt(glu);
     }
@@ -218,9 +208,9 @@ public class RobotRace extends Base {
 
         //Draw the robots.
         for (int i = 0; i < robots.length; i++) {
-            Robot robot = robots[i];
+            final Robot robot = robots[i];
             robot.update(raceTrack, gs.tAnim - tPrevious);
-            robot.draw(gl, glut, gs.showStick, gs.tAnim, lighting, robotTextures[i]);
+            robot.draw(gl, glut, gs.showStick, gs.tAnim, lighting);
         }
 
         // Draw the race track.

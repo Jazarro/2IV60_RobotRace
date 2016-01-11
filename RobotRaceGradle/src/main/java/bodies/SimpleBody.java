@@ -32,15 +32,13 @@ public class SimpleBody implements Body {
         shapes.add(shape);
     }
 
+    @Deprecated//No longer used or needed.
     public void changeTexture(ImplementedTexture textureOld, ImplementedTexture textureNew) {
-        for (Shape shape : shapes) {
-            if (shape.getTexture() != null) {
-                System.out.println(shape.getTexture().getOriginalFilename());
-                if (shape.getTexture().getOriginalFilename() == null ? textureOld.getOriginalFilename() == null : shape.getTexture().getOriginalFilename().equals(textureOld.getOriginalFilename())) {
+        shapes.stream().filter((shape) -> (shape.getTexture() != null)).filter((shape) -> (shape.getTexture().getOriginalFilename() == null 
+                ? textureOld.getOriginalFilename() == null
+                : shape.getTexture().getOriginalFilename().equals(textureOld.getOriginalFilename()))).forEach((shape) -> {
                     shape.setTexture(textureNew);
-                }
-            }
-        }
+        });
     }
 
     @Override
