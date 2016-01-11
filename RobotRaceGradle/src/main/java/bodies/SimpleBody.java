@@ -6,7 +6,6 @@
  */
 package bodies;
 
-import Texture.ImplementedTexture;
 import java.util.HashSet;
 import java.util.Set;
 import javax.media.opengl.GL2;
@@ -30,17 +29,6 @@ public class SimpleBody implements Body {
      */
     public void addShape(Shape shape) {
         shapes.add(shape);
-    }
-
-    @Deprecated//No longer used or needed.
-    public void changeTexture(ImplementedTexture textureOld, ImplementedTexture textureNew) {
-        for (Shape shape : shapes) {
-            if (shape.getTexture() != null) {
-                if (shape.getTexture().getOriginalFilename() == null ? textureOld.getOriginalFilename() == null : shape.getTexture().getOriginalFilename().equals(textureOld.getOriginalFilename())) {
-                    shape.setTexture(textureNew);
-                }
-            }
-        }
     }
 
     @Override

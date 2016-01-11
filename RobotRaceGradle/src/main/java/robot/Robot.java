@@ -17,6 +17,7 @@ import robotrace.Vector;
  * Represents a Robot, to be implemented according to the Assignments.
  *
  * @author Arjan Boschman
+ * @author Robke Geenen
  */
 public class Robot {
 

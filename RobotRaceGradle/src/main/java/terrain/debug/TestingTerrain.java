@@ -11,17 +11,16 @@ import com.jogamp.opengl.util.gl2.GLUT;
 import java.util.ArrayList;
 import java.util.List;
 import javax.media.opengl.GL2;
-import Camera.Camera;
 import robotrace.Lighting;
 import robotrace.Material;
 import robotrace.Vector;
 import terrain.Terrain;
 
 /**
- * Terrain made for measuring robot velocities.
+ * Terrain made for measuring robot velocities. It's got some handy evenly
+ * spaced stripes to help get a good idea of velocities.
  *
  * @author Arjan Boschman
- * @author Robke Geenen
  */
 @Deprecated
 public class TestingTerrain extends Terrain {

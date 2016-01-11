@@ -66,6 +66,12 @@ public class FractalTerrainGenerator implements HeightMap {
         divide(max);
     }
 
+    /**
+     * Recursive method that divides the terrain into ever smaller surfaces and
+     * performs the square-diamond steps on them.
+     *
+     * @param size The size to apply.
+     */
     private void divide(int size) {
         final int half = size / 2;
         final float scale = roughness * size;

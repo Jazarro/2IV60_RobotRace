@@ -1,3 +1,9 @@
+/*
+ * Course: Computer Graphics
+ * Course Code: 2IV60
+ * Assignment: RobotRace
+ * Students: Arjan Boschman & Robke Geenen
+ */
 package racetrack;
 
 import Texture.ImplementedTexture;
@@ -6,6 +12,10 @@ import java.util.List;
 import javax.media.opengl.GL2;
 import robotrace.Vector;
 
+/**
+ * 
+ * @author Robke Geenen
+ */
 public class RaceTrackDefinition {
 
     public static final int RTD_TEST = 0;

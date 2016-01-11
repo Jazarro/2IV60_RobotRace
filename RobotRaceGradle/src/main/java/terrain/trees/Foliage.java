@@ -43,10 +43,27 @@ public class Foliage implements SingletonDrawable {
                 .build();
     }
 
+    /**
+     * Draws a leaf at the current transformation.
+     *
+     * @param gl The instance of GL2 responsible for drawing the body.
+     */
     public void drawLeaf(GL2 gl) {
         leaf.draw(gl);
     }
 
+    /**
+     * Draws a branch at the current transformation. The level of detail (IE the
+     * number of faces) on the branch depends on the given detail level.
+     *
+     * @param gl                  The instance of GL2 responsible for drawing
+     *                            the body.
+     * @param requiredDetailLevel The required level of detail. This is an
+     *                            arbitrary scale, a number between 0 (incl) and
+     *                            3 (excl) is expected. Any other number will be
+     *                            interpreted as 3 instead. The higher the
+     *                            number, the higher the detail level.
+     */
     public void drawBranch(GL2 gl, int requiredDetailLevel) {
         switch (requiredDetailLevel) {
             case 0:

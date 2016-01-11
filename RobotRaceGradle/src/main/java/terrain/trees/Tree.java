@@ -72,6 +72,9 @@ public class Tree {
         }
     }
 
+    /**
+     * A branch or leaf on this tree.
+     */
     @SuppressWarnings("PublicInnerClass")
     public static class Node {
 
@@ -84,15 +87,56 @@ public class Tree {
         private final boolean isLeaf;
         private final float sidewaysTranslation;
 
+        /**
+         * This constructor overload is meant for creating leaf nodes.
+         *
+         * @param zTranslation        The translation in the z direction,
+         *                            relative to the branch that this node is
+         *                            on.
+         * @param scale               The scaling vector. This is absolute, NOT
+         *                            relative to the scaling of the previous
+         *                            branch.
+         * @param zRotation           The rotation around the Z-axis relative to
+         *                            the parent branch in degrees. This is in
+         *                            effect the rotation around the parent
+         *                            branch.
+         * @param yRotation           The rotation around the Y-axis relative to
+         *                            the parent branch in degrees. The is in
+         *                            effect the angle between this node and the
+         *                            parent branch, if one imagines both in the
+         *                            same plane.
+         * @param sidewaysTranslation The translation sideways. This is
+         *                            especially for leafs, since it doesn't
+         *                            look good if they start out in the center
+         *                            of the parent branch.
+         */
         public Node(float zTranslation, Vector scale, float zRotation, float yRotation, float sidewaysTranslation) {
             this(zTranslation, scale, zRotation, yRotation, new HashSet<>(0), new HashSet<>(0), true, sidewaysTranslation);
         }
 
+        /**
+         * This constructor overload is meant for creating branch nodes.
+         *
+         * @param zTranslation  The translation in the z direction, relative to
+         *                      the branch that this node is on.
+         * @param scale         The scaling vector. This is absolute, NOT
+         *                      relative to the scaling of the previous branch.
+         * @param zRotation     The rotation around the Z-axis relative to the
+         *                      parent branch in degrees. This is in effect the
+         *                      rotation around the parent branch.
+         * @param yRotation     The rotation around the Y-axis relative to the
+         *                      parent branch in degrees. The is in effect the
+         *                      angle between this node and the parent branch,
+         *                      if one imagines both in the same plane.
+         * @param childLeafs    A set of leaf nodes attached to this branch.
+         * @param childBranches A set of child branch nodes attached to this
+         *                      branch.
+         */
         public Node(float zTranslation, Vector scale, float zRotation, float yRotation, Set<Node> childLeafs, Set<Node> childBranches) {
             this(zTranslation, scale, zRotation, yRotation, childLeafs, childBranches, false, 0);
         }
 
-        public Node(float zTranslation, Vector scale, float zRotation, float yRotation, Set<Node> childLeafs, Set<Node> childBranches, boolean isLeaf, float sidewaysTranslation) {
+        private Node(float zTranslation, Vector scale, float zRotation, float yRotation, Set<Node> childLeafs, Set<Node> childBranches, boolean isLeaf, float sidewaysTranslation) {
             this.zTranslation = zTranslation;
             this.scale = scale;
             this.zRotation = zRotation;

@@ -108,6 +108,13 @@ public class TreeSupplier implements Supplier<Tree> {
         }
     }
 
+    /**
+     * Check if this supplier has already generated the maximum allotted number
+     * of tree types. If yes, then return a randomly selected trunk from the
+     * cache. Otherwise, generate a new trunk and cache it before returning it.
+     *
+     * @return The root node of a tree.
+     */
     private Tree.Node getTreeTrunk() {
         if (cachedTreeTrunks.size() < MAX_NR_UNIQUE_TREE_MODELS) {
             final Tree.Node trunk = treeGenerator.makeTreeTrunk();
@@ -118,10 +125,24 @@ public class TreeSupplier implements Supplier<Tree> {
         }
     }
 
+    /**
+     * Check if it is allowed to generate a tree at the given location.
+     *
+     * @param coords The point to check.
+     * @return True if the given coordinates are inside one of the forbidden
+     *         areas and are thus illegible.
+     */
     private boolean checkForbidden(final Point2D coords) {
         return forbiddenAreas.stream().anyMatch((rect) -> rect.contains(coords));
     }
 
+    /**
+     * Check if it is allowed to generate a tree at the given location.
+     *
+     * @param coords The point to check.
+     * @return True if the given coordinates are on a steep hill and are thus
+     *         illegible.
+     */
     private boolean checkAreaIsTooSteep(final Point2D coords) {
         final float center = heightMap.heightAt(coords.getX(), coords.getY());
         final float north = heightMap.heightAt(coords.getX(), coords.getY() - 1d);
@@ -134,10 +155,24 @@ public class TreeSupplier implements Supplier<Tree> {
                 || Math.abs(center - east) > MAX_DECLINATION;
     }
 
+    /**
+     * Check if it is allowed to generate a tree at the given location.
+     *
+     * @param coords The point to check.
+     * @return True if the given coordinates are underwater and are thus
+     *         illegible.
+     */
     private boolean checkAreaIsUnderWater(final Point2D coords) {
         return heightMap.heightAt(coords.getX(), coords.getY()) < 0f;
     }
 
+    /**
+     * Check if it is allowed to generate a tree at the given location.
+     *
+     * @param coords The point to check.
+     * @return True if the given coordinates are above the tree line and are
+     *         thus illegible.
+     */
     private boolean checkAreaIsAboveTreeLine(final Point2D coords) {
         return heightMap.heightAt(coords.getX(), coords.getY()) > MAX_TREE_ELEVATION;
     }

@@ -1,8 +1,18 @@
+/*
+ * Course: Computer Graphics
+ * Course Code: 2IV60
+ * Assignment: RobotRace
+ * Students: Arjan Boschman & Robke Geenen
+ */
 package racetrack;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 
+ * @author Robke Geenen
+ */
 class RaceTrackDistances {
 
     private final List<RaceTrackDistanceT> raceTrackDistances;

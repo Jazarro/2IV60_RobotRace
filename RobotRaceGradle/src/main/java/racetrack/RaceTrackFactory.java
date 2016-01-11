@@ -12,6 +12,10 @@ import java.util.List;
 import javax.media.opengl.GL2;
 import static racetrack.RaceTrackDefinition.getMaxTypeID;
 
+/**
+ * 
+ * @author Robke Geenen
+ */
 public class RaceTrackFactory {
 
     private final List<RaceTrack> raceTrackTypes = new ArrayList<>();

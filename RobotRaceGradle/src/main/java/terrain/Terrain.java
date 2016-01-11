@@ -29,7 +29,13 @@ import terrain.trees.TreeSupplier;
  */
 public class Terrain {
 
+    /**
+     * The translation of the terrain relative to the world origin.
+     */
     private static final Vector TERRAIN_LEVEL = new Vector(0d, 0d, -145d);
+    /**
+     * The translation of the water relative to the world origin.
+     */
     private static final float WATER_LEVEL = 0f;
     private static final String TERRAIN_TEXTURE_FILENAME = "terrain.png";
 
