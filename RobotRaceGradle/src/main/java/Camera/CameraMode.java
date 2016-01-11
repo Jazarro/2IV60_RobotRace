@@ -42,8 +42,18 @@ public class CameraMode {
         } else {
             this.fovAngle = fovAngle;
         }
-        this.planeNear = 0.1f * dist;
-        this.planeFar = Math.max(MIN_FAR_PLANE_DIST, 10f * dist);
+        final float planeNearNew = 0.1f * dist;
+        final float planeFarNew = Math.max(MIN_FAR_PLANE_DIST, 10f * dist);
+        if (planeNearNew <= 0f) {
+            this.planeNear = 1f;
+        } else {
+            this.planeNear = planeNearNew;
+        }
+        if (planeFarNew <= 0f) {
+            this.planeFar = 1f;
+        } else {
+            this.planeFar = planeFarNew;
+        }
     }
 
     private CameraMode(Vector eye, Vector center, Vector up, float fovAngle, float planeNear, float planeFar) {
