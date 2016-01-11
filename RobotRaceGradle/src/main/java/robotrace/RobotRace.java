@@ -187,8 +187,7 @@ public class RobotRace extends Base {
         }
 
         //Draw the robots.
-        for (int i = 0; i < robots.length; i++) {
-            final Robot robot = robots[i];
+        for (Robot robot : robots) {
             robot.update(raceTrack, gs.tAnim - tPrevious);
             robot.draw(gl, glut, gs.showStick, gs.tAnim, lighting);
         }
