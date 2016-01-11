@@ -11,16 +11,16 @@ package robot;
  * implements its own versions of these animations.
  *
  * Robot bodies don't necessarily need to provide implementations for all
- * animations. If a robot body is assigned a animation it doesn't support, it will
- * default to the IDLE animation instead. IDLE is therefore an exception
- * to the rule; all robot bodies all obliged to support it.
+ * animations. If a robot body is assigned a animation it doesn't support, it
+ * will default to the IDLE animation instead. IDLE is therefore an exception to
+ * the rule; all robot bodies all obliged to support it.
  *
  * @author Arjan Boschman
  */
 public enum AnimationType {
     /**
-     * The default animation type. Just standing around, doing nothing. All robot bodies
-     * must implement at least this animation.
+     * The default animation type. Just standing around, doing nothing. All
+     * robot bodies must implement at least this animation.
      */
     IDLE,
     /**

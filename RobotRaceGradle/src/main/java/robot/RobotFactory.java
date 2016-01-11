@@ -105,12 +105,12 @@ public class RobotFactory {
      * @return The newly created body of bender.
      */
     private Bender makeBenderBody(int backNumber) {
-        final Leg rightLeg = new Leg(benderLimb, 0F);
-        final Leg leftLeg = new Leg(benderLimb, 0.5F);
-        final Arm rightArm = new Arm(benderLimb, 0.5F, Vector.Y, Vector.Z.scale(-1));
-        final Arm leftArm = new Arm(benderLimb, 0F, Vector.Y.scale(-1), Vector.Z);
+        final Leg rightLeg = new Leg(benderLimb, 0f);
+        final Leg leftLeg = new Leg(benderLimb, 0.5f);
+        final Arm rightArm = new Arm(benderLimb, 0.5f, Vector.Y, Vector.Z.scale(-1d));
+        final Arm leftArm = new Arm(benderLimb, 0f, Vector.Y.scale(-1d), Vector.Z);
         final Animation animation = new Animation();
-        animation.addAnimationType(AnimationType.RUNNING, Bender.ANIM_RUNNING_CONSTANT / 1.5F);
+        animation.addAnimationType(AnimationType.RUNNING, Bender.ANIM_RUNNING_CONSTANT / 1.5f);
         animation.setDefaultAnimation(AnimationType.RUNNING);
         return new Bender(animation, benderTorso, rightLeg, leftLeg, rightArm, leftArm, backNumber);
     }

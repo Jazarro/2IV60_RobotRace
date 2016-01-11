@@ -19,7 +19,6 @@ import static racetrack.RaceTrackDefinition.*;
 import robotrace.Lighting;
 import robotrace.Material;
 import robotrace.Vector;
-import terrain.Terrain;
 
 /**
  * Implementation of a race track that is made from Bezier segments.
@@ -124,6 +123,9 @@ public class RaceTrack implements SingletonDrawable {
 
     /**
      * Draws this track, based on the control points.
+     *
+     * @param gl
+     * @param lighting
      */
     public void draw(GL2 gl, Lighting lighting) {
         lighting.setMaterial(gl, Material.NONE);

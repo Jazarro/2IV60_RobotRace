@@ -21,7 +21,9 @@ import terrain.Terrain;
  * Terrain made for measuring robot velocities.
  *
  * @author Arjan Boschman
+ * @author Robke Geenen
  */
+@Deprecated
 public class TestingTerrain extends Terrain {
 
     /**
@@ -50,7 +52,7 @@ public class TestingTerrain extends Terrain {
         final Material material = i % 2 == 0 ? Material.BOULDER : Material.DIRT;
         return new Shape(translation, Vector.O, 0, scaling, material);
     }
-    
+
     private Shape makeWallShape(int i) {
         final Vector translation = new Vector(i * 0.1F, 0.5F, 1);
         final Vector scaling = new Vector(0.1F, 1, 2);

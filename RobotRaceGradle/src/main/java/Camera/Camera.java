@@ -33,13 +33,18 @@ public class Camera {
     private int camModePrevious = 0;
 
     public void initialize(GlobalState gs, List<Robot> robots) {
-        viewPrevious = new CameraView(gs, robots, robots.get((int) Math.floor(Math.random() * robots.size())), (int) Math.floor(Math.random() * 3));
-        viewNext = new CameraView(gs, robots, robots.get((int) Math.floor(Math.random() * robots.size())), (int) Math.floor(Math.random() * 3));
+        viewPrevious = generateCameraView(gs, robots);
+        viewNext = generateCameraView(gs, robots);
     }
 
     /**
      * Updates the camera viewpoint and direction based on the selected camera
      * mode.
+     *
+     * @param gl
+     * @param glu
+     * @param gs
+     * @param robots
      */
     public void update(GL2 gl, GLU glu, GlobalState gs, List<Robot> robots) {
         final double deltaTime = gs.tAnim - tPrevious;
@@ -49,7 +54,7 @@ public class Camera {
             tAutoSwitch = 0d;
             camModePrevious = gs.camMode;
             viewPrevious = viewNext;
-            viewNext = new CameraView(gs, robots, robots.get((int) Math.floor(Math.random() * robots.size())), ((int) Math.floor(Math.random() * 3d)) + 1);
+            viewNext = generateCameraView(gs, robots);
         }
         viewPrevious.update(gs, robots);
         viewNext.update(gs, robots);
@@ -64,6 +69,10 @@ public class Camera {
 
     public Vector getCamPos() {
         return modeCurrent.getEye();
+    }
+
+    private CameraView generateCameraView(GlobalState gs, List<Robot> robots) {
+        return new CameraView(gs, robots, robots.get((int) Math.floor(Math.random() * robots.size())), ((int) Math.floor(Math.random() * 3d)) + 1);
     }
 
 }

@@ -14,7 +14,7 @@ import java.util.Map;
  * @author Arjan Boschman
  */
 public class Animation {
-    
+
     private final Map<AnimationType, Float> supportedAnims = new HashMap<>();
 
     private final AnimationTimer animationTimer;
@@ -24,7 +24,7 @@ public class Animation {
 
     public Animation() {
         this.animationTimer = new AnimationTimer();
-        this.supportedAnims.put(AnimationType.IDLE, -1F);
+        this.supportedAnims.put(AnimationType.IDLE, -1f);
     }
 
     public void addAnimationType(AnimationType animationType, float periodLength) {
@@ -75,6 +75,8 @@ public class Animation {
 
     /**
      * Delegates to {@link AnimationTimer#getLinearInterpolation()}.
+     *
+     * @return
      */
     public float getLinearInterpolation() {
         return animationTimer.getLinearInterpolation();
@@ -82,6 +84,9 @@ public class Animation {
 
     /**
      * Delegates to {@link AnimationTimer#AnimationTimer(float)}.
+     *
+     * @param offset
+     * @return
      */
     public float getLinearInterpolation(float offset) {
         return animationTimer.getLinearInterpolation(offset);

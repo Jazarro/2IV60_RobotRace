@@ -48,41 +48,41 @@ public class TreeGenerator {
      * The minimum scale for trunks. Scale in in the range (0 <= s <= 1) and
      * becomes smaller the deeper one descends into a tree's branches.
      */
-    private static final float MIN_TRUNK_SCALE = 0.5F;
+    private static final float MIN_TRUNK_SCALE = 0.5f;
 
     /**
      * The maximum trunk length. Used along with the scale to position and scale
      * all branches.
      */
-    private static final float MAX_TRUNK_LENGTH = 50;
+    private static final float MAX_TRUNK_LENGTH = 50f;
     /**
      * The maximum trunk radius. Used along with the scale to scale all
      * branches.
      */
-    public static final float MAX_TRUNK_RADIUS = 2.5F;
+    public static final float MAX_TRUNK_RADIUS = 2.5f;
 
     /**
      * The maximum rotation of a node around the Y-axis relative to its parent,
      * in degrees.
      */
-    private static final float MAX_Y_ANGLE = 45;
+    private static final float MAX_Y_ANGLE = 45f;
     /**
      * The maximum rotation of a node around the Z-axis relative to its parent,
      * in degrees.
      */
-    private static final float MAX_Z_ANGLE = 360;
+    private static final float MAX_Z_ANGLE = 360f;
 
     /**
      * The maximum rotation of a trunk node around the Y-axis;
      */
-    private static final float MAX_TRUNK_ANGLE = 5;
+    private static final float MAX_TRUNK_ANGLE = 5f;
 
     private final Random rand = new Random(RAND_SEED);
 
     public Tree.Node makeTreeTrunk() {
         final float trunkYRotation = rand.nextFloat() * MAX_TRUNK_ANGLE;
         final float trunkZRotation = rand.nextFloat() * MAX_Z_ANGLE;
-        return makeBranch(0, Math.max(MIN_TRUNK_SCALE, rand.nextFloat()), 0, trunkZRotation, trunkYRotation);
+        return makeBranch(0, Math.max(MIN_TRUNK_SCALE, rand.nextFloat()), 0f, trunkZRotation, trunkYRotation);
     }
 
     /**
@@ -111,14 +111,14 @@ public class TreeGenerator {
                 final float childYRotation = rand.nextFloat() * MAX_Y_ANGLE;
                 final float childZRotation = rand.nextFloat() * MAX_Z_ANGLE;
                 if (i < nrChildBranches) {
-                    final float translationScaleFactor = rand.nextFloat() * 0.4F + 0.3F;
+                    final float translationScaleFactor = rand.nextFloat() * 0.4f + 0.3f;
                     final float childTranslation = branchLength * translationScaleFactor;
-                    final float childScale = scale * (1 - translationScaleFactor);
+                    final float childScale = scale * (1f - translationScaleFactor);
                     childBranches.add(makeBranch(depth + 1, childScale, childTranslation, childZRotation, childYRotation));
                 } else {
-                    final float translationScaleFactor = rand.nextFloat() * 0.4F + 0.6F;
+                    final float translationScaleFactor = rand.nextFloat() * 0.4f + 0.6f;
                     final float childTranslation = branchLength * translationScaleFactor;
-                    final float sidewaysTranslation = (float) scaleVector.x() * MAX_TRUNK_RADIUS * (1 - translationScaleFactor);
+                    final float sidewaysTranslation = (float) scaleVector.x() * MAX_TRUNK_RADIUS * (1f - translationScaleFactor);
                     childLeafs.add(makeLeaf(childTranslation, childZRotation, childYRotation, sidewaysTranslation));
                 }
             }
@@ -135,7 +135,7 @@ public class TreeGenerator {
     }
 
     private Tree.Node makeLeaf(float translation, float zRotation, float yRotation, float sidewaysTranslation) {
-        return new Tree.Node(translation, new Vector(3, 3, 1), zRotation, yRotation, sidewaysTranslation);
+        return new Tree.Node(translation, new Vector(3d, 3d, 1d), zRotation, yRotation, sidewaysTranslation);
     }
 
 }

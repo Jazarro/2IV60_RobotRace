@@ -233,7 +233,7 @@ public class RaceTrackDefinition {
         }
     }
 
-    private static final class CubicBezierPath {
+    private static class CubicBezierPath {
 
         private final Vector p0;
         private final Vector p1;
@@ -251,7 +251,7 @@ public class RaceTrackDefinition {
             t = clip(t);
             final Vector point = Vector.O
                     .add(p0.scale(Math.pow((1d - t), 3d)))
-                    .add(p1.scale(3d * t * Math.pow((1 - t), 2d)))
+                    .add(p1.scale(3d * t * Math.pow((1d - t), 2d)))
                     .add(p2.scale(3d * (1d - t) * Math.pow(t, 2d)))
                     .add(p3.scale(Math.pow(t, 3d)));
             return point;

@@ -58,22 +58,22 @@ public enum Material {
     /**
      * The ambient RGBA reflectance of the material.
      */
-    final float[] ambient;
+    float[] ambient;
 
     /**
      * The diffuse RGBA reflectance of the material.
      */
-    final float[] diffuse;
+    float[] diffuse;
 
     /**
      * The specular RGBA reflectance of the material.
      */
-    final float[] specular;
+    float[] specular;
 
     /**
      * The specular exponent of the material.
      */
-    final float shininess;
+    float shininess;
 
     /**
      * Constructs a new material using the given properties.
@@ -101,6 +101,27 @@ public enum Material {
         this.diffuse = diffuse;
         this.specular = specular;
         this.shininess = shininess;
+    }
+
+    public Material uniColorize() {
+        ambient = uniColorizeComponent(ambient);
+        diffuse = uniColorizeComponent(diffuse);
+        specular = uniColorizeComponent(specular);
+        return this;
+    }
+
+    private float[] uniColorizeComponent(float[] in) {
+        final float[] out = new float[in.length];
+        float average = 0f;
+        for (int i = 0; i < in.length; i++) {
+            average += in[i];
+        }
+        average /= in.length;
+        for (int i = 0; i < in.length; i++) {
+            out[i] = average;
+        }
+        out[in.length - 1] = in[in.length - 1];
+        return out;
     }
 
 }

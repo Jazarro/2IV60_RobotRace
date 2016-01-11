@@ -4,6 +4,7 @@ import Texture.ImplementedTexture;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import robotrace.Vector;
 
@@ -139,10 +140,10 @@ public class TrackAssembler {
      * @return A list of textures.
      */
     public List<ImplementedTexture> getTextureList() {
-        return textureList;
+        return Collections.unmodifiableList(textureList);
     }
 
-    private static final class TrackSlice {
+    private static class TrackSlice {
 
         private final TrackSliceSide top, bottom, inner, outer;
         float outerTopDistance, outerBottomDistance, centerTopDistance, centerBottomDistance, innerTopDistance, innerBottomDistance;
@@ -336,7 +337,7 @@ public class TrackAssembler {
             return new Surface(vertices, true);
         }
 
-        private static final class TrackSliceSide {
+        private static class TrackSliceSide {
 
             private final Vertex vertex1, vertex2;
 

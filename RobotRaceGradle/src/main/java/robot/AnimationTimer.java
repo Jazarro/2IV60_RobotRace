@@ -23,12 +23,12 @@ public class AnimationTimer {
      * value means the animation hasn't started yet and the next call to
      * {@link #updateTime()} will set the initial value to the current time.
      */
-    private float zeroTime = -1;
+    private float zeroTime = -1f;
     /**
      * The total time elapsed since the start of the current animation period in
      * seconds. This is always a value between 0 and the periodLength.
      */
-    private float totalTimeElapsed = 0;
+    private float totalTimeElapsed = 0f;
 
     /**
      * Resets the Animation's timing to the start of the Animation period.
@@ -39,8 +39,8 @@ public class AnimationTimer {
      */
     public void restart(float periodLength) {
         this.periodLength = periodLength;
-        this.zeroTime = -1;
-        this.totalTimeElapsed = 0;
+        this.zeroTime = -1f;
+        this.totalTimeElapsed = 0f;
     }
 
     /**
@@ -56,12 +56,12 @@ public class AnimationTimer {
      *         the returned value will be even higher than one.
      */
     public int updateTime(float tAnim) {
-        if (periodLength <= 0) {
+        if (periodLength <= 0f) {
             return 0;
         }
-        if (zeroTime <= 0) {
+        if (zeroTime <= 0f) {
             zeroTime = tAnim;
-            totalTimeElapsed = 0;
+            totalTimeElapsed = 0f;
         } else {
             totalTimeElapsed = tAnim - zeroTime;
         }
@@ -87,7 +87,7 @@ public class AnimationTimer {
      * @return The interpolation value between 0 and 1.
      */
     public float getLinearInterpolation() {
-        return getLinearInterpolation(0F);
+        return getLinearInterpolation(0f);
     }
 
     /**
@@ -106,8 +106,8 @@ public class AnimationTimer {
      * @return The interpolation value between 0 and 1.
      */
     public float getLinearInterpolation(float offset) {
-        if (periodLength <= 0) {
-            return 0;
+        if (periodLength <= 0f) {
+            return 0f;
         } else {
             return (totalTimeElapsed + offset * periodLength) % periodLength / periodLength;
         }

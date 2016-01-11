@@ -30,14 +30,14 @@ public class CameraMode {
         this.eye = eye;
         this.center = center;
         this.up = up;
-        if (fovAngle < 1d) {//TODO: Fix FOVAngle
-            this.fovAngle = (float) Math.toDegrees(2d * Math.atan(gs.vDist / (2d * gs.vWidth)));
+        final float dist = (float) center.subtract(eye).length();
+        if (fovAngle < 1d) {
+            this.fovAngle = (float) Math.toDegrees(Math.atan(dist / (2d * gs.vWidth)));
         } else {
             this.fovAngle = fovAngle;
         }
-        final double dist = center.subtract(eye).length();
-        this.planeNear = 0.1f * (float) dist;
-        this.planeFar = (float) Math.max(500, 10f * dist);
+        this.planeNear = 0.1f * dist;
+        this.planeFar = 10f * dist;
     }
 
     private CameraMode(Vector eye, Vector center, Vector up, float fovAngle, float planeNear, float planeFar) {
@@ -54,9 +54,9 @@ public class CameraMode {
                 modeFrom.eye.scale(1d - distance).add(modeTo.eye.scale(distance)),
                 modeFrom.center.scale(1d - distance).add(modeTo.center.scale(distance)),
                 modeFrom.up.scale(1d - distance).add(modeTo.up.scale(distance)),
-                (float)((modeFrom.fovAngle * (1d - distance)) + (modeTo.fovAngle * (distance))),
-                (float)((modeFrom.planeNear * (1d - distance)) + (modeTo.planeNear * (distance))),
-                (float)((modeFrom.planeFar * (1d - distance)) + (modeTo.planeFar * (distance)))
+                (float) ((modeFrom.fovAngle * (1d - distance)) + (modeTo.fovAngle * (distance))),
+                (float) ((modeFrom.planeNear * (1d - distance)) + (modeTo.planeNear * (distance))),
+                (float) ((modeFrom.planeFar * (1d - distance)) + (modeTo.planeFar * (distance)))
         );
     }
 

@@ -49,14 +49,17 @@ public class StackAssembler {
      * Do this by adding a partial torus, because a conical frustum is a partial
      * torus with stackCount equal to one.
      *
-     * @param sliceCount The number of slices (xy plane) that the frustum is
-     *                   divided in, more slices equals a smoother surface.
-     * @param radiusLow  The radius of the lower ring of the frustum.
-     * @param radiusHigh The radius of the higher ring of the frustum.
-     * @param heightLow  The height of the lower ring of the frustum.
-     * @param heightHigh The height of the higher ring of the frustum.
-     * @param closeLow   If the lower ring should be a closed surface.
-     * @param closeHigh  If the higher ring should be a closed surface.
+     * @param sliceCount    The number of slices (xy plane) that the frustum is
+     *                      divided in, more slices equals a smoother surface.
+     * @param radiusLow     The radius of the lower ring of the frustum.
+     * @param radiusHigh    The radius of the higher ring of the frustum.
+     * @param heightLow     The height of the lower ring of the frustum.
+     * @param heightHigh    The height of the higher ring of the frustum.
+     * @param closeLow      If the lower ring should be a closed surface.
+     * @param closeHigh     If the higher ring should be a closed surface.
+     * @param textureTop    The texture for the top of the stack element.
+     * @param textureBottom The texture for the bottom of the stack element.
+     * @param textureSide   The texture for the side of the stack element.
      */
     public void addConicalFrustum(int sliceCount, float radiusLow, float radiusHigh, float heightLow, float heightHigh, boolean closeLow, boolean closeHigh, ImplementedTexture textureTop, ImplementedTexture textureBottom, ImplementedTexture textureSide) {
         addPartialTorus(sliceCount, 1, radiusLow, radiusHigh, heightLow, heightHigh, closeLow, closeHigh, textureTop, textureBottom, textureSide);
@@ -69,21 +72,23 @@ public class StackAssembler {
      * The lower ring and its properties will be ignored and the upper ring from
      * the last command will be used if compatible.
      *
-     * @param sliceCount The number of slices (xy plane) that the torus is
-     *                   divided in, more slices equals a smoother surface.
-     * @param stackCount The number of stacks (z axis) that the torus is divided
-     *                   in, more slices equals a smoother surface.
-     * @param radiusLow  The radius of the lower ring of the torus.
-     * @param radiusHigh The radius of the higher ring of the torus.
-     * @param heightLow  The height of the lower ring of the torus.
-     * @param heightHigh The height of the higher ring of the torus.
-     * @param closeLow   If the lower ring should be a closed surface.
-     * @param closeHigh  If the higher ring should be a closed surface.
+     * @param sliceCount    The number of slices (xy plane) that the torus is
+     *                      divided in, more slices equals a smoother surface.
+     * @param stackCount    The number of stacks (z axis) that the torus is
+     *                      divided in, more slices equals a smoother surface.
+     * @param radiusLow     The radius of the lower ring of the torus.
+     * @param radiusHigh    The radius of the higher ring of the torus.
+     * @param heightLow     The height of the lower ring of the torus.
+     * @param heightHigh    The height of the higher ring of the torus.
+     * @param closeLow      If the lower ring should be a closed surface.
+     * @param closeHigh     If the higher ring should be a closed surface.
+     * @param textureTop    The texture for the top of the stack element.
+     * @param textureBottom The texture for the bottom of the stack element.
+     * @param textureSide   The texture for the side of the stack element.
      */
     public void addPartialTorus(int sliceCount, int stackCount, float radiusLow, float radiusHigh, float heightLow, float heightHigh, boolean closeLow, boolean closeHigh, ImplementedTexture textureTop, ImplementedTexture textureBottom, ImplementedTexture textureSide) {
         //Make a new ring if the previous one can not be reused.
-        if (((rings.isEmpty()) || (sliceCount != rings.get(rings.size() - 1).getSliceCount())) /*&& rings.get(rings.size() - 1).getRadius() == radiusLow
-           && rings.get(rings.size() - 1).getHeight() == heightLow*/) {
+        if (((rings.isEmpty()) || (sliceCount != rings.get(rings.size() - 1).getSliceCount()))) {
             rings.add(makeRing(radiusLow, heightLow, sliceCount, true, closeLow, stackHeight, textureBottom, textureSide));
         }
         //Switch the radii and heights if the torus has a smaller upper radius.
@@ -166,7 +171,7 @@ public class StackAssembler {
      * @return A list of textures.
      */
     public List<ImplementedTexture> getTextureList() {
-        return textureList;
+        return Collections.unmodifiableList(textureList);
     }
 
     /**
@@ -199,9 +204,9 @@ public class StackAssembler {
     private float[] calculatePolygonNormal() {
         //The normal of a horizontal polygon surface always is in the negative z direction.
         final float[] normal = new float[COORD_COUNT];
-        normal[IND_X] = 0;
-        normal[IND_Y] = 0;
-        normal[IND_Z] = -1; //todo: check if this normal is correct
+        normal[IND_X] = 0f;
+        normal[IND_Y] = 0f;
+        normal[IND_Z] = 1f;
         return normal;
     }
 
@@ -227,7 +232,7 @@ public class StackAssembler {
             //And interleave them into indexedVertices, so that it becomes a proper quad strip.
             if (vertices1.hasNext() && (ring1 != null)) {
                 final Vertex vertex = vertices1.next();
-                final float textureX = (float) ring1.getVertices().indexOf(vertex) / (float) ring1.getVertices().size();
+                final float textureX = ring1.getVertices().indexOf(vertex) / (float) ring1.getVertices().size();
                 final IndexedVertex newVertex;
                 //If a vertex can be shared, do so.
                 if (sharedVertices.hasNext()) {
@@ -244,7 +249,7 @@ public class StackAssembler {
             //Again, interleaving, it means first vertex 1, then vertex 2, so here is vertex 2.
             if (vertices2.hasNext() && (ring2 != null)) {
                 final Vertex vertex = vertices2.next();
-                final float textureX = (float) ring2.getVertices().indexOf(vertex) / (float) ring2.getVertices().size();
+                final float textureX = ring2.getVertices().indexOf(vertex) / (float) ring2.getVertices().size();
                 //The second ring is not calculated (yet), and can therefore not (yet) be reused.
                 //So calculate the normal.
                 vertex.setNormalA(calculateQuadStripNormal(ring2.getVertices().indexOf(vertex), ring1, ring2, ring3));
@@ -273,13 +278,15 @@ public class StackAssembler {
         if (ring1.isVertexNormalCalculated(index)) {
             vertexNormal = ring1.getVertices().get(index).getNormalA();
         } else //If this is the only ring (it has no neighboring rings) then no surface is defined, and also no normal.
-         if ((ring2 == null) && (ring0 == null)) {
+        {
+            if ((ring2 == null) && (ring0 == null)) {
                 vertexNormal = new float[COORD_COUNT];
-                vertexNormal[IND_X] = 0;
-                vertexNormal[IND_Y] = 0;
-                vertexNormal[IND_Z] = 0;
+                vertexNormal[IND_X] = 0f;
+                vertexNormal[IND_Y] = 0f;
+                vertexNormal[IND_Z] = 0f;
             } else //If this is the last ring, then the normal is equal for both the first and second ring of the surface.
-             if (ring2 == null) {
+            {
+                if (ring2 == null) {
                     vertexNormal = ring0.getVertices().get(index).getNormalA();
                 } //Else the normal will be calculated.
                 else {
@@ -290,6 +297,8 @@ public class StackAssembler {
                     ring1.setVertex(vertex, index);
                     ring1.setVertexNormalCalculated(index);
                 }
+            }
+        }
         if ((!ring1.isSharp()) && (ring0 != null)) {
             //If the ring represents a smooth edge, the normal will be averaged with the normal below it.
             for (int i = 0; i < COORD_COUNT; i++) {
@@ -346,7 +355,7 @@ public class StackAssembler {
      */
     private static float[] calculatePosition(int angleIndex, float radius, float height, int sliceCount) {
         //Calculate the normal of the surface in circular coordinates.
-        final float sliceAngle = (float) toRadians((double) angleIndex * 360F / sliceCount);
+        final float sliceAngle = (float) toRadians((double) angleIndex * 360f / sliceCount);
         //And store the results as x, y, z components in an array.
         final float[] position = new float[COORD_COUNT];
         position[IND_X] = radius * (float) cos(sliceAngle);
@@ -369,7 +378,7 @@ public class StackAssembler {
      */
     private static float[] calculateNormal(int angleIndex, float deltaRadius, float deltaHeight, int sliceCount) {
         //Calculate the normal of the surface in spherical coordinates.
-        final float sliceAngle = (float) toRadians(angleIndex * 360F / sliceCount);
+        final float sliceAngle = (float) toRadians(angleIndex * 360f / sliceCount);
         final float stackAngle = (float) ((PI * 0.5d) - atan(deltaRadius / deltaHeight));
         //And store the results as x, y, z components in an array.
         final float[] normal = new float[COORD_COUNT];
@@ -379,7 +388,7 @@ public class StackAssembler {
         return normal;
     }
 
-    private static final class Ring {
+    private static class Ring {
 
         /**
          * The list of Vertex's defining this Ring.
@@ -441,7 +450,7 @@ public class StackAssembler {
          * @return The list of Vertex's defining this Ring.
          */
         private List<Vertex> getVertices() {
-            return vertices;
+            return Collections.unmodifiableList(vertices);
         }
 
         /**

@@ -1,11 +1,16 @@
 package racetrack;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 class RaceTrackDistances {
 
-    private final List<RaceTrackDistanceT> raceTrackDistances = new ArrayList<>();
+    private final List<RaceTrackDistanceT> raceTrackDistances;
     private double distance = 0d;
+
+    RaceTrackDistances() {
+        this.raceTrackDistances = new ArrayList<>();
+    }
 
     protected double getDistance(double t) {
         int i = 0;
@@ -16,7 +21,7 @@ class RaceTrackDistances {
                 t -= raceTrackDistances.get(raceTrackDistances.size() - 1).getT();
             }
         }
-        if(i == 0){
+        if (i == 0) {
             return 0d;
         }
         final double scale = (t - raceTrackDistances.get(i - 1).getT()) / (raceTrackDistances.get(i).getT() - raceTrackDistances.get(i - 1).getT());
@@ -32,7 +37,7 @@ class RaceTrackDistances {
                 distance -= raceTrackDistances.get(raceTrackDistances.size() - 1).getDistance();
             }
         }
-        if(i == 0){
+        if (i == 0) {
             return 0d;
         }
         final double scale = (distance - raceTrackDistances.get(i - 1).getDistance()) / (raceTrackDistances.get(i).getDistance() - raceTrackDistances.get(i - 1).getDistance());
@@ -44,7 +49,7 @@ class RaceTrackDistances {
         raceTrackDistances.add(new RaceTrackDistanceT(distance, t));
     }
 
-    private static final class RaceTrackDistanceT {
+    private static class RaceTrackDistanceT {
 
         private final double t, distance;
 

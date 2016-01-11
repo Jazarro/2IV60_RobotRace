@@ -44,7 +44,6 @@ public class Bender implements RobotBody {
     private final Arm leftArm;
     private final int backNumber;
 
-    //TODO: docs
     public Bender(Animation animation, Torso torso, Leg rightLeg, Leg leftLeg, Arm rightArm, Arm leftArm, int backNumber) {
         this.animation = animation;
         this.torso = torso;

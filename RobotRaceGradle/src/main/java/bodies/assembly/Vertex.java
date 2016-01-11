@@ -103,9 +103,15 @@ public class Vertex {
      * @param textureZ  Component of the texture in the Z axis.
      */
     public Vertex(float positionX, float positionY, float positionZ, float normalX, float normalY, float normalZ, float textureX, float textureY, float textureZ) {
-        setPositionC(positionX, positionY, positionZ);
-        setNormalC(normalX, normalY, normalZ);
-        setTextureC(textureX, textureY, textureZ);
+        this.positionX = positionX;
+        this.positionY = positionY;
+        this.positionZ = positionZ;
+        this.normalX = normalX;
+        this.normalY = normalY;
+        this.normalZ = normalZ;
+        this.textureX = textureX;
+        this.textureY = textureY;
+        this.textureZ = textureZ;
     }
 
     /**
@@ -114,7 +120,7 @@ public class Vertex {
      * @param position The position.
      */
     public Vertex(float[] position) {
-        this(position, new float[]{0f, 0f, 0f}, new float[]{0f,0f,0f});
+        this(position, new float[]{0f, 0f, 0f}, new float[]{0f, 0f, 0f});
     }
 
     /**
@@ -165,7 +171,7 @@ public class Vertex {
      * @param texture  The texture.
      */
     public Vertex(Vector position, Vector normal, Vector texture) {
-        this((float) position.x(), (float) position.y(), (float) position.z(), (float) normal.x(),(float)  normal.y(), (float) normal.z(), (float) texture.x(), (float) texture.y(), (float) texture.z());
+        this((float) position.x(), (float) position.y(), (float) position.z(), (float) normal.x(), (float) normal.y(), (float) normal.z(), (float) texture.x(), (float) texture.y(), (float) texture.z());
     }
 
     /**
@@ -175,7 +181,7 @@ public class Vertex {
      * @param positionY Component of the new position in the Y axis.
      * @param positionZ Component of the new position in the Z axis.
      */
-    public final void setPositionC(float positionX, float positionY, float positionZ) {
+    public void setPositionC(float positionX, float positionY, float positionZ) {
         this.positionX = positionX;
         this.positionY = positionY;
         this.positionZ = positionZ;
@@ -186,7 +192,7 @@ public class Vertex {
      *
      * @param position The new position.
      */
-    public final void setPositionA(float[] position) {
+    public void setPositionA(float[] position) {
         this.setPositionC(position[IND_X], position[IND_Y], position[IND_Z]);
     }
 
@@ -195,7 +201,7 @@ public class Vertex {
      *
      * @param position The new position.
      */
-    public final void setPositionV(Vector position) {
+    public void setPositionV(Vector position) {
         this.setPositionC((float) position.x(), (float) position.y(), (float) position.z());
     }
 
@@ -204,7 +210,7 @@ public class Vertex {
      *
      * @return The position of this Vertex.
      */
-    public final float[] getPositionA() {
+    public float[] getPositionA() {
         float[] position = new float[COORD_COUNT];
         position[IND_X] = positionX;
         position[IND_Y] = positionY;
@@ -217,7 +223,7 @@ public class Vertex {
      *
      * @return The position of this Vertex.
      */
-    public final Vector getPositionV() {
+    public Vector getPositionV() {
         return new Vector(positionX, positionY, positionZ);
     }
 
@@ -228,7 +234,7 @@ public class Vertex {
      * @param normalY Component of the new normal in the Y axis.
      * @param normalZ Component of the new normal in the Z axis.
      */
-    public final void setNormalC(float normalX, float normalY, float normalZ) {
+    public void setNormalC(float normalX, float normalY, float normalZ) {
         this.normalX = normalX;
         this.normalY = normalY;
         this.normalZ = normalZ;
@@ -239,7 +245,7 @@ public class Vertex {
      *
      * @param normal The new normal of this Vertex.
      */
-    public final void setNormalA(float[] normal) {
+    public void setNormalA(float[] normal) {
         this.setNormalC(normal[IND_X], normal[IND_Y], normal[IND_Z]);
     }
 
@@ -248,7 +254,7 @@ public class Vertex {
      *
      * @param normal The new normal of this Vertex.
      */
-    public final void setNormalV(Vector normal) {
+    public void setNormalV(Vector normal) {
         this.setNormalC((float) normal.x(), (float) normal.y(), (float) normal.z());
     }
 
@@ -257,7 +263,7 @@ public class Vertex {
      *
      * @return The normal of this Vertex.
      */
-    public final float[] getNormalA() {
+    public float[] getNormalA() {
         float[] normal = new float[COORD_COUNT];
         normal[IND_X] = normalX;
         normal[IND_Y] = normalY;
@@ -270,7 +276,7 @@ public class Vertex {
      *
      * @return The normal of this Vertex.
      */
-    public final Vector getNormalV() {
+    public Vector getNormalV() {
         return new Vector(normalX, normalY, normalZ);
     }
 
@@ -281,7 +287,7 @@ public class Vertex {
      * @param textureY Component of the new texture in the Y axis.
      * @param textureZ Component of the new texture in the Z axis.
      */
-    public final void setTextureC(float textureX, float textureY, float textureZ) {
+    public void setTextureC(float textureX, float textureY, float textureZ) {
         this.textureX = textureX;
         this.textureY = textureY;
         this.textureZ = textureZ;
@@ -292,7 +298,7 @@ public class Vertex {
      *
      * @param texture The new texture of this Vertex.
      */
-    public final void setTextureA(float[] texture) {
+    public void setTextureA(float[] texture) {
         this.setTextureC(texture[IND_X], texture[IND_Y], texture[IND_Z]);
     }
 
@@ -301,7 +307,7 @@ public class Vertex {
      *
      * @param texture The new texture of this Vertex.
      */
-    public final void setTextureV(Vector texture) {
+    public void setTextureV(Vector texture) {
         this.setTextureC((float) texture.x(), (float) texture.y(), (float) texture.z());
     }
 
@@ -310,7 +316,7 @@ public class Vertex {
      *
      * @return The texture of this Vertex.
      */
-    public final float[] getTextureA() {
+    public float[] getTextureA() {
         float[] texture = new float[COORD_COUNT];
         texture[IND_X] = textureX;
         texture[IND_Y] = textureY;
@@ -323,7 +329,7 @@ public class Vertex {
      *
      * @return The texture of this Vertex.
      */
-    public final Vector getTextureV() {
+    public Vector getTextureV() {
         return new Vector(textureX, textureY, textureZ);
     }
 

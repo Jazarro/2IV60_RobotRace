@@ -61,7 +61,8 @@ public interface RobotBody {
 
     /**
      * Interrupt the currently playing animation and run the given animation
-     * type once. After the animation is done, return to the default animation type.
+     * type once. After the animation is done, return to the default animation
+     * type.
      *
      * @param animationType Specifies the animation to run once.
      */
@@ -72,10 +73,11 @@ public interface RobotBody {
      * type a given number of times. After the animation is done, return to the
      * default animation type.
      *
-     * @param animationType  Specifies the animation to run.
-     * @param repeats How often the animation should repeat. A value equal to or
-     *                lower than zero is interpreted as indefinitely and will
-     *                trigger a call to {@link #setDefaultAnimation}.
+     * @param animationType Specifies the animation to run.
+     * @param repeats       How often the animation should repeat. A value equal
+     *                      to or lower than zero is interpreted as indefinitely
+     *                      and will trigger a call to
+     *                      {@link #setDefaultAnimation}.
      */
     void playAnimation(AnimationType animationType, int repeats);
 

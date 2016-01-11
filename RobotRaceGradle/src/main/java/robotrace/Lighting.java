@@ -33,7 +33,7 @@ public class Lighting {
      * Length 4 float-array representing an all black, fully transparent colour.
      * All four values are zero.
      */
-    private static final float[] COLOUR_OFF = new float[]{0, 0, 0, 0};
+    private static final float[] COLOUR_OFF = new float[]{0f, 0f, 0f, 0f};
     /**
      * Value that, when passed as argument when setting the position of a light
      * source, will make the light source infinitely far away.
@@ -85,8 +85,8 @@ public class Lighting {
      */
     private void calculatePosition(GlobalState gs) {
         //Calculate the light position to be 10 degrees above and to the left of the starting eye point.
-        final float azimuth = getAzimuth(gs) - 10;
-        final float inclination = getInclination(gs) - 10;
+        final float azimuth = getAzimuth(gs) - 10f;
+        final float inclination = getInclination(gs) - 10f;
         //Calculate the x coordinate of the sun point relative to the center point.
         final double xSunLocal = Math.cos(azimuth) * Math.cos(inclination) * gs.vDist;
         //Calculate the y coordinate of the sun point relative to the center point.
@@ -129,6 +129,25 @@ public class Lighting {
      * Note that using glColor* has been turned off and doesn't work.
      */
     public void setMaterial(GL2 gl, Material material) {
+        setMaterial(gl, material, false);
+    }
+
+    /**
+     * Sets the given material values on the given GL2 instance. This will set
+     * the light reflective properties (and thus colour) for any object drawn
+     * henceforth.
+     *
+     * @param gl       The GL2 instance responsible for drawing the scene.
+     * @param material The material to set.
+     * @param uniColor If the material should be unicolorized.
+     *
+     * @see #setColor Use this method to set colours without needing a Material.
+     * Note that using glColor* has been turned off and doesn't work.
+     */
+    public void setMaterial(GL2 gl, Material material, boolean uniColor) {
+        if (uniColor) {
+            material = material.uniColorize();
+        }
         gl.glMaterialfv(GL_FRONT, GL_AMBIENT, material.ambient, 0);
         gl.glMaterialfv(GL_FRONT, GL_DIFFUSE, material.diffuse, 0);
         gl.glMaterialfv(GL_FRONT, GL_SPECULAR, material.specular, 0);

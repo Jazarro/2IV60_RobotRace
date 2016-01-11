@@ -7,7 +7,8 @@
 package racetrack;
 
 import bodies.BufferManager;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import javax.media.opengl.GL2;
 import static racetrack.RaceTrackDefinition.getMaxTypeID;
 

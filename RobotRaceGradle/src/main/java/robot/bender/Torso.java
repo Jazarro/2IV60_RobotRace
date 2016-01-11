@@ -35,76 +35,76 @@ public class Torso implements SingletonDrawable {
     /**
      * Radius of the body at the hips.
      */
-    private static final float RADIUS_HIPS = 0.175F;
+    private static final float RADIUS_HIPS = 0.175f;
     /**
      * Radius of the body at the chest.
      */
-    private static final float RADIUS_TORSO = 0.225F;
+    private static final float RADIUS_TORSO = 0.225f;
     /**
      * Radius of the body at the start of the neck.
      */
-    private static final float RADIUS_NECK = 0.125F;
+    private static final float RADIUS_NECK = 0.125f;
     /**
      * Radius of the body at the end of the neck and the head.
      */
-    private static final float RADIUS_HEAD = 0.125F;
+    private static final float RADIUS_HEAD = 0.125f;
     /**
      * Radius of the body at the antenna base.
      */
-    private static final float RADIUS_ANTENNA_BOTTOM = 0.05F;
+    private static final float RADIUS_ANTENNA_BOTTOM = 0.05f;
     /**
      * Radius of the body at the bottom of the antenna, just above the base.
      */
-    private static final float RADIUS_ANTENNA_MIDDLE = 0.03F;
+    private static final float RADIUS_ANTENNA_MIDDLE = 0.03f;
     /**
      * Radius of the body at the top of the antenna, just below the transmitter.
      */
-    private static final float RADIUS_ANTENNA_TOP = 0.01F;
+    private static final float RADIUS_ANTENNA_TOP = 0.01f;
     /**
      * Radius of the body at the center of the transmitter ball.
      */
-    private static final float RADIUS_ANTENNA_BALL_MIDDLE = 0.025F;
+    private static final float RADIUS_ANTENNA_BALL_MIDDLE = 0.025f;
     /**
      * Radius of the body at the top of the transmitter.
      */
-    private static final float RADIUS_ANTENNA_BALL_TOP = 0F;
+    private static final float RADIUS_ANTENNA_BALL_TOP = 0f;
 
     /**
      * Height of the body at the hips.
      */
-    private static final float HEIGHT_PELVIS = 0F;
+    private static final float HEIGHT_PELVIS = 0f;
     /**
      * Height of the body at the chest.
      */
-    private static final float HEIGHT_TORSO = 0.45F;
+    private static final float HEIGHT_TORSO = 0.45f;
     /**
      * Height of the body at the start of the head.
      */
-    private static final float HEIGHT_NECK = 0.55F;
+    private static final float HEIGHT_NECK = 0.55f;
     /**
      * Height of the body at where the head starts to curve inwards.
      */
-    private static final float HEIGHT_HEAD = 0.875F;
+    private static final float HEIGHT_HEAD = 0.875f;
     /**
      * Height of the body at the base of the antenna.
      */
-    private static final float HEIGHT_ANTENNA_BOTTOM = 1F;
+    private static final float HEIGHT_ANTENNA_BOTTOM = 1f;
     /**
      * Height of the body at the top of the antenna base.
      */
-    private static final float HEIGHT_ANTENNA_MIDDLE = 1.025F;
+    private static final float HEIGHT_ANTENNA_MIDDLE = 1.025f;
     /**
      * Height of the body at the top of the antenna, just below the transmitter.
      */
-    private static final float HEIGHT_ANTENNA_TOP = 1.175F;
+    private static final float HEIGHT_ANTENNA_TOP = 1.175f;
     /**
      * Height of the body at the center of the transmitter.
      */
-    private static final float HEIGHT_ANTENNA_BALL_MIDDLE = HEIGHT_ANTENNA_TOP + RADIUS_ANTENNA_BALL_MIDDLE; //1.1875d;
+    private static final float HEIGHT_ANTENNA_BALL_MIDDLE = HEIGHT_ANTENNA_TOP + RADIUS_ANTENNA_BALL_MIDDLE;
     /**
      * Height of the body at the top of the transmitter.
      */
-    public static final float HEIGHT_ANTENNA_BALL_TOP = HEIGHT_ANTENNA_BALL_MIDDLE + RADIUS_ANTENNA_BALL_MIDDLE; //1.2d;
+    public static final float HEIGHT_ANTENNA_BALL_TOP = HEIGHT_ANTENNA_BALL_MIDDLE + RADIUS_ANTENNA_BALL_MIDDLE;
 
     /**
      * The default number of edges to give the rings of the various shapes.
@@ -119,16 +119,16 @@ public class Torso implements SingletonDrawable {
      * The absolute distance on the x-axis between the central vertical axis and
      * the position of the legs.
      */
-    public static final float LEG_OFFCENTER = 0.1F;
+    public static final float LEG_OFFCENTER = 0.1f;
     /**
      * The height of the shoulder relative to the height of the torso.
      */
-    public static final float SHOULDER_HEIGHT = 0.375F;
+    public static final float SHOULDER_HEIGHT = 0.375f;
     /**
      * The absolute distance on the x-axis between the central vertical axis and
      * the position of the shoulders.
      */
-    public static final float SHOULDER_OFFCENTER = 0.2F;
+    public static final float SHOULDER_OFFCENTER = 0.2f;
 
     /**
      * One or more textures that will be printed on the robots' backs. These
@@ -216,22 +216,22 @@ public class Torso implements SingletonDrawable {
     }
 
     private void applyRunningTransformation(GL2 gl, Animation animation) {
-        final double fractionInRadians = animation.getLinearInterpolation() * 2 * Math.PI;
-        final double bobbingUpAndDownHeight = 0.05 * Math.abs(Math.sin(fractionInRadians));
-        gl.glTranslated(0, 0, bobbingUpAndDownHeight);
-        gl.glRotated(RUNNING_ANGLE, 1, 0, 0);
+        final double fractionInRadians = animation.getLinearInterpolation() * 2f * Math.PI;
+        final double bobbingUpAndDownHeight = 0.05f * Math.abs(Math.sin(fractionInRadians));
+        gl.glTranslated(0d, 0d, bobbingUpAndDownHeight);
+        gl.glRotated(RUNNING_ANGLE, 1d, 0d, 0d);
     }
 
     private void drawStickFigureBody(GL2 gl, GLUT glut, double bodyHeight) {
         gl.glPushMatrix();
         gl.glScaled(RobotBody.STICK_THICKNESS, RobotBody.STICK_THICKNESS, bodyHeight);
-        gl.glTranslated(0d, 0d, bodyHeight / 2);
+        gl.glTranslated(0d, 0d, bodyHeight / 2f);
         glut.glutSolidCube(1f);
         gl.glPopMatrix();
     }
 
     private void drawStickFigurePelvis(GL2 gl, GLUT glut, double bodyHeight) {
-        final double pelvisWidth = LEG_OFFCENTER * 2;
+        final double pelvisWidth = LEG_OFFCENTER * 2f;
         gl.glPushMatrix();
         gl.glScaled(pelvisWidth, RobotBody.STICK_THICKNESS, RobotBody.STICK_THICKNESS);
         glut.glutSolidCube(1f);
@@ -239,7 +239,7 @@ public class Torso implements SingletonDrawable {
     }
 
     private void drawStickFigureShoulders(GL2 gl, GLUT glut) {
-        final double shoulderWidth = SHOULDER_OFFCENTER * 2;
+        final double shoulderWidth = SHOULDER_OFFCENTER * 2f;
         gl.glPushMatrix();
         gl.glTranslated(0d, 0d, SHOULDER_HEIGHT);
         gl.glScaled(shoulderWidth, RobotBody.STICK_THICKNESS, RobotBody.STICK_THICKNESS);
@@ -265,7 +265,7 @@ public class Torso implements SingletonDrawable {
      */
     public void setRightLegMountPoint(GL2 gl) {
         gl.glTranslated(LEG_OFFCENTER, 0d, 0d);
-        gl.glRotated(180, 1, 0, 0);
+        gl.glRotated(180d, 1d, 0d, 0d);
     }
 
     /**
@@ -277,7 +277,7 @@ public class Torso implements SingletonDrawable {
      */
     public void setLeftLegMountPoint(GL2 gl) {
         gl.glTranslated(-LEG_OFFCENTER, 0d, 0d);
-        gl.glRotated(180, 1, 0, 0);
+        gl.glRotated(180d, 1d, 0d, 0d);
     }
 
     /**

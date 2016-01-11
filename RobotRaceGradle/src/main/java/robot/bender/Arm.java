@@ -54,8 +54,8 @@ public class Arm {
         switch (animation.getCurrentAnimationType()) {
             case RUNNING:
                 final float fraction = animation.getLinearInterpolation(animationPeriodOffset);
-                final float fractionInRadians = (float) (fraction * 2 * Math.PI);
-                final float jointAngle = 28 + -60 * (float) Math.sin(fractionInRadians);
+                final float fractionInRadians = (float) (fraction * 2f * Math.PI);
+                final float jointAngle = 28f - (60f * (float) Math.sin(fractionInRadians));
                 return jointAngle / NR_SHOULDER_JOINTS;
             case IDLE:
             default:
@@ -65,9 +65,9 @@ public class Arm {
 
     private void drawElbows(GL2 gl, GLUT glut, boolean stickFigure, Animation animation) {
         for (int i = 0; i < NR_ELBOW_JOINTS; i++) {
-            gl.glRotated(getPartialElbowAngle(animation), 1, 0, 0.7 * horizontalTurningAxis.z());
+            gl.glRotated(getPartialElbowAngle(animation), 1f, 0f, 0.7f * horizontalTurningAxis.z());
             limb.drawSegment(gl, glut, stickFigure);
-            gl.glTranslated(0, 0, Limb.HEIGHT_OUTER_SEGMENT);
+            gl.glTranslated(0d, 0d, Limb.HEIGHT_OUTER_SEGMENT);
         }
     }
 
@@ -75,8 +75,8 @@ public class Arm {
         switch (animation.getCurrentAnimationType()) {
             case RUNNING:
                 final float fraction = animation.getLinearInterpolation(animationPeriodOffset);
-                final float fractionInRadians = (float) (fraction * 2 * Math.PI);
-                final float jointAngle = -90 + 20 * (float) Math.sin(fractionInRadians);
+                final float fractionInRadians = (float) (fraction * 2f * Math.PI);
+                final float jointAngle = -90f + 20f * (float) Math.sin(fractionInRadians);
                 return jointAngle / NR_SHOULDER_JOINTS;
             case IDLE:
             default:
@@ -86,12 +86,12 @@ public class Arm {
 
     private void drawWrists(GL2 gl, GLUT glut, boolean stickFigure, Animation animation) {
         for (int i = 0; i < NR_WRIST_JOINTS + 1; i++) {
-            gl.glRotated(getPartialWristAngle(animation), 0.1, 0.5 * horizontalTurningAxis.z(), 0);
+            gl.glRotated(getPartialWristAngle(animation), 0.1f, 0.5f * horizontalTurningAxis.z(), 0d);
             if (i == NR_WRIST_JOINTS) {
                 limb.drawHand(gl, stickFigure);
             } else {
                 limb.drawSegment(gl, glut, stickFigure);
-                gl.glTranslated(0, 0, Limb.HEIGHT_OUTER_SEGMENT);
+                gl.glTranslated(0d, 0d, Limb.HEIGHT_OUTER_SEGMENT);
             }
         }
     }
@@ -100,12 +100,12 @@ public class Arm {
         switch (animation.getCurrentAnimationType()) {
             case RUNNING:
                 final float fraction = animation.getLinearInterpolation(animationPeriodOffset);
-                final float fractionInRadians = (float) (fraction * 2 * Math.PI);
-                final float jointAngle = -30 + -35 * (float) Math.sin(fractionInRadians);
+                final float fractionInRadians = (float) (fraction * 2f * Math.PI);
+                final float jointAngle = -30f - 35f * (float) Math.sin(fractionInRadians);
                 return jointAngle / (NR_WRIST_JOINTS + 1);
             case IDLE:
             default:
-                return 0F;
+                return 0f;
         }
     }
 

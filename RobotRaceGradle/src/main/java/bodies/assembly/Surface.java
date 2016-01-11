@@ -7,13 +7,14 @@
 package bodies.assembly;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
  *
  * @author Robke Geenen
  */
-final class Surface {
+class Surface {
 
     /**
      * The IndexedVertex's defining this Surface.
@@ -31,7 +32,7 @@ final class Surface {
      * @param vertices The IndexedVertex's defining this Surface.
      * @param polygon  If this Surface is a polygon or a quad strip.
      */
-    public Surface(List<IndexedVertex> vertices, boolean polygon) {
+    Surface(List<IndexedVertex> vertices, boolean polygon) {
         this.vertices = vertices;
         this.polygon = polygon;
     }
@@ -42,7 +43,7 @@ final class Surface {
      * @return The IndexedVertex's defining this Surface.
      */
     public List<IndexedVertex> getVertices() {
-        return vertices;
+        return Collections.unmodifiableList(vertices);
     }
 
     /**

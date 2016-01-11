@@ -29,7 +29,7 @@ import terrain.trees.TreeSupplier;
  */
 public class Terrain {
 
-    private static final Vector TERRAIN_LEVEL = new Vector(0, 0, -145);
+    private static final Vector TERRAIN_LEVEL = new Vector(0d, 0d, -145d);
     private static final float WATER_LEVEL = 0f;
     private static final String TERRAIN_TEXTURE_FILENAME = "terrain.png";
 
@@ -41,18 +41,18 @@ public class Terrain {
         final Foliage foliage = new Foliage();
         foliage.initialize(gl, bmInitialiser);
         final FractalTerrainGenerator heightMap = FractalTerrainGenerator.create();
-        final TreeSupplier treeSupplierClose = new TreeSupplier(new Rectangle(-150, -150, 300, 300), heightMap, foliage);
-        treeSupplierClose.addForbiddenArea(-25, -25, 50, 50);
-        final TreeSupplier treeSupplierFar = new TreeSupplier(new Rectangle(-500, -500, 1000, 1000), heightMap, foliage);
-        treeSupplierFar.addForbiddenArea(-50, -50, 100, 100);
+        final TreeSupplier treeSupplierClose = new TreeSupplier(new Rectangle(-150d, -150d, 300d, 300d), heightMap, foliage);
+        treeSupplierClose.addForbiddenArea(-25d, -25d, 50d, 50d);
+        final TreeSupplier treeSupplierFar = new TreeSupplier(new Rectangle(-500d, -500d, 1000d, 1000d), heightMap, foliage);
+        treeSupplierFar.addForbiddenArea(-50d, -50d, 100d, 100d);
         for (int i = 0; i < 15; i++) {
             trees.add(treeSupplierClose.get());
             trees.add(treeSupplierFar.get());
         }
         final ImplementedTexture terrainTexture = new ImplementedTexture(gl, TERRAIN_TEXTURE_FILENAME, true, false);
-        this.terrainBody = new TerrainFactory(1000, 1000, 1F)
+        this.terrainBody = new TerrainFactory(1000f, 1000f, 1f)
                 .makeTerrain(bmInitialiser, heightMap, terrainTexture);
-        this.waterBody = new TerrainFactory(1000, 1000, 100)
+        this.waterBody = new TerrainFactory(1000f, 1000f, 100f)
                 .makeTerrain(bmInitialiser, (x, y) -> WATER_LEVEL, null);
     }
 
@@ -72,8 +72,7 @@ public class Terrain {
         {
             gl.glTranslated(TERRAIN_LEVEL.x(), TERRAIN_LEVEL.y(), TERRAIN_LEVEL.z());
             gl.glEnable(GL_CULL_FACE);
-            lighting.setMaterial(gl, Material.NONE);
-            lighting.setColor(gl, 1f, 1f, 1f, 1f);
+            lighting.setMaterial(gl, Material.DIRT, true);
             terrainBody.draw(gl);
             lighting.setMaterial(gl, Material.WATER);
             waterBody.draw(gl);

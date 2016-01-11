@@ -11,6 +11,7 @@ import bodies.assembly.StackAssembler;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javax.media.opengl.GL2;
 
@@ -31,7 +32,7 @@ public class StackBuilder {
     private ImplementedTexture textureTop = null;
     private ImplementedTexture textureBottom = null;
     private ImplementedTexture textureSide = null;
-    private List<Shape> texturedShapes = new ArrayList<>();
+    private final List<Shape> texturedShapes;
 
     /**
      * Construct a new SimpleBody.StackBuilder. This builder can be used to
@@ -42,6 +43,7 @@ public class StackBuilder {
      *                      the bodies created by these builders do not.
      */
     public StackBuilder(BufferManager.Initialiser bmInitialiser) {
+        this.texturedShapes = new ArrayList<>();
         this.bmInitialiser = bmInitialiser;
         this.assembler = new StackAssembler();
     }
@@ -55,7 +57,7 @@ public class StackBuilder {
      *         ImplementedTexture.
      */
     public List<Shape> getTexturedShapes() {
-        return texturedShapes;
+        return Collections.unmodifiableList(texturedShapes);
     }
 
     /**

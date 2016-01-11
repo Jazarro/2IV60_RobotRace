@@ -40,7 +40,7 @@ public class CameraView {
         return cameraMode;
     }
 
-    public void update(GlobalState gs, List<Robot> robots) {
+    public final void update(GlobalState gs, List<Robot> robots) {
         this.robots = robots;
         switch (this.camMode) {
             case 1:
@@ -62,6 +62,8 @@ public class CameraView {
 
     /**
      * Computes eye, center, and up, based on the camera's default mode.
+     *
+     * @param gs
      */
     public void setDefaultMode(GlobalState gs) {
         //Calculate the x coordinate of the eye point relative to the center point.
@@ -79,13 +81,15 @@ public class CameraView {
         final Vector up = Vector.Z;
         //Calculate the needed field of view angle to make the displayed portion 
         //of the line through the center point exactly vDist long.
-        final float fovAngle = 40f;//TODO: Fix FOVAngle
+        final float fovAngle = 0f;
         cameraMode = new CameraMode(gs, eye, center, up, fovAngle);
     }
 
     /**
      * Computes eye, center, and up, based on the helicopter mode. The camera
      * should focus on the robot.
+     *
+     * @param gs
      */
     public void setHelicopterMode(GlobalState gs) {
         final Vector eye = robots.get(robotFocus).getPosition().add(HELICOPTER_EYE);
@@ -98,6 +102,8 @@ public class CameraView {
     /**
      * Computes eye, center, and up, based on the motorcycle mode. The camera
      * should focus on the robot.
+     *
+     * @param gs
      */
     public void setMotorCycleMode(GlobalState gs) {
         final Vector eye = addRelative(robots.get(robotFocus).getPositionTrack(), robots.get(robotFocus).getDirectionTrack(), MOTORCYCLE_EYE);
@@ -110,6 +116,8 @@ public class CameraView {
     /**
      * Computes eye, center, and up, based on the first person mode. The camera
      * should view from the perspective of the robot.
+     *
+     * @param gs
      */
     public void setFirstPersonMode(GlobalState gs) {
         final Robot robot = robots.get(robotEye);

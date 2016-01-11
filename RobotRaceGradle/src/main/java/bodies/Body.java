@@ -27,7 +27,7 @@ public interface Body {
      * NB: There are plans to drop the dependency on GLUT entirely, beware this
      * second parameter will likely disappear in a later version.
      *
-     * @param gl   The instance of GL2 responsible for drawing the body.
+     * @param gl The instance of GL2 responsible for drawing the body.
      */
     void draw(GL2 gl);
 

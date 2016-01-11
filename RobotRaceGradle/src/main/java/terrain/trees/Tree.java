@@ -17,7 +17,7 @@ import robotrace.Vector;
  *
  * @author Arjan Boschman
  */
-public class Tree {//TODO: Clean up, document.
+public class Tree {
 
     private final Foliage foliage;
     private final Vector position;
@@ -61,11 +61,11 @@ public class Tree {//TODO: Clean up, document.
      */
     private int getRequiredDetailLevel(Vector camPos) {
         final float distanceToEye = (float) Math.abs(camPos.subtract(position).length());
-        if (distanceToEye > 1500) {
+        if (distanceToEye > 1500f) {
             return 0;
-        } else if (distanceToEye > 300) {
+        } else if (distanceToEye > 300f) {
             return 1;
-        } else if (distanceToEye > 150) {
+        } else if (distanceToEye > 150f) {
             return 2;
         } else {
             return 3;
@@ -105,25 +105,25 @@ public class Tree {//TODO: Clean up, document.
 
         public void draw(GL2 gl, Lighting lighting, Foliage foliage, int requiredDetailLevel, int depth) {
             gl.glPushMatrix();
-            gl.glTranslated(0, 0, zTranslation);
-            gl.glRotated(zRotation, 0, 0, 1);
-            gl.glRotated(yRotation, 0, 1, 0);
+            gl.glTranslated(0d, 0d, zTranslation);
+            gl.glRotated(zRotation, 0d, 0d, 1d);
+            gl.glRotated(yRotation, 0d, 1d, 0d);
             gl.glPushMatrix();
             if (isLeaf) {
-                final float scaleMultiplier = requiredDetailLevel == 0 ? 4 : requiredDetailLevel == 1 ? 2 : 1;
+                final float scaleMultiplier = (requiredDetailLevel == 0) ? (4f) : ((requiredDetailLevel == 1) ? (2f) : (1f));
                 gl.glScaled(scale.x() * scaleMultiplier, scale.y() * scaleMultiplier, scale.z() * scaleMultiplier);
-                gl.glTranslated(sidewaysTranslation, 0, 0);
-                gl.glRotated(zRotation, 0, 0, 1);
+                gl.glTranslated(sidewaysTranslation, 0d, 0d);
+                gl.glRotated(zRotation, 0d, 0d, 1d);
                 foliage.drawLeaf(gl);
             } else {
                 gl.glScaled(scale.x(), scale.y(), scale.z());
                 foliage.drawBranch(gl, calcRequiredDetailForBranch(requiredDetailLevel, (float) scale.x()));
             }
             gl.glPopMatrix();
-            final int maxNodes = requiredDetailLevel == 0 ? 1
-                    : requiredDetailLevel == 1 ? 4
-                            : requiredDetailLevel == 2 ? 10
-                                    : Integer.MAX_VALUE;
+            final int maxNodes = (requiredDetailLevel == 0) ? (1)
+                    : ((requiredDetailLevel == 1) ? (4)
+                            : ((requiredDetailLevel == 2) ? (10)
+                                    : (Integer.MAX_VALUE)));
             if (!childLeafs.isEmpty()) {
                 lighting.setMaterial(gl, Material.LEAF);
                 childLeafs.stream().limit(maxNodes).forEach((node) -> node.draw(gl, lighting, foliage, requiredDetailLevel, depth + 1));

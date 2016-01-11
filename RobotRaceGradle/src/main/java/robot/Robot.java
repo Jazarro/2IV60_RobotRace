@@ -141,7 +141,7 @@ public class Robot {
 
     private double getGravityDrag() {
         final double zInclination = direction.normalized().dot(Vector.Z);
-        final double gravity = Math.pow(2d, Math.pow(zInclination, 2d) * 4d); //TODO: Find nice value!
+        final double gravity = Math.pow(2d, Math.pow(zInclination, 2d) * 4d);
         return (zInclination < 0d) ? (gravity) : (1d / gravity);
     }
 

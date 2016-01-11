@@ -23,7 +23,7 @@ public class FractalTerrainGenerator implements HeightMap {
     private static final long RAND_SEED = 12_345_678_422L;
 
     public static FractalTerrainGenerator create() {
-        final FractalTerrainGenerator instance = new FractalTerrainGenerator(10, 0.3F);
+        final FractalTerrainGenerator instance = new FractalTerrainGenerator(10, 0.3f);
         instance.initialise();
         return instance;
     }
@@ -47,7 +47,7 @@ public class FractalTerrainGenerator implements HeightMap {
      * creates the generator using some default values and also initialises it.
      */
     public FractalTerrainGenerator(int detail, float roughness) {
-        this.globalSize = (int) Math.pow(2, detail) + 1;
+        this.globalSize = (int) Math.pow(2d, detail) + 1;
         this.max = globalSize - 1;
         this.map = new float[globalSize][globalSize];
         this.roughness = roughness;
@@ -58,7 +58,7 @@ public class FractalTerrainGenerator implements HeightMap {
      * will calculate the heights of all grid points in advance.
      */
     public void initialise() {
-        final float initialValue = -50;
+        final float initialValue = -50f;
         map[0][0] = initialValue;
         map[max][0] = initialValue;
         map[0][max] = initialValue;
@@ -74,12 +74,12 @@ public class FractalTerrainGenerator implements HeightMap {
         }
         for (int y = half; y < max; y += size) {
             for (int x = half; x < max; x += size) {
-                performDiamondStep(x, y, half, rand.nextFloat() * scale * 2 - scale);
+                performDiamondStep(x, y, half, rand.nextFloat() * scale * 2f - scale);
             }
         }
         for (int y = 0; y <= max; y += half) {//Be mindful of rounding errors.
             for (int x = (y + half) % size; x <= max; x += size) {
-                performSquareStep(x, y, half, rand.nextFloat() * scale * 2 - scale);
+                performSquareStep(x, y, half, rand.nextFloat() * scale * 2f - scale);
             }
         }
         divide(half);
@@ -100,7 +100,7 @@ public class FractalTerrainGenerator implements HeightMap {
                 = (map[x][Math.floorMod(y - radius, globalSize)] //Top
                 + map[Math.floorMod(x - radius, globalSize)][y] //Left
                 + map[x][Math.floorMod(y + radius, globalSize)] //Bottom
-                + map[Math.floorMod(x + radius, globalSize)][y]) / 4;  //Right
+                + map[Math.floorMod(x + radius, globalSize)][y]) / 4f;  //Right
         map[x][y] = average + offset;
     }
 
@@ -116,15 +116,11 @@ public class FractalTerrainGenerator implements HeightMap {
      *               adds randomness to the generation.
      */
     private void performDiamondStep(int x, int y, int radius, float offset) {
-        final float a1 = map[Math.floorMod(x - radius, globalSize)][Math.floorMod(y - radius, globalSize)]; //Top-Left
-        final float a2 = map[Math.floorMod(x - radius, globalSize)][Math.floorMod(y + radius, globalSize)]; //Bottom-Left
-        final float a3 = map[Math.floorMod(x + radius, globalSize)][Math.floorMod(y - radius, globalSize)]; //Top-Right
-        final float a4 = map[Math.floorMod(x + radius, globalSize)][Math.floorMod(y + radius, globalSize)]; //Bottom-Right
         final float average
                 = (map[Math.floorMod(x - radius, globalSize)][Math.floorMod(y - radius, globalSize)] //Top-Left
                 + map[Math.floorMod(x - radius, globalSize)][Math.floorMod(y + radius, globalSize)] //Bottom-Left
                 + map[Math.floorMod(x + radius, globalSize)][Math.floorMod(y - radius, globalSize)] //Top-Right
-                + map[Math.floorMod(x + radius, globalSize)][Math.floorMod(y + radius, globalSize)]) / 4; //Bottom-Right
+                + map[Math.floorMod(x + radius, globalSize)][Math.floorMod(y + radius, globalSize)]) / 4f; //Bottom-Right
         map[x][y] = average + offset;
     }
 

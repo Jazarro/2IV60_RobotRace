@@ -32,7 +32,6 @@ public class SimpleBody implements Body {
         shapes.add(shape);
     }
 
-    
     @Deprecated//No longer used or needed.
     public void changeTexture(ImplementedTexture textureOld, ImplementedTexture textureNew) {
         for (Shape shape : shapes) {

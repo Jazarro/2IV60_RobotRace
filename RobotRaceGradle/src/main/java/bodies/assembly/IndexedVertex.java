@@ -10,7 +10,7 @@ package bodies.assembly;
  *
  * @author Robke Geenen
  */
-final class IndexedVertex {
+class IndexedVertex {
 
     /**
      * The Vertex this IndexedVertex is based on.
@@ -86,7 +86,7 @@ final class IndexedVertex {
      *
      * @param shared If this IndexedVertex is shared between objects.
      */
-    protected final void setShared(boolean shared) {
+    protected void setShared(boolean shared) {
         this.shared = shared;
     }
 
@@ -95,7 +95,7 @@ final class IndexedVertex {
      *
      * @return If this IndexedVertex is shared between objects.
      */
-    protected final boolean isShared() {
+    protected boolean isShared() {
         return shared;
     }
 
@@ -104,7 +104,7 @@ final class IndexedVertex {
      *
      * @return The index of this IndexedVertex in the vertex array.
      */
-    protected final int getIndex() {
+    protected int getIndex() {
         return index;
     }
 
@@ -113,7 +113,7 @@ final class IndexedVertex {
      *
      * @param index The index of this IndexedVertex in the vertex array.
      */
-    protected final void setIndex(int index) {
+    protected void setIndex(int index) {
         this.index = index;
     }
 

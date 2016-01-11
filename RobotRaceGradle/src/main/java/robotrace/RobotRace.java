@@ -130,7 +130,7 @@ public class RobotRace extends Base {
         final BufferManager.Initialiser bmInitialiser = bodyManager.makeInitialiser(gl);
         lighting.initialize(gl, gs);
 
-        // Enable blending.//todo check if it's better with this on.
+        // Enable blending.
         gl.glEnable(GL.GL_BLEND);
         gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
 
@@ -176,7 +176,7 @@ public class RobotRace extends Base {
         lighting.drawScene(gl);
 
         // Background color.
-        gl.glClearColor((1.0f / 255) * 135, (1.0f / 255) * 206, (1.0f / 255) * 250, 0f);
+        gl.glClearColor((135f / 255f), (206f / 255f), (250f / 255f), 0f);
         // Clear background and depth buffer.
         gl.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         gl.glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -232,7 +232,7 @@ public class RobotRace extends Base {
         //The height of the cone topping the axis.
         final float coneHeight = 0.1f;
         //The length of axis beams' long edge.
-        final float axisLength = 1 - coneHeight;
+        final float axisLength = 1f - coneHeight;
         //Sets the color relative to the axis being drawn. (x=red,y=green,z=blue)
         lighting.setColor(gl, x, y, z, 1f);
 
@@ -245,9 +245,9 @@ public class RobotRace extends Base {
          * around the axis perpendicular to the one being drawn. The z-cone is
          * already rotated correctly, so it is not rotated.
          */
-        gl.glRotatef(z == 1 ? 0 : 90, -y, x, 0);
+        gl.glRotatef(z == 1f ? 0f : 90f, -y, x, 0f);
         //Draw the cone, make base five times wider than the axis beam.
-        glut.glutSolidCone(axisThickness * 5, coneHeight, DEFAULT_SLICES, DEFAULT_STACKS);
+        glut.glutSolidCone(axisThickness * 5f, coneHeight, DEFAULT_SLICES, DEFAULT_STACKS);
         //Restore the original matrix.
         gl.glPopMatrix();
 
@@ -258,9 +258,9 @@ public class RobotRace extends Base {
                 axisLength * 0.5f * y,
                 axisLength * 0.5f * z);
         //Stretch the beam along its axis to make it fit the previously defined axisLength.
-        gl.glScalef(x == 0 ? 1f : axisLength / axisThickness,
-                y == 0 ? 1f : axisLength / axisThickness,
-                z == 0 ? 1f : axisLength / axisThickness);
+        gl.glScalef(x == 0f ? 1f : axisLength / axisThickness,
+                y == 0f ? 1f : axisLength / axisThickness,
+                z == 0f ? 1f : axisLength / axisThickness);
         //Draw the beam.
         glut.glutSolidCube(axisThickness);
         //Restore the original matrix.

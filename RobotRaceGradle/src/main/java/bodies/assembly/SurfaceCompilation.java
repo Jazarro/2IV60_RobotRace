@@ -11,13 +11,14 @@ import com.jogamp.common.nio.Buffers;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
  *
  * @author Robke Geenen
  */
-final class SurfaceCompilation {
+class SurfaceCompilation {
 
     /**
      * All IndexedVertex's of all Surfaces in this SurfaceCompilation.
@@ -63,7 +64,7 @@ final class SurfaceCompilation {
      * @return All IndexedVertex's of all Surfaces in this SurfaceCompilation.
      */
     public List<IndexedVertex> getVertices() {
-        return vertices;
+        return Collections.unmodifiableList(vertices);
     }
 
     /**
@@ -72,7 +73,7 @@ final class SurfaceCompilation {
      * @return All Surfaces in this SurfaceCompilation.
      */
     public List<Surface> getSurfaces() {
-        return surfaces;
+        return Collections.unmodifiableList(surfaces);
     }
 
     /**

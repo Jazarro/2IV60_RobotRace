@@ -60,6 +60,7 @@ public class TerrainFactory {
      *                      buffers and gives them to OpenGL.
      * @param heightMap     The HeightMap instance that dictates what the data
      *                      should look like.
+     * @param texture
      * @return A Body, which can be used during the draw phase to easily draw
      *         the entire terrain.
      */

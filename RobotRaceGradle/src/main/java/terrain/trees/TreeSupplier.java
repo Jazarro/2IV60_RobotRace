@@ -50,7 +50,7 @@ public class TreeSupplier implements Supplier<Tree> {
      * radius around a spot in order for that spot to be considered level enough
      * to support tree growth.
      */
-    private static final float MAX_DECLINATION = 0.5F;
+    private static final float MAX_DECLINATION = 0.5f;
 
     private static final int MAX_NR_UNIQUE_TREE_MODELS = 5;
 
@@ -93,7 +93,7 @@ public class TreeSupplier implements Supplier<Tree> {
             }
             addForbiddenArea(coords.getX() - TREE_CLEARING_RADIUS,
                     coords.getY() - TREE_CLEARING_RADIUS,
-                    2 * TREE_CLEARING_RADIUS, 2 * TREE_CLEARING_RADIUS);
+                    2f * TREE_CLEARING_RADIUS, 2f * TREE_CLEARING_RADIUS);
             return new Tree(foliage,
                     new Vector(coords.getX(), coords.getY(),
                             heightMap.heightAt(coords.getX(), coords.getY())), getTreeTrunk());
@@ -116,10 +116,10 @@ public class TreeSupplier implements Supplier<Tree> {
 
     private boolean checkAreaIsTooSteep(final Point2D coords) {
         final float center = heightMap.heightAt(coords.getX(), coords.getY());
-        final float north = heightMap.heightAt(coords.getX(), coords.getY() - 1);
-        final float south = heightMap.heightAt(coords.getX(), coords.getY() + 1);
-        final float west = heightMap.heightAt(coords.getX() - 1, coords.getY());
-        final float east = heightMap.heightAt(coords.getX() + 1, coords.getY());
+        final float north = heightMap.heightAt(coords.getX(), coords.getY() - 1d);
+        final float south = heightMap.heightAt(coords.getX(), coords.getY() + 1d);
+        final float west = heightMap.heightAt(coords.getX() - 1d, coords.getY());
+        final float east = heightMap.heightAt(coords.getX() + 1d, coords.getY());
         return Math.abs(center - north) > MAX_DECLINATION
                 || Math.abs(center - south) > MAX_DECLINATION
                 || Math.abs(center - west) > MAX_DECLINATION
@@ -127,7 +127,7 @@ public class TreeSupplier implements Supplier<Tree> {
     }
 
     private boolean checkAreaIsUnderWater(final Point2D coords) {
-        return heightMap.heightAt(coords.getX(), coords.getY()) < 0;
+        return heightMap.heightAt(coords.getX(), coords.getY()) < 0f;
     }
 
 }
