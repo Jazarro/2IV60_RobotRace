@@ -24,7 +24,7 @@ public class ImplementedTexture {
 
     public ImplementedTexture(GL2 gl, String filename, boolean interpolate, boolean mirror) {
         originalFilename = filename;
-        final File file = new File("src/textures/" + filename);
+        final File file = new File("src/main/java/robotrace/" + filename);
         try {
             texture = TextureIO.newTexture(file, true);
             texture.enable(gl);
