@@ -4,6 +4,10 @@
  * Course Code: 2IV60
  * Assignment: RobotRace
  * 
+ * This code is based on 6 template classes, as well as the RobotRaceLibrary. 
+ * Both were provided by the course tutor, currently prof.dr.ir. 
+ * J.J. (Jack) van Wijk. (e-mail: j.j.v.wijk@tue.nl)
+ * 
  * Copyright (C) 2015 Arjan Boschman, Robke Geenen
  *
  * This program is free software; you can redistribute it and/or
@@ -31,6 +35,10 @@ import java.util.logging.Logger;
 import javax.media.opengl.GL2;
 import javax.media.opengl.GLException;
 
+/**
+ * 
+ * @author Robke Geenen
+ */
 public class ImplementedTexture {
 
     private Texture texture;
