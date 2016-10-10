@@ -1,5 +1,4 @@
 # 2IV60_RobotRace
-Check out [the website](https://aboschman.github.io/2IV60_RobotRace/) here at GitHub.io.
 
 ## Background
 This project was made by Arjan Boschman and Röbke Geenen as part of an assignment for the TU/e pre-master course Computer Graphics (Course code 2IV60). The final submission was marked 10/10. 
